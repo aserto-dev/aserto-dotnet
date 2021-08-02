@@ -1,0 +1,82 @@
+name: ci
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - v*
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+  # Run tests for PRs
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        cfg:
+          - { project: Aserto.AspNetCore.Middleware, dotnet: 5.x}
+    name: Build ${{ matrix.cfg.project }} on ${{ matrix.cfg.dotnet }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.cfg.dotnet }}
+
+      - name: Build ${{ matrix.cfg.project }}
+        run: |
+          dotnet build src/${{ matrix.cfg.project }}
+        
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        cfg:
+          - { project: Aserto.AspNetCore.Middleware.Tests }
+    name: Test ${{ matrix.cfg.project }} test.
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet 5.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.x
+
+      - name: Setup dotnet 3.1.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Test Aserto.AspNetCore.Middleware
+        run: |
+          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./lcov.info tests/${{ matrix.cfg.project }}
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: tests\${{ matrix.cfg.project }}\lcov.net5.info
+  release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.x
+
+      - name: Build
+        run: dotnet build --configuration Release src/Aserto.AspNetCore.Middleware/Aserto.AspNetCore.Middleware.csproj
+
+      - name: Publish to NuGet.org
+        uses: brandedoutcast/publish-nuget@v2.5.5
+        with:
+          PROJECT_FILE_PATH: src/Aserto.AspNetCore.Middleware/Aserto.AspNetCore.Middleware.csproj
+          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}

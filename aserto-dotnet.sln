@@ -1,0 +1,95 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D5BD9281-22D3-46B4-B048-7F5ED1936743}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53CB8A87-9EEB-4414-857A-9128EC5B8F64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{627E0D90-0947-433D-BED0-8ABCB6DD0D39}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{169823A9-9DFD-4878-9F1A-E493697D9196}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yaml = .github\workflows\ci.yaml
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B993F79A-E3D4-4754-9416-8D0E561AF14C}"
+	ProjectSection(SolutionItems) = preProject
+		build\aserto-brandmark-color.png = build\aserto-brandmark-color.png
+		build\common.props = build\common.props
+		build\stylecop.json = build\stylecop.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.NETCore3", "examples\Aserto.NETCore3\Aserto.NETCore3.csproj", "{650E9DC0-2B96-4791-8D9A-DC5EAAB4CB3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.AspNetCore.Middleware", "src\Aserto.AspNetCore.Middleware\Aserto.AspNetCore.Middleware.csproj", "{916F8C72-DDC1-454E-98BD-4A4ACC7ECA35}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.AspNetCore.Middleware.Tests", "tests\Aserto.AspNetCore.Middleware.Tests\Aserto.AspNetCore.Middleware.Tests.csproj", "{EA1CEC81-7EA4-40DA-9B4F-8CDDC389B158}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Duende", "Duende", "{435BA142-8D8F-4DDD-9394-027B1360DDCB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "examples\Duende\IdentityServer\IdentityServer.csproj", "{299E1C73-5C20-44C0-A12F-E50802F06D35}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.NETCore3.Duende", "examples\Duende\Aserto.NETCore3.Duende\Aserto.NETCore3.Duende.csproj", "{75FD42B4-2F12-449A-A967-1E6377528005}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.MVC.Duende", "examples\Duende\Aserto.MVC.Duende\Aserto.MVC.Duende.csproj", "{37EE02ED-AED4-4905-90AF-32B51B315849}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth0", "Auth0", "{9717A88D-6516-4AEC-AEF5-1903C6D245C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.NETCore3.Auth0", "examples\Auth0\Aserto.NETCore3.Auth0\Aserto.NETCore3.Auth0.csproj", "{E003A358-73F4-48C9-A903-A8962E223D90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{650E9DC0-2B96-4791-8D9A-DC5EAAB4CB3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650E9DC0-2B96-4791-8D9A-DC5EAAB4CB3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650E9DC0-2B96-4791-8D9A-DC5EAAB4CB3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650E9DC0-2B96-4791-8D9A-DC5EAAB4CB3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{916F8C72-DDC1-454E-98BD-4A4ACC7ECA35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{916F8C72-DDC1-454E-98BD-4A4ACC7ECA35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{916F8C72-DDC1-454E-98BD-4A4ACC7ECA35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{916F8C72-DDC1-454E-98BD-4A4ACC7ECA35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA1CEC81-7EA4-40DA-9B4F-8CDDC389B158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA1CEC81-7EA4-40DA-9B4F-8CDDC389B158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA1CEC81-7EA4-40DA-9B4F-8CDDC389B158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA1CEC81-7EA4-40DA-9B4F-8CDDC389B158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{299E1C73-5C20-44C0-A12F-E50802F06D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{299E1C73-5C20-44C0-A12F-E50802F06D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{299E1C73-5C20-44C0-A12F-E50802F06D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{299E1C73-5C20-44C0-A12F-E50802F06D35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75FD42B4-2F12-449A-A967-1E6377528005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75FD42B4-2F12-449A-A967-1E6377528005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75FD42B4-2F12-449A-A967-1E6377528005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75FD42B4-2F12-449A-A967-1E6377528005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37EE02ED-AED4-4905-90AF-32B51B315849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37EE02ED-AED4-4905-90AF-32B51B315849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37EE02ED-AED4-4905-90AF-32B51B315849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37EE02ED-AED4-4905-90AF-32B51B315849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E003A358-73F4-48C9-A903-A8962E223D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E003A358-73F4-48C9-A903-A8962E223D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E003A358-73F4-48C9-A903-A8962E223D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E003A358-73F4-48C9-A903-A8962E223D90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{650E9DC0-2B96-4791-8D9A-DC5EAAB4CB3B} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
+		{916F8C72-DDC1-454E-98BD-4A4ACC7ECA35} = {D5BD9281-22D3-46B4-B048-7F5ED1936743}
+		{EA1CEC81-7EA4-40DA-9B4F-8CDDC389B158} = {53CB8A87-9EEB-4414-857A-9128EC5B8F64}
+		{435BA142-8D8F-4DDD-9394-027B1360DDCB} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
+		{299E1C73-5C20-44C0-A12F-E50802F06D35} = {435BA142-8D8F-4DDD-9394-027B1360DDCB}
+		{75FD42B4-2F12-449A-A967-1E6377528005} = {435BA142-8D8F-4DDD-9394-027B1360DDCB}
+		{37EE02ED-AED4-4905-90AF-32B51B315849} = {435BA142-8D8F-4DDD-9394-027B1360DDCB}
+		{9717A88D-6516-4AEC-AEF5-1903C6D245C8} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
+		{E003A358-73F4-48C9-A903-A8962E223D90} = {9717A88D-6516-4AEC-AEF5-1903C6D245C8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EE6E7731-2793-4C3B-BC1D-EBD18DC3F967}
+	EndGlobalSection
+EndGlobal
