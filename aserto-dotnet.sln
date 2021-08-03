@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{62
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{169823A9-9DFD-4878-9F1A-E493697D9196}"
 	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.md = CHANGELOG.md
 		.github\workflows\ci.yaml = .github\workflows\ci.yaml
 		README.md = README.md
 	EndProjectSection
@@ -39,6 +40,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth0", "Auth0", "{9717A88D-6516-4AEC-AEF5-1903C6D245C8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.NETCore3.Auth0", "examples\Auth0\Aserto.NETCore3.Auth0\Aserto.NETCore3.Auth0.csproj", "{E003A358-73F4-48C9-A903-A8962E223D90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aserto.MVC.Auth0", "examples\Auth0\Aserto.MVC.Auth0\Aserto.MVC.Auth0.csproj", "{31B35FAF-C70E-42B7-B287-E7043A73C6EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +77,10 @@ Global
 		{E003A358-73F4-48C9-A903-A8962E223D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E003A358-73F4-48C9-A903-A8962E223D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E003A358-73F4-48C9-A903-A8962E223D90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +95,7 @@ Global
 		{37EE02ED-AED4-4905-90AF-32B51B315849} = {435BA142-8D8F-4DDD-9394-027B1360DDCB}
 		{9717A88D-6516-4AEC-AEF5-1903C6D245C8} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
 		{E003A358-73F4-48C9-A903-A8962E223D90} = {9717A88D-6516-4AEC-AEF5-1903C6D245C8}
+		{31B35FAF-C70E-42B7-B287-E7043A73C6EE} = {9717A88D-6516-4AEC-AEF5-1903C6D245C8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE6E7731-2793-4C3B-BC1D-EBD18DC3F967}

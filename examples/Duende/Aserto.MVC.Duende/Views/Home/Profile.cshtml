@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Authentication
+
+@{
+    ViewData["Title"] = "Profile";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>User profile</p>
+@if (Context.User.Identity.IsAuthenticated)
+{
+    <h2>Claims</h2>
+
+    <dl>
+        @foreach (var claim in User.Claims)
+        {
+            <dt>@claim.Type</dt>
+            <dd>@claim.Value</dd>
+        }
+    </dl>
+
+    <h2>Properties</h2>
+
+    <dl>
+
+        @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+        {
+            <dt>@prop.Key</dt>
+            <dd>@prop.Value</dd>
+        }
+
+
+    </dl>
+}
+else
+{
+    <h2>User not authenticated.</h2>
+}

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Aserto.AspNetCore.Middleware.Extensions;
 using Aserto.AspNetCore.Middleware.Policies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -60,7 +62,11 @@ namespace Aserto.MVC.Duende
             //end Aserto options handling
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Aserto", policy => policy.Requirements.Add(new AsertoDecisionRequirement(new List<string> { "email" })));
+                // User is authenticated via a cookie.
+                var policy = new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme);
+                policy.AddRequirements(new AsertoDecisionRequirement(new List<string> { "email" }));
+                options.DefaultPolicy = policy.Build();
+                // options.AddPolicy("Aserto", policy => policy.Requirements.Add(new AsertoDecisionRequirement(new List<string> { "email" })));
             });
 
             services.AddControllersWithViews();
@@ -91,10 +97,10 @@ namespace Aserto.MVC.Duende
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}")
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 // The RequireAuthorization method disables anonymous access for the entire application.
                 // You can also use the [Authorize] attribute, if you want to specify authorization on a per controller or action method basis.
-                .RequireAuthorization("Aserto");
+                //.RequireAuthorization("Aserto");
             });
         }
     }
