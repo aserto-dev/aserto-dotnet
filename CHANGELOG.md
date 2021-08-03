@@ -1,5 +1,10 @@
 # Change Log
 
+## [Version 0.0.3](https://github.com/aserto-dev/aserto-dotnet/tree/v0.0.3) (2021-08-02)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.2...v0.0.3)
+
+**Changed**
+- Use Aserto.Authorizer.Grpc package instead of Aserto.Protobuf 
 
 ## [Version 0.0.2](https://github.com/aserto-dev/aserto-dotnet/tree/v0.0.2) (2021-08-02)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.1...v0.0.2)
