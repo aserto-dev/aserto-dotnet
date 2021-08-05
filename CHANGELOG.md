@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.0.4](https://github.com/aserto-dev/aserto-dotnet/tree/v0.0.4) (2021-08-05)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.3...v0.0.4)
+
+**Changed**
+- Use the Authorization header instead of Aserto-Api-Key when making calls to the Authorizer
+
 ## [Version 0.0.3](https://github.com/aserto-dev/aserto-dotnet/tree/v0.0.3) (2021-08-02)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.2...v0.0.3)
 
