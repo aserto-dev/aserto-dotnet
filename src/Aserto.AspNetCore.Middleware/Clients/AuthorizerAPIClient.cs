@@ -62,7 +62,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             this.metaData = new Grpc.Core.Metadata();
             this.metaData.Add("Aserto-Tenant-Id", $"{this.options.TenantID}");
-            this.metaData.Add("Aserto-Api-Key", $"basic {this.options.AuthorizerApiKey}");
+            this.metaData.Add("Authorization", $"basic {this.options.AuthorizerApiKey}");
 
             this.decision = this.options.Decision;
             this.policyID = this.options.PolicyID;
