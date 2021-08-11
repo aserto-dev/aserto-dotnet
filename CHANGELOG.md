@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.0.6](https://github.com/aserto-dev/aserto-dotnet/tree/v0.0.6) (2021-08-11)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.5...v0.0.6)
+
+**Changed**
+- Fix for release pipepline
+
 ## [Version 0.0.5](https://github.com/aserto-dev/aserto-dotnet/tree/v0.0.5) (2021-08-11)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.4...v0.0.5)
 
