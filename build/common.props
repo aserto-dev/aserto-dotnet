@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/aserto-dev/aserto-dotnet/</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/aserto-dev/aserto-dotnet</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReleaseNotes>
       https://github.com/aserto-dev/aserto-dotnet/blob/main/CHANGELOG.md
     </PackageReleaseNotes>
