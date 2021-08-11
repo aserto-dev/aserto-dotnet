@@ -13,6 +13,9 @@ on:
   # Run tests for PRs
   pull_request:
 
+env:
+   VAULT_ADDR: https://vault.eng.aserto.com/
+
 jobs:
   build:
     runs-on: windows-latest
