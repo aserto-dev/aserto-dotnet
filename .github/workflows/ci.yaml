@@ -63,8 +63,18 @@ jobs:
           path-to-lcov: tests\${{ matrix.cfg.project }}\lcov.net5.info
   release:
     runs-on: ubuntu-latest
+    needs: test
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
+      - name: Read Configuration
+        uses: hashicorp/vault-action@v2.1.0
+        id: vault
+        with:
+          url: ${{ env.VAULT_ADDR }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            kv/data/nuget  "NUGET_API_KEY"     | NUGET_API_KEY;
+
       - uses: actions/checkout@v2
 
       - name: Setup .NET Core
@@ -77,4 +87,4 @@ jobs:
 
       - name: Publish to NuGet.org
         run: |
-          dotnet nuget push ./src/Aserto.AspNetCore.Middleware/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+          dotnet nuget push ./src/Aserto.AspNetCore.Middleware/bin/Release/*.nupkg --api-key ${NUGET_API_KEY} --source https://api.nuget.org/v3/index.json
