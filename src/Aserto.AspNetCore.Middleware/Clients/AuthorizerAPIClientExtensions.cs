@@ -55,6 +55,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             var identityContext = new IdentityContext();
             var policyContext = new PolicyContext();
             identityContext.Mode = IdentityMode.Anonymous;
+            identityContext.Type = IdentityType.None;
 
             if (identity.Identity.AuthenticationType != null && identity.Identity != null)
             {
@@ -64,6 +65,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
                     if (claim != null)
                     {
                         identityContext.Mode = IdentityMode.Manual;
+                        identityContext.Type = IdentityType.Sub;
                         identityContext.Identity = claim.Value;
                         break;
                     }

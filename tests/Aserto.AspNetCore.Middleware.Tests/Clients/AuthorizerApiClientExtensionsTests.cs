@@ -66,7 +66,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(this.mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
 
-            Assert.Equal(API.IdentityMode.Anonymous, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.None, isRequest.IdentityContext.Type);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
 
-            Assert.Equal(API.IdentityMode.Manual, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("email", isRequest.IdentityContext.Identity);
         }
 
@@ -106,7 +106,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
 
-            Assert.Equal(API.IdentityMode.Manual, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("userName", isRequest.IdentityContext.Identity);
         }
 
@@ -125,7 +125,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
 
-            Assert.Equal(API.IdentityMode.Manual, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("userName", isRequest.IdentityContext.Identity);
         }
 
@@ -144,7 +144,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, new List<string>() { "my_custom_claim_type" });
 
-            Assert.Equal(API.IdentityMode.Manual, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("custom_value", isRequest.IdentityContext.Identity);
         }
 
@@ -165,7 +165,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, new List<string>() { "my_custom_claim_type1", "my_custom_claim_type2" });
 
-            Assert.Equal(API.IdentityMode.Manual, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("custom_value1", isRequest.IdentityContext.Identity);
         }
 
@@ -184,7 +184,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
 
-            Assert.Equal(API.IdentityMode.Anonymous, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.None, isRequest.IdentityContext.Type);
         }
 
         [Fact]
@@ -199,7 +199,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
 
-            Assert.Equal(API.IdentityMode.Anonymous, isRequest.IdentityContext.Mode);
+            Assert.Equal(API.IdentityType.None, isRequest.IdentityContext.Type);
         }
 
         [Theory]
