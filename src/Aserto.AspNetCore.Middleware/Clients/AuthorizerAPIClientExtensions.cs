@@ -10,8 +10,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System.Collections.Generic;
     using System.Security.Claims;
     using System.Text;
-    using Aserto.API;
-    using Aserto.Authorizer.Authorizer;
+    using Aserto.API.V1;
+    using Aserto.Authorizer.Authorizer.V1;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>

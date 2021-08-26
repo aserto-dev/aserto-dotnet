@@ -1,5 +1,5 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.Authorizer.Authorizer;
+using Aserto.Authorizer.Authorizer.V1;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

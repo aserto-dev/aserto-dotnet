@@ -13,14 +13,15 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System.Text;
     using System.Threading.Tasks;
     using Aserto.API;
+    using Aserto.API.V1;
     using Aserto.AspNetCore.Middleware.Options;
-    using Aserto.Authorizer.Authorizer;
+    using Aserto.Authorizer.Authorizer.V1;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Microsoft.Extensions.Options;
-    using static Aserto.Authorizer.Authorizer.Authorizer;
+    using static Aserto.Authorizer.Authorizer.V1.Authorizer;
 
     /// <summary>
     /// Client for Aserto Authorizer API.

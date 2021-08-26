@@ -21,7 +21,6 @@ namespace Aserto.AspNetCore.Middleware
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using static Aserto.Authorizer.Authorizer.Authorizer;
 
     /// <summary>
     /// Middleware used for Aserto Authorization.

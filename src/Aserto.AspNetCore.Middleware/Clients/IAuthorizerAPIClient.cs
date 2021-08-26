@@ -11,7 +11,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
-    using Aserto.Authorizer.Authorizer;
+    using Aserto.Authorizer.Authorizer.V1;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
