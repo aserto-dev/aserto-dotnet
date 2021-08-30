@@ -10,6 +10,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System.Collections.Generic;
     using System.Security.Claims;
     using System.Text;
+    using System.Text.RegularExpressions;
     using Aserto.API.V1;
     using Aserto.Authorizer.Authorizer.V1;
     using Microsoft.AspNetCore.Http;
@@ -92,6 +93,9 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             policyPath = $"{policyPath}.{method.ToUpper()}";
             policyPath = $"{policyPath}{urlPath.Replace("/", ".").ToLower()}".TrimEnd('.');
+
+            Regex regex = new Regex("[^a-zA-Z0-9._]");
+            policyPath = regex.Replace(policyPath, "_");
 
             return policyPath;
         }
