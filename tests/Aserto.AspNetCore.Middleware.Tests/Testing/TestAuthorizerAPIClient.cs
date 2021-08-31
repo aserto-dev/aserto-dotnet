@@ -1,4 +1,5 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
+using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Authorizer.Authorizer.V1;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -45,6 +46,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
         public string PolicyRoot
         {
             get { return this.policyRoot; }
+        }
+
+        public Func<string, HttpRequest, string> PolicyPathMapper
+        {
+            get { return AsertoOptionsDefaults.DefaultPolicyPathMapper; }
         }
 
         internal IsRequest IsReq

@@ -10,6 +10,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Text;
+    using Microsoft.AspNetCore.Http;
 
     /// <summary>
     /// Options for Aserto Middleware.
@@ -52,6 +53,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         public string Decision { get; set; } = AsertoOptionsDefaults.Decision;
 
         /// <summary>
+        /// Gets or sets the URL to Policy mapper.
+        /// </summary>
+        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+
+        /// <summary>
         /// Validates the provided options.
         /// </summary>
         /// <param name="options">Authorizer API Client options <see cref="AsertoOptions"/>.</param>
@@ -75,22 +81,22 @@ namespace Aserto.AspNetCore.Middleware.Options
                 return false;
             }
 
-            if (options.AuthorizerApiKey == string.Empty)
+            if (string.IsNullOrEmpty(options.AuthorizerApiKey))
             {
                 return false;
             }
 
-            if (options.PolicyID == string.Empty)
+            if (string.IsNullOrEmpty(options.PolicyID))
             {
                 return false;
             }
 
-            if (options.PolicyRoot == string.Empty)
+            if (string.IsNullOrEmpty(options.PolicyRoot))
             {
                 return false;
             }
 
-            if (options.TenantID == string.Empty)
+            if (string.IsNullOrEmpty(options.TenantID))
             {
                 return false;
             }

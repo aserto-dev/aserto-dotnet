@@ -229,5 +229,24 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
 
             Assert.Equal(expected, isRequest.PolicyContext.Path);
         }
+
+        [Fact]
+        public void CustomURLToPolicyMapper()
+        {
+            this.mockRequest.SetupGet(r => r.Path).Returns("/foo");
+            this.mockRequest.SetupGet(r => r.Method).Returns("GET");
+            var testIdentity = new ClaimsIdentity();
+            var testPrincipal = new ClaimsPrincipal(testIdentity);
+
+            this.options.Value.PolicyPathMapper = (policyRoot, httpRequest) =>
+            {
+                return "custom.policy.mapper";
+            };
+
+            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+
+            Assert.Equal("custom.policy.mapper", isRequest.PolicyContext.Path);
+        }
     }
 }

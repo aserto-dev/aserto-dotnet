@@ -56,7 +56,7 @@ public void ConfigureServices(IServiceCollection services)
    //..
 
    // Adds the Aserto Authorization service
-   services.AddAsertoAuthorization(Configuration.GetSection("Aserto"));
+   services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options));
  
    //..  
 }
@@ -134,6 +134,34 @@ public void ConfigureServices(IServiceCollection services)
 
    //..
 }
+```
+
+## URL path to policy mapping
+By default, when computing the policy path, the middleware:
+* converts all slashes to dots
+* converts any character that is not alpha, digit, dot or underscore to underscore
+* converts uppercase characters in the URL path to lowercases
+
+This behavior can be overwritten by providing a custom function to the `PolicyPathMapper` AsertoAuthorization option:
+```csharp
+// Startup.cs
+
+public void ConfigureServices(IServiceCollection services)
+{
+   //..
+
+   // Adds the Aserto Authorization service
+   services.AddAsertoAuthorization(options =>
+   {
+      Configuration.GetSection("Aserto").Bind(options));
+      options.PolicyPathMapper = (policyRoot, httpRequest) =>
+      {
+          return "custom.policy.path";
+      };
+   }
+   //..  
+}
+
 ```
 
 ## Building & testing

@@ -29,7 +29,7 @@ namespace Aserto.NETCore3
         public void ConfigureServices(IServiceCollection services)
         {
             //Aserto options handling
-            services.AddAsertoAuthorization(Configuration.GetSection("Aserto"));
+            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options));
             //end Aserto options handling
 
             services.AddControllers();

@@ -35,6 +35,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private ILogger logger;
         private string decision;
         private string policyID;
+        private Func<string, HttpRequest, string> policyPathMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
@@ -68,6 +69,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.decision = this.options.Decision;
             this.policyID = this.options.PolicyID;
             this.policyRoot = this.options.PolicyRoot;
+            this.policyPathMapper = this.options.PolicyPathMapper;
         }
 
         /// <inheritdoc/>
@@ -86,6 +88,12 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public string PolicyRoot
         {
             get { return this.policyRoot; }
+        }
+
+        /// <inheritdoc/>
+        public Func<string, HttpRequest, string> PolicyPathMapper
+        {
+            get { return this.policyPathMapper; }
         }
 
         /// <inheritdoc/>

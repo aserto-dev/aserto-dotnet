@@ -1,5 +1,6 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Extensions;
+using Aserto.AspNetCore.Middleware.Options;
 using Aserto.AspNetCore.Middleware.Policies;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,8 +32,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
             {
             };
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(testConfig).Build();
+            Action<AsertoOptions> options = new Action<AsertoOptions>(o => new AsertoOptions());
+            configuration.GetSection("Aserto").Bind(options);
+
             var t = new TestAuthorizerAPIClient(false);
-            var builder = TestUtil.GetPolicyWebHostBuilder(t, configuration.GetSection("Aserto"));
+            var builder = TestUtil.GetPolicyWebHostBuilder(t, options);
             var testServer = new TestServer(builder);
 
             await Assert.ThrowsAsync<OptionsValidationException>(() => testServer.CreateClient().GetAsync("/foo"));
@@ -55,9 +59,18 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         public async Task AsertoAuthorizationDisabledAllows()
         {
             var t = new TestAuthorizerAPIClient(false);
-            var configSection = TestUtil.GetValidConfig();
-            configSection["Enabled"] = "false";
-            var builder = TestUtil.GetPolicyWebHostBuilder(t, configSection);
+
+            Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
+            {
+                o.ServiceUrl = "https://testserver.com";
+                o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
+                o.TenantID = "YOUR_TENANT_ID";
+                o.PolicyID = "YOUR_POLICY_ID";
+                o.PolicyRoot = "policy_root";
+                o.Enabled = false;
+            });
+
+            var builder = TestUtil.GetPolicyWebHostBuilder(t, options);
             var testServer = new TestServer(builder);
 
             var response = await testServer.CreateClient().GetAsync("/foo");
@@ -69,6 +82,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         [InlineData("tp", "GET", "https://localhost/", "tp.GET")]
         [InlineData("tp", "DELETE", "https://localhost/", "tp.DELETE")]
         [InlineData("tp", "PATCH", "https://localhost/", "tp.PATCH")]
+        [InlineData("tp", "PUT", "https://localhost/", "tp.PUT")]
         [InlineData("tp", "POST", "https://localhost/foo", "tp.POST.foo")]
         [InlineData("tp", "GET", "https://localhost/foo", "tp.GET.foo")]
         [InlineData("tp", "GET", "https://localhost/?a=b", "tp.GET")]
