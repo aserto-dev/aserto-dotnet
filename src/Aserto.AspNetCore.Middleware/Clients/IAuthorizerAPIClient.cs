@@ -36,6 +36,11 @@ namespace Aserto.AspNetCore.Middleware.Clients
         string PolicyRoot { get; }
 
         /// <summary>
+        /// Gets the function that converts an <see cref="HttpRequest"/> to a policy path.
+        /// </summary>
+        public Func<string, HttpRequest, string> PolicyPathMapper { get; }
+
+        /// <summary>
         /// Determines if the HTTP request is allowed.
         /// </summary>
         /// <param name="isRequest">The <see cref="IsRequest"/> that will be used for the request.</param>

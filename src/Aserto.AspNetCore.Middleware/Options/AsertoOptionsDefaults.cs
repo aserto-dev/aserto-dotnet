@@ -9,6 +9,8 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Text.RegularExpressions;
+    using Microsoft.AspNetCore.Http;
 
     /// <summary>
     /// Defaults for Aserto Options.
@@ -49,5 +51,24 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Gets a value indicating the decision string.
         /// </summary>
         public static string Decision { get; } = "allowed";
+
+        /// <summary>
+        /// The default Policy Path Mapper.
+        /// </summary>
+        /// <param name="policyRoot">The policy root.</param>
+        /// <param name="request">The <see cref="HttpRequest"/>.</param>
+        /// <returns>The Aserto Policy path.</returns>
+        internal static string DefaultPolicyPathMapper(string policyRoot, HttpRequest request)
+        {
+            var policyPath = policyRoot;
+
+            policyPath = $"{policyPath}.{request.Method.ToUpper()}";
+            policyPath = $"{policyPath}{request.Path.Value.Replace("/", ".").ToLower()}".TrimEnd('.');
+
+            Regex regex = new Regex("[^a-zA-Z0-9._]");
+            policyPath = regex.Replace(policyPath, "_");
+
+            return policyPath;
+        }
     }
 }

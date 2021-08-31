@@ -12,24 +12,23 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Aserto.AspNetCore.Middleware.Policies;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Aserto.AspNetCore.Middleware.Options;
 
 namespace Aserto.AspNetCore.Middleware.Tests
 {
     public static class TestUtil
     {
-        internal static IConfigurationSection GetValidConfig()
+        internal static Action<AsertoOptions> GetValidConfig()
         {
-            var testConfig = new Dictionary<string, string>
+            Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
             {
-                { "Aserto:ServiceUrl","https://testserver.com" },
-                { "Aserto:AuthorizerApiKey","YOUR_AUTHORIZER_API_KEY" },
-                { "Aserto:TenantID","YOUR_TENANT_ID" },
-                { "Aserto:PolicyID","YOUR_POLICY_ID" },
-                { "Aserto:PolicyRoot","policy_root" },
-            };
-
-            var configuration = new ConfigurationBuilder().AddInMemoryCollection(testConfig).Build();
-            return configuration.GetSection("Aserto");
+                o.ServiceUrl = "https://testserver.com";
+                o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
+                o.TenantID = "YOUR_TENANT_ID";
+                o.PolicyID = "YOUR_POLICY_ID";
+                o.PolicyRoot = "policy_root";
+            });
+            return options;
         }
 
         internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient)
@@ -42,17 +41,17 @@ namespace Aserto.AspNetCore.Middleware.Tests
             return GetPolicyWebHostBuilder(testAuthorizerAPIClient, TestUtil.GetValidConfig(), uri);
         }
 
-        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient, IConfigurationSection configSection)
+        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient, Action<AsertoOptions> options)
         {
-            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, configSection, "/foo");
+            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, options, "/foo");
         }
 
-        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizationAPIClient, IConfigurationSection configSection, string uri)
+        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizationAPIClient, Action<AsertoOptions> options, string uri)
         {
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoAuthorization(configSection);
+                    services.AddAsertoAuthorization(options);
                     TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
                     services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
                     {

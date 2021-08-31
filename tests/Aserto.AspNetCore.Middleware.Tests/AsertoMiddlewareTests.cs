@@ -1,5 +1,6 @@
 using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Extensions;
+using Aserto.AspNetCore.Middleware.Options;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -31,7 +32,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
         [Fact]
         public async Task NullConfigThrows()
         {
-            ConfigurationSection configuration = null;
+            Action<AsertoOptions> configuration = null;
 
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
@@ -86,13 +87,20 @@ namespace Aserto.AspNetCore.Middleware.Tests
         [Fact]
         public async Task AsertoAuthorizationDisabledAllows()
         {
-            var configSection = TestUtil.GetValidConfig();
-            configSection["Enabled"] = "false";
+            Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
+            {
+                o.ServiceUrl = "https://testserver.com";
+                o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
+                o.TenantID = "YOUR_TENANT_ID";
+                o.PolicyID = "YOUR_POLICY_ID";
+                o.PolicyRoot = "policy_root";
+                o.Enabled = false;
+            });
 
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoAuthorization(configSection);
+                    services.AddAsertoAuthorization(options);
                     TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
                     services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
                     {

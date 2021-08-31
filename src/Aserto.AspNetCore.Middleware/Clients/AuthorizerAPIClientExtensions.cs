@@ -73,7 +73,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
                 }
             }
 
-            var policyPath = BuildPolicyPath(client.PolicyRoot, request.Method, request.Path.Value);
+            var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;
             policyContext.Id = client.PolicyID;
             policyContext.Decisions.Add(client.Decision);
@@ -85,19 +85,6 @@ namespace Aserto.AspNetCore.Middleware.Clients
             isRequest.ResourceContext = null;
 
             return isRequest;
-        }
-
-        private static string BuildPolicyPath(string policyRoot, string method, string urlPath)
-        {
-            var policyPath = policyRoot;
-
-            policyPath = $"{policyPath}.{method.ToUpper()}";
-            policyPath = $"{policyPath}{urlPath.Replace("/", ".").ToLower()}".TrimEnd('.');
-
-            Regex regex = new Regex("[^a-zA-Z0-9._]");
-            policyPath = regex.Replace(policyPath, "_");
-
-            return policyPath;
         }
     }
 }
