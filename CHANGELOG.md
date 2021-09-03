@@ -1,5 +1,13 @@
 # Change Log
 
+## [Version 0.1.1](https://github.com/aserto-dev/aserto-dotnet/tree/v0.1.1) (2021-09-03)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.1.0...v0.1.1)
+
+**Changed**
+- Added the ability to provide a custom url to Aserto policy mapper
+- The default mapper now converts any character that is not alpha, digit, dot or underscore to underscore
+- Removed references to IdentityCodext.Mode
+
 ## [Version 0.1.0](https://github.com/aserto-dev/aserto-dotnet/tree/v0.1.0) (2021-08-26)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.0.6...v0.1.0)
 
