@@ -104,13 +104,13 @@ namespace Aserto.AspNetCore.Middleware.Clients
                 throw new ArgumentNullException(nameof(isRequest));
             }
 
-            if (isRequest.IdentityContext.Mode == IdentityMode.Anonymous)
+            if (isRequest.IdentityContext.Type == IdentityType.None)
             {
                 this.logger.LogDebug("No Authentication type provided. Using Anonymous identity context.");
             }
             else
             {
-                this.logger.LogDebug($"Authentication type set to {isRequest.IdentityContext.Mode}. Using identity ${isRequest.IdentityContext.Identity}");
+                this.logger.LogDebug($"Authentication type set to {isRequest.IdentityContext.Type}. Using identity ${isRequest.IdentityContext.Identity}");
             }
 
             var result = await this.authorizerClient.IsAsync(isRequest, this.metaData);

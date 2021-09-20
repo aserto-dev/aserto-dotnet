@@ -53,8 +53,27 @@ namespace Aserto.AspNetCore.Middleware.Clients
             }
 
             var isRequest = new IsRequest();
-            var identityContext = new IdentityContext();
             var policyContext = new PolicyContext();
+
+            var identityContext = BuildIdentityContext(identity, supportedClaimTypes);
+
+            var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
+            policyContext.Path = policyPath;
+            policyContext.Id = client.PolicyID;
+            policyContext.Decisions.Add(client.Decision);
+
+            isRequest.IdentityContext = identityContext;
+            isRequest.PolicyContext = policyContext;
+
+            // TODO: handle resource context.
+            isRequest.ResourceContext = null;
+
+            return isRequest;
+        }
+
+        private static IdentityContext BuildIdentityContext(ClaimsPrincipal identity, IEnumerable<string> supportedClaimTypes)
+        {
+            var identityContext = new IdentityContext();
             identityContext.Type = IdentityType.None;
 
             if (identity.Identity.AuthenticationType != null && identity.Identity != null)
@@ -71,18 +90,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
                 }
             }
 
-            var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
-            policyContext.Path = policyPath;
-            policyContext.Id = client.PolicyID;
-            policyContext.Decisions.Add(client.Decision);
-
-            isRequest.IdentityContext = identityContext;
-            isRequest.PolicyContext = policyContext;
-
-            // TODO: handle resource context.
-            isRequest.ResourceContext = null;
-
-            return isRequest;
+            return identityContext;
         }
     }
 }
