@@ -69,34 +69,32 @@ namespace Aserto.AspNetCore.Middleware.Options
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (!Uri.IsWellFormedUriString(options.ServiceUrl, UriKind.Absolute))
+            if (!ValidateUri(options.ServiceUrl))
             {
                 return false;
             }
 
-            var serviceUri = new Uri(options.ServiceUrl);
+            if (string.IsNullOrEmpty(options.AuthorizerApiKey) ||
+                string.IsNullOrEmpty(options.PolicyID) ||
+                string.IsNullOrEmpty(options.PolicyRoot) ||
+                string.IsNullOrEmpty(options.TenantID))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool ValidateUri(string uri)
+        {
+            if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+            {
+                return false;
+            }
+
+            var serviceUri = new Uri(uri);
 
             if (serviceUri.Scheme != Uri.UriSchemeHttps && serviceUri.Scheme != Uri.UriSchemeHttp)
-            {
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(options.AuthorizerApiKey))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(options.PolicyID))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(options.PolicyRoot))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(options.TenantID))
             {
                 return false;
             }
