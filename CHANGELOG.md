@@ -1,5 +1,13 @@
 # Change Log
 
+## [Version 0.1.2](https://github.com/aserto-dev/aserto-dotnet/tree/v0.1.2) (2021-09-20)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.1.1...v0.1.2)
+
+**Changed**
+- Update Aserto.Authorizer.Client.Grpc to 0.1.1
+- Update 3rd party dependencies
+- Integrate with code climate
+
 ## [Version 0.1.1](https://github.com/aserto-dev/aserto-dotnet/tree/v0.1.1) (2021-09-03)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.1.0...v0.1.1)
 
