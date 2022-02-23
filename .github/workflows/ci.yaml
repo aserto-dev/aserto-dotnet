@@ -26,6 +26,12 @@ jobs:
     name: Build ${{ matrix.cfg.project }} on ${{ matrix.cfg.dotnet }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: gitleaks-check
+        uses: aserto-dev/gitleaks-action@master
+
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
