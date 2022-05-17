@@ -16,6 +16,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using Aserto.API.V1;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.Authorizer.V1;
+    using Google.Protobuf.WellKnownTypes;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
@@ -36,6 +37,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private string decision;
         private string policyID;
         private Func<string, HttpRequest, string> policyPathMapper;
+        private Func<string, HttpRequest, Struct> resourceMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
@@ -70,6 +72,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.policyID = this.options.PolicyID;
             this.policyRoot = this.options.PolicyRoot;
             this.policyPathMapper = this.options.PolicyPathMapper;
+            this.resourceMapper = this.options.ResourceMapper;
         }
 
         /// <inheritdoc/>
@@ -94,6 +97,12 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public Func<string, HttpRequest, string> PolicyPathMapper
         {
             get { return this.policyPathMapper; }
+        }
+
+        /// <inheritdoc/>
+        public Func<string, HttpRequest, Struct> ResourceMapper
+        {
+            get { return this.resourceMapper; }
         }
 
         /// <inheritdoc/>

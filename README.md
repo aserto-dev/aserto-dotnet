@@ -164,6 +164,35 @@ public void ConfigureServices(IServiceCollection services)
 
 ```
 
+## Resource Mapper
+A resource can be any structured data that the authorization policy uses to evaluate decisions. By default, middleware do not include a resource in authorization calls.
+
+Resource data can be added by providing a custom function to the `ResourceMapper` AsertoAuthorization option
+
+```csharp
+// Startup.cs
+
+public void ConfigureServices(IServiceCollection services)
+{
+   //..
+
+   // Adds the Aserto Authorization service
+   services.AddAsertoAuthorization(options =>
+     {
+       options.ResourceMapper = (policyRoot, httpRequest) =>
+       {
+         Struct result = new Struct();
+         result.Fields["asset"] = Value.ForString("megaSeeds");
+
+         return result;
+       };
+       Configuration.GetSection("Aserto").Bind(options);
+   });
+   //..  
+}
+
+```
+
 ## Building & testing
 
 The project can be built on Windows, Linux or macOS using the [.Net Core SDK](https://dotnet.microsoft.com/download):

@@ -12,6 +12,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System.Text;
     using System.Threading.Tasks;
     using Aserto.Authorizer.Authorizer.V1;
+    using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
@@ -39,6 +40,11 @@ namespace Aserto.AspNetCore.Middleware.Clients
         /// Gets the function that converts an <see cref="HttpRequest"/> to a policy path.
         /// </summary>
         public Func<string, HttpRequest, string> PolicyPathMapper { get; }
+
+        /// <summary>
+        /// Gets the function that receives an <see cref="HttpRequest"/> and a policy root and converts it to a resource context.
+        /// </summary>
+        public Func<string, HttpRequest, Struct> ResourceMapper { get; }
 
         /// <summary>
         /// Determines if the HTTP request is allowed.
