@@ -1,5 +1,13 @@
 # Change Log
 
+## [Version 0.8.1](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.1) (2022-05-17)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.0...v0.8.1)
+
+**Changed**
+- The default policy url to policy mapper is able to map urls that contain colons
+- Added the ability to pass a function to map resources is authorization requests
+
+
 ## [Version 0.8.0](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.0) (2022-02-09)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.1.2...v0.8.0)
 
