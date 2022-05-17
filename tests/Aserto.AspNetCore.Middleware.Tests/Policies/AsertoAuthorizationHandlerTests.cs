@@ -97,6 +97,9 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         [InlineData("tp", "GET", "https://localhost/a?dotted=q.u.e.r.y", "tp.GET.a")]
         [InlineData("tp", "GET", "https://localhost/nuberic/123456/1", "tp.GET.nuberic.123456.1")]
         [InlineData("tp", "GET", "https://localhost/Upercase", "tp.GET.upercase")]
+        [InlineData("tp", "GET", "https://localhost/api/:colons", "tp.GET.api.__colons")]
+        [InlineData("tp", "POST", "https://localhost/api/:colons", "tp.POST.api.__colons")]
+        [InlineData("tp", "DELETE", "https://localhost/api/:colons", "tp.DELETE.api.__colons")]
         public async Task UriToPolicyPath(string policyRoot, string method, string uri, string expected)
         {
             var t = new TestAuthorizerAPIClient(policyRoot);
