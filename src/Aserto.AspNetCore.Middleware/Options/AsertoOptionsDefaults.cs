@@ -10,6 +10,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
+    using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
@@ -69,6 +70,17 @@ namespace Aserto.AspNetCore.Middleware.Options
             policyPath = regex.Replace(policyPath, "_");
 
             return policyPath;
+        }
+
+        /// <summary>
+        /// The default Resource Context mapper function.
+        /// </summary>
+        /// <param name="policyRoot">The policy root.</param>
+        /// <param name="request">The <see cref="HttpRequest"/>.</param>
+        /// <returns>The default Resource Context mapper.</returns>
+        internal static Struct DefaultResourceMapper(string policyRoot, HttpRequest request)
+        {
+            return null;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Text;
+    using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
@@ -56,6 +57,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
         public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+
+        /// <summary>
+        /// Gets or sets the Resource mapper.
+        /// </summary>
+        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
 
         /// <summary>
         /// Validates the provided options.

@@ -9,8 +9,6 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System;
     using System.Collections.Generic;
     using System.Security.Claims;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using Aserto.API.V1;
     using Aserto.Authorizer.Authorizer.V1;
     using Microsoft.AspNetCore.Http;
@@ -65,8 +63,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             isRequest.IdentityContext = identityContext;
             isRequest.PolicyContext = policyContext;
 
-            // TODO: handle resource context.
-            isRequest.ResourceContext = null;
+            isRequest.ResourceContext = client.ResourceMapper(client.PolicyRoot, request);
 
             return isRequest;
         }
