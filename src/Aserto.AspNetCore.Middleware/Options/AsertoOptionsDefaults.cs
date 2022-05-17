@@ -63,7 +63,7 @@ namespace Aserto.AspNetCore.Middleware.Options
             var policyPath = policyRoot;
 
             policyPath = $"{policyPath}.{request.Method.ToUpper()}";
-            policyPath = $"{policyPath}{request.Path.Value.Replace("/", ".").ToLower()}".TrimEnd('.');
+            policyPath = $"{policyPath}{request.Path.Value.Replace("/", ".").Replace(":", "__").ToLower()}".TrimEnd('.');
 
             Regex regex = new Regex("[^a-zA-Z0-9._]");
             policyPath = regex.Replace(policyPath, "_");
