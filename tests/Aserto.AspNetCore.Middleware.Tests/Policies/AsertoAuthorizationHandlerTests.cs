@@ -129,5 +129,43 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
             }
             Assert.Equal(expected, t.IsReq.PolicyContext.Path);
         }
+
+        [Theory]
+        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/:something", "tp.GET.api.__asset")]
+        [InlineData("tp", "POST", "api/{asset}", "https://localhost/api/:something", "tp.POST.api.__asset")]
+        [InlineData("tp", "PUT", "api/{asset}", "https://localhost/api/:something", "tp.PUT.api.__asset")]
+        [InlineData("tp", "DELETE", "api/{asset}", "https://localhost/api/:something", "tp.DELETE.api.__asset")]
+        [InlineData("tp", "GET", "api/{asset1}/{asset2}", "https://localhost/api/:multiple/:value", "tp.GET.api.__asset1.__asset2")]
+        [InlineData("tp", "GET", "api/{asset}/not_last", "https://localhost/api/:value/not_last", "tp.GET.api.__asset.not_last")]
+        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/no_colons", "tp.GET.api.no_colons")]
+        public async Task RouteValues(string policyRoot, string method, string bindPath, string requestUri, string expected)
+        {
+            var t = new TestAuthorizerAPIClient(policyRoot);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t, bindPath);
+            var testServer = new TestServer(builder);
+
+            var testClient = testServer.CreateClient();
+            switch (method)
+            {
+                case "GET":
+                    await testClient.GetAsync(requestUri);
+                    break;
+                case "POST":
+                    await testClient.PostAsync(requestUri, new StringContent("a=b"));
+                    break;
+                case "DELETE":
+                    await testClient.DeleteAsync(requestUri);
+                    break;
+                case "PUT":
+                    await testClient.PutAsync(requestUri, new StringContent("a=b"));
+                    break;
+                case "PATCH":
+                    await testClient.PatchAsync(requestUri, new StringContent("a=b"));
+                    break;
+                default:
+                    throw new InvalidOperationException($"{method} is not a valid HTTP request method");
+            }
+            Assert.Equal(expected, t.IsReq.PolicyContext.Path);
+        }
     }
 }
