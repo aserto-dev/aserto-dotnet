@@ -1,5 +1,12 @@
 # Change Log
 
+## [Version 0.8.2](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.2) (2022-05-27)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.1...v0.8.2)
+
+**Changed**
+- The middleware ships with a default resource context mapper
+
+
 ## [Version 0.8.1](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.1) (2022-05-17)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.0...v0.8.1)
 

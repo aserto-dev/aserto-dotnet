@@ -165,9 +165,9 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 ## Resource Mapper
-A resource can be any structured data that the authorization policy uses to evaluate decisions. By default, middleware do not include a resource in authorization calls.
+A resource can be any structured data that the authorization policy uses to evaluate decisions. By default, middleware add to the resource context all the route parameters that start with `:`.
 
-Resource data can be added by providing a custom function to the `ResourceMapper` AsertoAuthorization option
+Resource data can be overwritten by providing a custom function to the `ResourceMapper` AsertoAuthorization option
 
 ```csharp
 // Startup.cs
