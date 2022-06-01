@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.8.3](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.3) (2022-06-01)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.2...v0.8.3)
+
+**Bugfix**
+- The default policy context path mapper now correctly handles casing for route values.
+
 ## [Version 0.8.2](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.2) (2022-05-27)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.1...v0.8.2)
 
