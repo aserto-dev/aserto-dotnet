@@ -61,13 +61,10 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <returns>The Aserto Policy path.</returns>
         internal static string DefaultPolicyPathMapper(string policyRoot, HttpRequest request)
         {
-            var policyPath = policyRoot;
-
-            // Handle method
-            policyPath = $"{policyPath}.{request.Method.ToUpper()}";
+            var policyPath = string.Empty;
 
             // Replace "/" with "."
-            policyPath = $"{policyPath}{request.Path.Value.Replace("/", ".").ToLower()}";
+            policyPath = $"{policyPath}{request.Path.Value.Replace("/", ".")}";
 
             // Handle route values
             if (request.RouteValues != null)
@@ -88,6 +85,12 @@ namespace Aserto.AspNetCore.Middleware.Options
 
             // Trim tailing dots
             policyPath = policyPath.TrimEnd('.');
+
+            // Lowercase everything
+            policyPath = policyPath.ToLower();
+
+            // Handle method
+            policyPath = $"{policyRoot}.{request.Method.ToUpper()}{policyPath}";
 
             Regex regex = new Regex("[^a-zA-Z0-9._]");
             policyPath = regex.Replace(policyPath, "_");
