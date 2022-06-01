@@ -132,6 +132,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
 
         [Theory]
         [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/:something", "tp.GET.api.__asset")]
+        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/:upperCase", "tp.GET.api.__asset")]
         [InlineData("tp", "POST", "api/{asset}", "https://localhost/api/:something", "tp.POST.api.__asset")]
         [InlineData("tp", "PUT", "api/{asset}", "https://localhost/api/:something", "tp.PUT.api.__asset")]
         [InlineData("tp", "DELETE", "api/{asset}", "https://localhost/api/:something", "tp.DELETE.api.__asset")]

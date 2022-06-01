@@ -122,6 +122,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
                 this.logger.LogDebug($"Authentication type set to {isRequest.IdentityContext.Type}. Using identity ${isRequest.IdentityContext.Identity}");
             }
 
+            this.logger.LogDebug($"Policy Context path resolved to: {isRequest.PolicyContext.Path}");
+            this.logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
             var result = await this.authorizerClient.IsAsync(isRequest, this.metaData);
 
             if (result.Decisions.Count == 0)
