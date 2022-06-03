@@ -138,7 +138,10 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         [InlineData("tp", "DELETE", "api/{asset}", "https://localhost/api/:something", "tp.DELETE.api.__asset")]
         [InlineData("tp", "GET", "api/{asset1}/{asset2}", "https://localhost/api/:multiple/:value", "tp.GET.api.__asset1.__asset2")]
         [InlineData("tp", "GET", "api/{asset}/not_last", "https://localhost/api/:value/not_last", "tp.GET.api.__asset.not_last")]
-        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/no_colons", "tp.GET.api.no_colons")]
+        [InlineData("tp", "GET", "api/{asset}/not_last", "https://localhost/api/val/not_last", "tp.GET.api.__asset.not_last")]
+        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/no_colons", "tp.GET.api.__asset")]
+        [InlineData("tp", "GET", "api/{asset}/another/{asset2}", "https://localhost/api/api/another/api", "tp.GET.api.__asset.another.__asset2")]
+        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/UperCase", "tp.GET.api.__asset")]
         public async Task RouteValues(string policyRoot, string method, string bindPath, string requestUri, string expected)
         {
             var t = new TestAuthorizerAPIClient(policyRoot);

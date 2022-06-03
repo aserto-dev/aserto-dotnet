@@ -7,8 +7,6 @@
 namespace Aserto.AspNetCore.Middleware.Options
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using System.Text.RegularExpressions;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
@@ -63,34 +61,35 @@ namespace Aserto.AspNetCore.Middleware.Options
         {
             var policyPath = string.Empty;
 
-            // Replace "/" with "."
-            policyPath = $"{policyPath}{request.Path.Value.Replace("/", ".")}";
-
-            // Handle route values
-            if (request.RouteValues != null)
+            if (request.HttpContext == null || request.HttpContext.GetEndpoint() == null)
             {
-                foreach (var routeValue in request.RouteValues)
-                {
-                    var routeVal = routeValue.Value.ToString();
-                    if (routeVal.StartsWith(":"))
-                    {
-                        var valRegex = new Regex(Regex.Escape(routeVal));
-                        policyPath = valRegex.Replace(policyPath, $"__{routeValue.Key}", 1);
-                    }
-                }
+                policyPath = request.Path;
             }
+            else
+            {
+                policyPath = request.HttpContext.GetEndpoint().DisplayName;
+            }
+
+            // replace "{" with "__" in endpoint
+            policyPath = policyPath.Replace("{", "__");
+
+            // replace "}" with ""
+            policyPath = policyPath.Replace("}", string.Empty);
+
+            // Replace "/" with "."
+            policyPath = policyPath.Replace("/", ".");
 
             // Handle any other ":"
             policyPath = policyPath.Replace(":", "__");
-
-            // Trim tailing dots
-            policyPath = policyPath.TrimEnd('.');
 
             // Lowercase everything
             policyPath = policyPath.ToLower();
 
             // Handle method
-            policyPath = $"{policyRoot}.{request.Method.ToUpper()}{policyPath}";
+            policyPath = $"{policyRoot}.{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
+
+            // Trim tailing dots
+            policyPath = policyPath.TrimEnd('.');
 
             Regex regex = new Regex("[^a-zA-Z0-9._]");
             policyPath = regex.Replace(policyPath, "_");
@@ -124,11 +123,6 @@ namespace Aserto.AspNetCore.Middleware.Options
                 }
 
                 var resourceContextValue = routeValue.Value.ToString();
-
-                if (resourceContextValue != null)
-                {
-                    resourceContextValue = resourceContextValue.TrimStart(':');
-                }
 
                 result.Fields[routeValue.Key] = Value.ForString(resourceContextValue);
             }
