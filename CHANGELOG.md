@@ -1,5 +1,12 @@
 # Change Log
 
+## [Version 0.8.4](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.4) (2022-06-01)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.3...v0.8.4)
+
+**Changed**
+- The default policy mapper now checks if any endpoint exists. If it exists it constructs the policy path based on it.
+
+
 ## [Version 0.8.3](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.3) (2022-06-01)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.2...v0.8.3)
 
