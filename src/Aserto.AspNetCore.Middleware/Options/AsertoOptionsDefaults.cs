@@ -10,6 +10,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.Text.RegularExpressions;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Routing;
 
     /// <summary>
     /// Defaults for Aserto Options.
@@ -67,7 +68,15 @@ namespace Aserto.AspNetCore.Middleware.Options
             }
             else
             {
-                policyPath = request.HttpContext.GetEndpoint().DisplayName;
+                var routeEndpoint = (RouteEndpoint)request.HttpContext.GetEndpoint();
+                if (routeEndpoint != null)
+                {
+                    policyPath = routeEndpoint.RoutePattern.RawText;
+                }
+                else
+                {
+                    policyPath = request.Path;
+                }
             }
 
             // replace "{" with "__" in endpoint
