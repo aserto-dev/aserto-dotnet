@@ -1,5 +1,12 @@
 # Change Log
 
+## [Version 0.8.5](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.5) (2022-06-06)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.4...v0.8.5)
+
+**Changed**
+- The default policy mapper now uses the RouteEndpoint if it exists.
+
+
 ## [Version 0.8.4](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.4) (2022-06-01)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.3...v0.8.4)
 
