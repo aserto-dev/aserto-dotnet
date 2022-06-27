@@ -60,8 +60,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <returns>The Aserto Policy path.</returns>
         internal static string DefaultPolicyPathMapper(string policyRoot, HttpRequest request)
         {
-            var policyPath = string.Empty;
-
+            string policyPath;
             if (request.HttpContext == null || request.HttpContext.GetEndpoint() == null)
             {
                 policyPath = request.Path;
@@ -90,9 +89,6 @@ namespace Aserto.AspNetCore.Middleware.Options
 
             // Handle any other ":"
             policyPath = policyPath.Replace(":", "__");
-
-            // Lowercase everything
-            policyPath = policyPath.ToLower();
 
             // Handle method
             policyPath = $"{policyRoot}.{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
