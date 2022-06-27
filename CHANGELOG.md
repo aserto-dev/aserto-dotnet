@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.8.6](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.6) (2022-06-27)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.5...v0.8.6)
+
+**Changed**
+- No longer lowercase the module path when computing the policy path.
+
 ## [Version 0.8.5](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.5) (2022-06-06)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.4...v0.8.5)
 
