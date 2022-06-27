@@ -96,7 +96,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         [InlineData("tp", "GET", "https://localhost/dotted.endpoint", "tp.GET.dotted.endpoint")]
         [InlineData("tp", "GET", "https://localhost/a?dotted=q.u.e.r.y", "tp.GET.a")]
         [InlineData("tp", "GET", "https://localhost/nuberic/123456/1", "tp.GET.nuberic.123456.1")]
-        [InlineData("tp", "GET", "https://localhost/Upercase", "tp.GET.upercase")]
+        [InlineData("tp", "GET", "https://localhost/Upercase", "tp.GET.Upercase")]
         [InlineData("tp", "GET", "https://localhost/api/:colons", "tp.GET.api.__colons")]
         [InlineData("tp", "POST", "https://localhost/api/:colons", "tp.POST.api.__colons")]
         [InlineData("tp", "DELETE", "https://localhost/api/:colons", "tp.DELETE.api.__colons")]
@@ -142,6 +142,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/no_colons", "tp.GET.api.__asset")]
         [InlineData("tp", "GET", "api/{asset}/another/{asset2}", "https://localhost/api/api/another/api", "tp.GET.api.__asset.another.__asset2")]
         [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/UperCase", "tp.GET.api.__asset")]
+        [InlineData("tp", "GET", "api/{CaseSensitive}", "https://localhost/api/parameter", "tp.GET.api.__CaseSensitive")]
         public async Task RouteValues(string policyRoot, string method, string bindPath, string requestUri, string expected)
         {
             var t = new TestAuthorizerAPIClient(policyRoot);
