@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.8.7](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.7) (2022-09-14)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.6...v0.8.7)
+
+**Changed**
+- Expose default Policy and Resource mapper.
+
 ## [Version 0.8.6](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.6) (2022-06-27)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.5...v0.8.6)
 
