@@ -1,7 +1,6 @@
-﻿using Aserto.API.V1;
-using Aserto.AspNetCore.Middleware.Clients;
+﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.Authorizer;
+using Aserto.Authorizer.V2.API;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -12,7 +11,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using Xunit;
-using static Aserto.Authorizer.Authorizer.V1.Authorizer;
+using static Aserto.Authorizer.V2.Authorizer;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {

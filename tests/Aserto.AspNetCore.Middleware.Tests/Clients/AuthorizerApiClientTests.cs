@@ -1,6 +1,6 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.Authorizer.V1;
+using Aserto.Authorizer.V2;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using Grpc.Core.Testing;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using static Aserto.Authorizer.Authorizer.V1.Authorizer;
+using static Aserto.Authorizer.V2.Authorizer;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {

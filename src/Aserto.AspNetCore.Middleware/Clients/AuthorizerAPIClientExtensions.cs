@@ -9,8 +9,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System;
     using System.Collections.Generic;
     using System.Security.Claims;
-    using Aserto.API.V1;
-    using Aserto.Authorizer.Authorizer.V1;
+    using Aserto.Authorizer.V2;
+    using Aserto.Authorizer.V2.API;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
@@ -57,7 +57,9 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;
-            policyContext.Id = client.PolicyID;
+
+            // TODO: figure out what we do with the policy ID
+            // policyContext.Id = client.PolicyID;
             policyContext.Decisions.Add(client.Decision);
 
             isRequest.IdentityContext = identityContext;
