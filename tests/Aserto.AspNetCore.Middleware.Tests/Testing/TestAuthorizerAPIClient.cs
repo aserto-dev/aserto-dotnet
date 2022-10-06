@@ -16,7 +16,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
         private bool allowed = true;
         private IsRequest isRequest = null;
         private string decision = "testdecision";
-        private string policyID = "testpolicyID";
+        private string policyName = "testpolicyName";
+        private string policyInstanceLabel = "testpolicyInstanceLabel";
         private string policyRoot = "policyRoot";
 
         public TestAuthorizerAPIClient()
@@ -39,9 +40,14 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
             get { return this.decision; }
         }
 
-        public string PolicyID
+        public string PolicyName
         {
-            get { return this.policyID; }
+            get { return this.policyName; }
+        }
+
+        public string PolicyInstanceLabel
+        {
+            get { return this.policyInstanceLabel; }
         }
 
         public string PolicyRoot

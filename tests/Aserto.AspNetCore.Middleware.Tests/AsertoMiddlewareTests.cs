@@ -92,7 +92,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
                 o.ServiceUrl = "https://testserver.com";
                 o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
                 o.TenantID = "YOUR_TENANT_ID";
-                o.PolicyID = "YOUR_POLICY_ID";
+                o.PolicyName = "YOUR_POLICY_NAME";
                 o.PolicyRoot = "policy_root";
                 o.Enabled = false;
             });

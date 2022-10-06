@@ -58,8 +58,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
             var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;
 
-            // TODO: figure out what we do with the policy ID
-            // policyContext.Id = client.PolicyID;
+            policyContext.Name = client.PolicyName;
+            policyContext.InstanceLabel = client.PolicyInstanceLabel;
             policyContext.Decisions.Add(client.Decision);
 
             isRequest.IdentityContext = identityContext;

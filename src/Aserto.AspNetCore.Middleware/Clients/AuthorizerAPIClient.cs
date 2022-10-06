@@ -7,6 +7,7 @@
 namespace Aserto.AspNetCore.Middleware.Clients
 {
     using System;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
@@ -29,7 +30,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private readonly string policyRoot;
         private ILogger logger;
         private string decision;
-        private string policyID;
+        private string policyName;
+        private string policyInstanceLabel;
         private Func<string, HttpRequest, string> policyPathMapper;
         private Func<string, HttpRequest, Struct> resourceMapper;
 
@@ -51,9 +53,16 @@ namespace Aserto.AspNetCore.Middleware.Clients
             else
             {
                 this.authorizerClient = null;
+
+                var httpHandler = new HttpClientHandler();
+
+                // TODO: add config for this. Return `true` to allow certificates that are untrusted/invalid
+                httpHandler.ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
                 var channel = GrpcChannel.ForAddress(
                     this.options.ServiceUrl,
-                    new GrpcChannelOptions { });
+                    new GrpcChannelOptions { HttpHandler = httpHandler });
 
                 this.authorizerClient = new AuthorizerClient(channel);
             }
@@ -63,7 +72,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.metaData.Add("Authorization", $"basic {this.options.AuthorizerApiKey}");
 
             this.decision = this.options.Decision;
-            this.policyID = this.options.PolicyID;
+            this.policyName = this.options.PolicyName;
+            this.policyInstanceLabel = this.options.PolicyInstanceLabel;
             this.policyRoot = this.options.PolicyRoot;
             this.policyPathMapper = this.options.PolicyPathMapper;
             this.resourceMapper = this.options.ResourceMapper;
@@ -76,9 +86,15 @@ namespace Aserto.AspNetCore.Middleware.Clients
         }
 
         /// <inheritdoc/>
-        public string PolicyID
+        public string PolicyName
         {
-            get { return this.policyID; }
+            get { return this.policyName; }
+        }
+
+        /// <inheritdoc/>
+        public string PolicyInstanceLabel
+        {
+            get { return this.policyInstanceLabel; }
         }
 
         /// <inheritdoc/>

@@ -41,7 +41,12 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Policy ID.
         /// </summary>
-        public string PolicyID { get; set; } = AsertoOptionsDefaults.PolicyID;
+        public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
+
+        /// <summary>
+        /// Gets or sets a value indicating the Aserto Policy ID.
+        /// </summary>
+        public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Policy Root.
@@ -80,10 +85,8 @@ namespace Aserto.AspNetCore.Middleware.Options
                 return false;
             }
 
-            if (string.IsNullOrEmpty(options.AuthorizerApiKey) ||
-                string.IsNullOrEmpty(options.PolicyID) ||
-                string.IsNullOrEmpty(options.PolicyRoot) ||
-                string.IsNullOrEmpty(options.TenantID))
+            // TODO: figure out what we need to do with policy root
+            if (string.IsNullOrEmpty(options.PolicyRoot))
             {
                 return false;
             }

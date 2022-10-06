@@ -13,7 +13,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Options
             var options = new AsertoOptions();
             options.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
             options.TenantID = "YOUR_TENANT_ID";
-            options.PolicyID = "YOUR_POLICY_ID";
+            options.PolicyName = "YOUR_POLICY_NAME";
             options.PolicyRoot = "weatherforecast";
             return options;
         }
@@ -44,21 +44,21 @@ namespace Aserto.AspNetCore.Middleware.Tests.Options
         }
 
         [Fact]
-        public void NoAuthorizerApiKeyDenies()
+        public void NoAuthorizerApiKeyAllows()
         {
             var options = getValidOptions();
             options.AuthorizerApiKey = string.Empty;
 
-            Assert.False(AsertoOptions.Validate(options));
+            Assert.True(AsertoOptions.Validate(options));
         }
 
         [Fact]
-        public void NoPolicyIDDenies()
+        public void NoPolicyNameAllows()
         {
             var options = getValidOptions();
-            options.PolicyID = string.Empty;
+            options.PolicyName = string.Empty;
 
-            Assert.False(AsertoOptions.Validate(options));
+            Assert.True(AsertoOptions.Validate(options));
         }
 
         [Fact]
@@ -71,12 +71,12 @@ namespace Aserto.AspNetCore.Middleware.Tests.Options
         }
 
         [Fact]
-        public void NoTenantIDDenies()
+        public void NoTenantIDAllows()
         {
             var options = getValidOptions();
             options.TenantID = string.Empty;
 
-            Assert.False(AsertoOptions.Validate(options));
+            Assert.True(AsertoOptions.Validate(options));
         }
 
         [Fact]

@@ -27,9 +27,14 @@ namespace Aserto.AspNetCore.Middleware.Clients
         string Decision { get; }
 
         /// <summary>
-        /// Gets the policy id that will be used for all the requests.
+        /// Gets the policy name that will be used for all the requests.
         /// </summary>
-        string PolicyID { get; }
+        string PolicyName { get; }
+
+        /// <summary>
+        /// Gets the policy instance label that will be used for all the requests.
+        /// </summary>
+        string PolicyInstanceLabel { get; }
 
         /// <summary>
         /// Gets the policy root that will be used for all the requests.
