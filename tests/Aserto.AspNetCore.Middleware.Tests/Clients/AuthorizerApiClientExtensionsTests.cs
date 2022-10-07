@@ -203,25 +203,23 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         }
 
         [Theory]
-        [InlineData("tp", "GET", "/", "tp.GET")]
-        [InlineData("tp", "GET", "", "tp.GET")]
-        [InlineData("tp", "POST", "", "tp.POST")]
-        [InlineData("tp", "PUT", "", "tp.PUT")]
-        [InlineData("tp", "DELETE", "", "tp.DELETE")]
-        [InlineData("t", "GET", "/", "t.GET")]
-        [InlineData("tp", "GET", "/foo", "tp.GET.foo")]
-        [InlineData("tp", "GET", "/foo/", "tp.GET.foo")]
-        [InlineData("tp", "GET", "/foo/bar", "tp.GET.foo.bar")]
-        [InlineData("tp", "GET", "/foo/bar/", "tp.GET.foo.bar")]
-        [InlineData("tp", "POST", "/foo/bar/", "tp.POST.foo.bar")]
-        [InlineData("tp", "DELETE", "/foo/bar/", "tp.DELETE.foo.bar")]
-        public void PolicyPathBuilds(string policyRoot, string method, string path, string expected)
+        [InlineData("GET", "/", "GET")]
+        [InlineData("GET", "", "GET")]
+        [InlineData("POST", "", "POST")]
+        [InlineData("PUT", "", "PUT")]
+        [InlineData("DELETE", "", "DELETE")]
+        [InlineData("GET", "/foo", "GET.foo")]
+        [InlineData("GET", "/foo/", "GET.foo")]
+        [InlineData("GET", "/foo/bar", "GET.foo.bar")]
+        [InlineData("GET", "/foo/bar/", "GET.foo.bar")]
+        [InlineData("POST", "/foo/bar/", "POST.foo.bar")]
+        [InlineData("DELETE", "/foo/bar/", "DELETE.foo.bar")]
+        public void PolicyPathBuilds(string method, string path, string expected)
         {
             this.mockRequest.SetupGet(r => r.Path).Returns(path);
             this.mockRequest.SetupGet(r => r.Method).Returns(method);
             var testIdentity = new ClaimsIdentity();
             var testPrincipal = new ClaimsPrincipal(testIdentity);
-            this.options.Value.PolicyRoot = policyRoot;
 
             var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
@@ -237,7 +235,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity();
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            this.options.Value.PolicyPathMapper = (policyRoot, httpRequest) =>
+            this.options.Value.PolicyPathMapper = (httpRequest) =>
             {
                 return "custom.policy.mapper";
             };

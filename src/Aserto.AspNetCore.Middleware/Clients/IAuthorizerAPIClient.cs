@@ -37,19 +37,14 @@ namespace Aserto.AspNetCore.Middleware.Clients
         string PolicyInstanceLabel { get; }
 
         /// <summary>
-        /// Gets the policy root that will be used for all the requests.
-        /// </summary>
-        string PolicyRoot { get; }
-
-        /// <summary>
         /// Gets the function that converts an <see cref="HttpRequest"/> to a policy path.
         /// </summary>
-        public Func<string, HttpRequest, string> PolicyPathMapper { get; }
+        public Func<HttpRequest, string> PolicyPathMapper { get; }
 
         /// <summary>
         /// Gets the function that receives an <see cref="HttpRequest"/> and a policy root and converts it to a resource context.
         /// </summary>
-        public Func<string, HttpRequest, Struct> ResourceMapper { get; }
+        public Func<HttpRequest, Struct> ResourceMapper { get; }
 
         /// <summary>
         /// Determines if the HTTP request is allowed.

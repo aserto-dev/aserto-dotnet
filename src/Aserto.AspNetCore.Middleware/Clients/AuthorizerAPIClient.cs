@@ -27,13 +27,12 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private readonly AuthorizerClient authorizerClient;
         private readonly Grpc.Core.Metadata metaData;
         private readonly AsertoOptions options;
-        private readonly string policyRoot;
         private ILogger logger;
         private string decision;
         private string policyName;
         private string policyInstanceLabel;
-        private Func<string, HttpRequest, string> policyPathMapper;
-        private Func<string, HttpRequest, Struct> resourceMapper;
+        private Func<HttpRequest, string> policyPathMapper;
+        private Func<HttpRequest, Struct> resourceMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
@@ -74,7 +73,6 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.decision = this.options.Decision;
             this.policyName = this.options.PolicyName;
             this.policyInstanceLabel = this.options.PolicyInstanceLabel;
-            this.policyRoot = this.options.PolicyRoot;
             this.policyPathMapper = this.options.PolicyPathMapper;
             this.resourceMapper = this.options.ResourceMapper;
         }
@@ -98,19 +96,13 @@ namespace Aserto.AspNetCore.Middleware.Clients
         }
 
         /// <inheritdoc/>
-        public string PolicyRoot
-        {
-            get { return this.policyRoot; }
-        }
-
-        /// <inheritdoc/>
-        public Func<string, HttpRequest, string> PolicyPathMapper
+        public Func<HttpRequest, string> PolicyPathMapper
         {
             get { return this.policyPathMapper; }
         }
 
         /// <inheritdoc/>
-        public Func<string, HttpRequest, Struct> ResourceMapper
+        public Func<HttpRequest, Struct> ResourceMapper
         {
             get { return this.resourceMapper; }
         }

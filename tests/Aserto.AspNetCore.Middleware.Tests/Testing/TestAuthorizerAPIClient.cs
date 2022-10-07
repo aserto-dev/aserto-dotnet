@@ -18,7 +18,6 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
         private string decision = "testdecision";
         private string policyName = "testpolicyName";
         private string policyInstanceLabel = "testpolicyInstanceLabel";
-        private string policyRoot = "policyRoot";
 
         public TestAuthorizerAPIClient()
             : this(false)
@@ -28,11 +27,6 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
         public TestAuthorizerAPIClient(bool allowed)
         {
             this.allowed = allowed;
-        }
-
-        public TestAuthorizerAPIClient(string policyRoot)
-        {
-            this.policyRoot = policyRoot;
         }
 
         public string Decision
@@ -50,17 +44,12 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
             get { return this.policyInstanceLabel; }
         }
 
-        public string PolicyRoot
-        {
-            get { return this.policyRoot; }
-        }
-
-        public Func<string, HttpRequest, string> PolicyPathMapper
+        public Func<HttpRequest, string> PolicyPathMapper
         {
             get { return AsertoOptionsDefaults.DefaultPolicyPathMapper; }
         }
 
-        public Func<string, HttpRequest, Struct> ResourceMapper {
+        public Func<HttpRequest, Struct> ResourceMapper {
             get { return AsertoOptionsDefaults.DefaultResourceMapper; }
         }
 

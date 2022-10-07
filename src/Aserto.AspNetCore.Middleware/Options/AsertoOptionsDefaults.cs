@@ -65,10 +65,9 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// The default Policy Path Mapper.
         /// </summary>
-        /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The Aserto Policy path.</returns>
-        public static string DefaultPolicyPathMapper(string policyRoot, HttpRequest request)
+        public static string DefaultPolicyPathMapper(HttpRequest request)
         {
             string policyPath;
             if (request.HttpContext == null || request.HttpContext.GetEndpoint() == null)
@@ -93,7 +92,7 @@ namespace Aserto.AspNetCore.Middleware.Options
             policyPath = policyPath.Replace(":", "__");
 
             // Handle method
-            policyPath = $"{policyRoot}.{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
+            policyPath = $"{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
 
             // Trim tailing dots
             policyPath = policyPath.TrimEnd('.');
@@ -107,10 +106,9 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// The default Resource Context mapper function.
         /// </summary>
-        /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The default Resource Context mapper.</returns>
-        public static Struct DefaultResourceMapper(string policyRoot, HttpRequest request)
+        public static Struct DefaultResourceMapper(HttpRequest request)
         {
             if (request.RouteValues == null || request.RouteValues.Count == 0)
             {
@@ -156,7 +154,7 @@ namespace Aserto.AspNetCore.Middleware.Options
                 }
 
                 // handle parameters that have default and that are nullable
-                var processedPiece = piece.TrimStart('{').Split('=')[0].Split('?')[0];
+                var processedPiece = piece.TrimStart('{').TrimEnd('}').Split('=')[0].Split('?')[0];
 
                 // handle reserver routes
                 bool isReserver = Array.Exists(ReservedRoutes, reservedRoute => processedPiece == reservedRoute);

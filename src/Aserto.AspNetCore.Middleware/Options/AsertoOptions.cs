@@ -49,11 +49,6 @@ namespace Aserto.AspNetCore.Middleware.Options
         public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Policy Root.
-        /// </summary>
-        public string PolicyRoot { get; set; } = AsertoOptionsDefaults.PolicyRoot;
-
-        /// <summary>
         /// Gets or sets a value indicating the decision string to be used.
         /// </summary>
         public string Decision { get; set; } = AsertoOptionsDefaults.Decision;
@@ -61,12 +56,12 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
-        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+        public Func<HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
 
         /// <summary>
         /// Gets or sets the Resource mapper.
         /// </summary>
-        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
+        public Func<HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
 
         /// <summary>
         /// Validates the provided options.
@@ -81,12 +76,6 @@ namespace Aserto.AspNetCore.Middleware.Options
             }
 
             if (!ValidateUri(options.ServiceUrl))
-            {
-                return false;
-            }
-
-            // TODO: figure out what we need to do with policy root
-            if (string.IsNullOrEmpty(options.PolicyRoot))
             {
                 return false;
             }

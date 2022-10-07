@@ -14,7 +14,6 @@ namespace Aserto.AspNetCore.Middleware.Tests.Options
             options.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
             options.TenantID = "YOUR_TENANT_ID";
             options.PolicyName = "YOUR_POLICY_NAME";
-            options.PolicyRoot = "weatherforecast";
             return options;
         }
 
@@ -59,15 +58,6 @@ namespace Aserto.AspNetCore.Middleware.Tests.Options
             options.PolicyName = string.Empty;
 
             Assert.True(AsertoOptions.Validate(options));
-        }
-
-        [Fact]
-        public void NoPolicyRootDenies()
-        {
-            var options = getValidOptions();
-            options.PolicyRoot = string.Empty;
-
-            Assert.False(AsertoOptions.Validate(options));
         }
 
         [Fact]
