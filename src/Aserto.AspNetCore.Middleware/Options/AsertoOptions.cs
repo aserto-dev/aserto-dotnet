@@ -44,6 +44,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
 
         /// <summary>
+        /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
+        /// </summary>
+        public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
+
+        /// <summary>
         /// Gets or sets a value indicating the Aserto Policy ID.
         /// </summary>
         public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;

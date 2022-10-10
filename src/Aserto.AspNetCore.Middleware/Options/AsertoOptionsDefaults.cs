@@ -48,6 +48,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         public static string PolicyName { get; } = string.Empty;
 
         /// <summary>
+        /// Gets a value indicating whether the service connections are allowed when using SSL.
+        /// </summary>
+        public static bool Insecure { get; } = false;
+
+        /// <summary>
         /// Gets a value indicating the Policy Name.
         /// </summary>
         public static string PolicyInstanceLabel { get; } = string.Empty;
@@ -161,7 +166,7 @@ namespace Aserto.AspNetCore.Middleware.Options
 
                 if (isReserver)
                 {
-                    result = $"{result}/{request.RouteValues[processedPiece].ToString()}";
+                    result = $"{result}/{request.RouteValues[processedPiece]}";
                 }
                 else
                 {

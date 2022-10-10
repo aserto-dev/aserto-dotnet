@@ -27,12 +27,12 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private readonly AuthorizerClient authorizerClient;
         private readonly Grpc.Core.Metadata metaData;
         private readonly AsertoOptions options;
-        private ILogger logger;
-        private string decision;
-        private string policyName;
-        private string policyInstanceLabel;
-        private Func<HttpRequest, string> policyPathMapper;
-        private Func<HttpRequest, Struct> resourceMapper;
+        private readonly string decision;
+        private readonly ILogger logger;
+        private readonly string policyName;
+        private readonly string policyInstanceLabel;
+        private readonly Func<HttpRequest, string> policyPathMapper;
+        private readonly Func<HttpRequest, Struct> resourceMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
@@ -53,22 +53,31 @@ namespace Aserto.AspNetCore.Middleware.Clients
             {
                 this.authorizerClient = null;
 
-                var httpHandler = new HttpClientHandler();
+                var grpcChannelOptions = new GrpcChannelOptions { };
 
-                // TODO: add config for this. Return `true` to allow certificates that are untrusted/invalid
-                httpHandler.ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                if (this.options.Insecure)
+                {
+                    var httpHandler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                    };
+
+                    grpcChannelOptions = new GrpcChannelOptions { HttpHandler = httpHandler };
+                }
 
                 var channel = GrpcChannel.ForAddress(
                     this.options.ServiceUrl,
-                    new GrpcChannelOptions { HttpHandler = httpHandler });
+                    grpcChannelOptions);
 
                 this.authorizerClient = new AuthorizerClient(channel);
             }
 
-            this.metaData = new Grpc.Core.Metadata();
-            this.metaData.Add("Aserto-Tenant-Id", $"{this.options.TenantID}");
-            this.metaData.Add("Authorization", $"basic {this.options.AuthorizerApiKey}");
+            this.metaData = new Grpc.Core.Metadata
+            {
+                { "Aserto-Tenant-Id", $"{this.options.TenantID}" },
+                { "Authorization", $"basic {this.options.AuthorizerApiKey}" },
+            };
 
             this.decision = this.options.Decision;
             this.policyName = this.options.PolicyName;

@@ -142,6 +142,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         [InlineData("GET", "api/{asset}/another/{asset2}", "https://localhost/api/api/another/api", "GET.api.__asset.another.__asset2")]
         [InlineData("GET", "api/{asset}", "https://localhost/api/UperCase", "GET.api.__asset")]
         [InlineData("GET", "api/{CaseSensitive}", "https://localhost/api/parameter", "GET.api.__CaseSensitive")]
+        // Tests reserver routes. eg. Controller and Action.
+        [InlineData("GET", "api/{controller=Home}/{action=Index}", "https://localhost/api/Home/Account", "GET.api.Home.Account")]
+        // Tests optional route parameters
+        [InlineData("GET", "api/{id?}", "https://localhost/api", "GET.api")]
+        [InlineData("GET", "api/{id?}", "https://localhost/api/myid", "GET.api.__id")]
         public async Task RouteValues(string method, string bindPath, string requestUri, string expected)
         {
             var t = new TestAuthorizerAPIClient();

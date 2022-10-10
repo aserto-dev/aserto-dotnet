@@ -100,5 +100,35 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
 
             Assert.True(isAsync);
         }
+
+        [Fact]
+        public void AllowInsecure()
+        {
+            // var mockClient = new Moq.Mock<AuthorizerClient>();
+            var mockClaimsPrinipal = new Moq.Mock<ClaimsPrincipal>();
+            var mockRequest = new Moq.Mock<HttpRequest>();
+
+            var asertoOptions = new AsertoOptions();
+            asertoOptions.Insecure = true;
+
+            var options = Microsoft.Extensions.Options.Options.Create(asertoOptions);
+            var logggerFactory = new NullLoggerFactory();
+
+            var isResponse = new IsResponse();
+            isResponse.Decisions.Add(new Decision() { Is = true });
+
+            mockClaimsPrinipal.SetupGet(cp => cp.Identity.AuthenticationType).Returns(() => null);
+            mockRequest.SetupGet(r => r.Path).Returns("/foo");
+            mockRequest.SetupGet(r => r.Method).Returns("GET");
+
+            var fakecall = TestCalls.AsyncUnaryCall<IsResponse>(Task.FromResult(isResponse),
+                Task.FromResult(new Metadata()),
+                () => Status.DefaultSuccess,
+                () => new Metadata(), () => { });
+
+            var authorizerAPIClient = new AuthorizerAPIClient(options, logggerFactory);
+
+            Assert.NotNull(authorizerAPIClient);
+        }
     }
 }
