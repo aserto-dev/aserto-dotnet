@@ -11,10 +11,9 @@ namespace Aserto.AspNetCore.Middleware
     using System.Net;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using Aserto.API;
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
-    using Aserto.Authorizer.Authorizer;
+    using Aserto.Authorizer.V2;
     using Grpc.Core;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;

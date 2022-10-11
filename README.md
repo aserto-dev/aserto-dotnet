@@ -2,11 +2,10 @@
 
 [![ci](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml/badge.svg)](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml) [![Coverage Status](https://coveralls.io/repos/github/aserto-dev/aserto-dotnet/badge.svg?branch=main&t=1UzNg5)](https://coveralls.io/github/aserto-dev/aserto-dotnet?branch=main) [![NuGet version](https://img.shields.io/nuget/v/Aserto.AspNetCore.Middleware?style=flat)](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/)[![Maintainability](https://api.codeclimate.com/v1/badges/8d946af86d3dbd10956b/maintainability)](https://codeclimate.com/github/aserto-dev/aserto-dotnet/maintainability)
 
-Aserto.AspNetCore.Middleware is a middleware that allows .NET Asp applications to use Aserto as the Authorization provider.
+Aserto.AspNetCore.Middleware is a middleware that allows .NET Asp applications to use Topaz Authorizer as the Authorization provider.
 
 ## Prerequisites
 * [.NET SDK](https://dotnet.microsoft.com/download) 3.1 or newer.
-* An [Aserto](https://console.aserto.com) account.
 
 ## Installation
 [Aserto.AspNetCore.Middleware](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/) is provided as a NuGet package. 
@@ -23,18 +22,6 @@ dotnet add package Aserto.AspNetCore.Middleware
 ```
 
 ## Configuration
-The following configuration settings are required for Aserto.AspNetCore middleware. You can add them to your `appsettings.json`:
-```json
-// appsettings.json
-
-"Aserto": {
-    "AuthorizerApiKey": "YOUR_AUTHORIZER_API_KEY",
-    "TenantID": "YOUT_ASERTO_TENANTID",
-    "PolicyID": "YOUR_ASERTO_POLICY_ID",
-    "PolicyRoot": "YOUR_POLICY_ROOT"
-}
-``` 
-This settings can be retrieved from the [Policy Settings](https://console.aserto.com/ui/policies) page of your Aserto account.
 
 The middleware accepts the following optional parameters:
 
@@ -43,6 +30,11 @@ The middleware accepts the following optional parameters:
 | Enabled | true | Enables or disables Aserto Authorization |
 | ServiceUrl | "https://authorizer.prod.aserto.com:8443" | Sets the URL for the authorizer endpoint. |
 | Decision | "allowed" | The decision that will be used by the middleware when creating an authorizer request. |
+| AuthorizerApiKey | "" | The authorizer API Key |
+| TenantID | "" | The Aserto Tenant ID |
+| Inscure | false | Indicates whether insecure service connections are allowed when using SSL |
+| PolicyName | "" | The Aserto policy name |
+| PolicyInstanceLabel | "" | The label of the active policy runtime |
 
 
 ## Usage
@@ -154,7 +146,7 @@ public void ConfigureServices(IServiceCollection services)
    services.AddAsertoAuthorization(options =>
    {
       Configuration.GetSection("Aserto").Bind(options));
-      options.PolicyPathMapper = (policyRoot, httpRequest) =>
+      options.PolicyPathMapper = (httpRequest) =>
       {
           return "custom.policy.path";
       };
@@ -179,7 +171,7 @@ public void ConfigureServices(IServiceCollection services)
    // Adds the Aserto Authorization service
    services.AddAsertoAuthorization(options =>
      {
-       options.ResourceMapper = (policyRoot, httpRequest) =>
+       options.ResourceMapper = (httpRequest) =>
        {
          Struct result = new Struct();
          result.Fields["asset"] = Value.ForString("megaSeeds");

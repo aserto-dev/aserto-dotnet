@@ -39,14 +39,19 @@ namespace Aserto.AspNetCore.Middleware.Options
         public string TenantID { get; set; } = AsertoOptionsDefaults.TenantID;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Policy ID.
+        /// Gets or sets a value indicating the Aserto Policy Name.
         /// </summary>
-        public string PolicyID { get; set; } = AsertoOptionsDefaults.PolicyID;
+        public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Policy Root.
+        /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
         /// </summary>
-        public string PolicyRoot { get; set; } = AsertoOptionsDefaults.PolicyRoot;
+        public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
+
+        /// <summary>
+        /// Gets or sets a value indicating the Aserto Instance label.
+        /// </summary>
+        public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
         /// <summary>
         /// Gets or sets a value indicating the decision string to be used.
@@ -56,12 +61,12 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
-        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+        public Func<HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
 
         /// <summary>
         /// Gets or sets the Resource mapper.
         /// </summary>
-        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
+        public Func<HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
 
         /// <summary>
         /// Validates the provided options.
@@ -76,14 +81,6 @@ namespace Aserto.AspNetCore.Middleware.Options
             }
 
             if (!ValidateUri(options.ServiceUrl))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(options.AuthorizerApiKey) ||
-                string.IsNullOrEmpty(options.PolicyID) ||
-                string.IsNullOrEmpty(options.PolicyRoot) ||
-                string.IsNullOrEmpty(options.TenantID))
             {
                 return false;
             }

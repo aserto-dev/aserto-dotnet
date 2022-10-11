@@ -11,12 +11,17 @@ namespace Aserto.AspNetCore.Middleware.Options
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
+    using Microsoft.AspNetCore.Routing.Patterns;
+
+    // Reserved routing names: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/routing?view=aspnetcore-6.0#reserved-routing-names
 
     /// <summary>
     /// Defaults for Aserto Options.
     /// </summary>
     public static class AsertoOptionsDefaults
     {
+        private static readonly string[] ReservedRoutes = { "action", "area", "controller", "handler", "page" };
+
         /// <summary>
         /// Gets a value indicating whether the Aserto authorization is enabled.
         /// </summary>
@@ -25,7 +30,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets a value indicating the Aserto service URL.
         /// </summary>
-        public static string ServiceUrl { get; } = "https://authorizer.prod.aserto.com:8443";
+        public static string ServiceUrl { get; } = "https://localhost:8282";
 
         /// <summary>
         /// Gets a value indicating the Aserto Authorizer API Key.
@@ -38,9 +43,19 @@ namespace Aserto.AspNetCore.Middleware.Options
         public static string TenantID { get; } = string.Empty;
 
         /// <summary>
-        /// Gets a value indicating the Aserto Policy ID.
+        /// Gets a value indicating the Policy Name.
         /// </summary>
-        public static string PolicyID { get; } = string.Empty;
+        public static string PolicyName { get; } = string.Empty;
+
+        /// <summary>
+        /// Gets a value indicating whether the service connections are allowed when using SSL.
+        /// </summary>
+        public static bool Insecure { get; } = false;
+
+        /// <summary>
+        /// Gets a value indicating the Policy Name.
+        /// </summary>
+        public static string PolicyInstanceLabel { get; } = string.Empty;
 
         /// <summary>
         /// Gets a value indicating the Aserto Policy Root.
@@ -55,10 +70,9 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// The default Policy Path Mapper.
         /// </summary>
-        /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The Aserto Policy path.</returns>
-        public static string DefaultPolicyPathMapper(string policyRoot, HttpRequest request)
+        public static string DefaultPolicyPathMapper(HttpRequest request)
         {
             string policyPath;
             if (request.HttpContext == null || request.HttpContext.GetEndpoint() == null)
@@ -67,15 +81,7 @@ namespace Aserto.AspNetCore.Middleware.Options
             }
             else
             {
-                var routeEndpoint = (RouteEndpoint)request.HttpContext.GetEndpoint();
-                if (routeEndpoint != null)
-                {
-                    policyPath = routeEndpoint.RoutePattern.RawText;
-                }
-                else
-                {
-                    policyPath = request.Path;
-                }
+                policyPath = ParseRouteEndpoint(request);
             }
 
             // replace "{" with "__" in endpoint
@@ -91,7 +97,7 @@ namespace Aserto.AspNetCore.Middleware.Options
             policyPath = policyPath.Replace(":", "__");
 
             // Handle method
-            policyPath = $"{policyRoot}.{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
+            policyPath = $"{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
 
             // Trim tailing dots
             policyPath = policyPath.TrimEnd('.');
@@ -105,10 +111,9 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// The default Resource Context mapper function.
         /// </summary>
-        /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The default Resource Context mapper.</returns>
-        public static Struct DefaultResourceMapper(string policyRoot, HttpRequest request)
+        public static Struct DefaultResourceMapper(HttpRequest request)
         {
             if (request.RouteValues == null || request.RouteValues.Count == 0)
             {
@@ -118,10 +123,7 @@ namespace Aserto.AspNetCore.Middleware.Options
             Struct result = new Struct();
             foreach (var routeValue in request.RouteValues)
             {
-                // Skip reserved routing names: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/routing?view=aspnetcore-6.0#reserved-routing-names
-                string[] reservedRoutes = { "action", "area", "controller", "handler", "page" };
-
-                bool exists = Array.Exists(reservedRoutes, reservedRoute => reservedRoute == routeValue.Key);
+                bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == routeValue.Key);
                 if (exists)
                 {
                     continue;
@@ -130,6 +132,50 @@ namespace Aserto.AspNetCore.Middleware.Options
                 var resourceContextValue = routeValue.Value.ToString();
 
                 result.Fields[routeValue.Key] = Value.ForString(resourceContextValue);
+            }
+
+            return result;
+        }
+
+        private static string ParseRouteEndpoint(HttpRequest request)
+        {
+            var routeEndpoint = (RouteEndpoint)request.HttpContext.GetEndpoint();
+            if (routeEndpoint == null)
+            {
+                return request.Path;
+            }
+
+            string result = string.Empty;
+
+            var routePatternPieces = routeEndpoint.RoutePattern.RawText.Split("/");
+
+            foreach (var piece in routePatternPieces)
+            {
+                // Not a parameter
+                if (!piece.StartsWith("{"))
+                {
+                    result = $"{result}/{piece}";
+                    continue;
+                }
+
+                // handle parameters that have default and that are nullable
+                var processedPiece = piece.TrimStart('{').TrimEnd('}').Split('=')[0].Split('?')[0];
+
+                // handle reserver routes
+                bool isReserver = Array.Exists(ReservedRoutes, reservedRoute => processedPiece == reservedRoute);
+
+                if (isReserver)
+                {
+                    result = $"{result}/{request.RouteValues[processedPiece]}";
+                }
+                else
+                {
+                    // handle optional parameters
+                    if (request.RouteValues.ContainsKey(processedPiece))
+                    {
+                        result = $"{result}/{{{processedPiece}}}";
+                    }
+                }
             }
 
             return result;

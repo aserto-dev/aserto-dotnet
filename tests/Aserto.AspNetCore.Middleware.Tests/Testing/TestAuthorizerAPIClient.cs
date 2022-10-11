@@ -1,6 +1,6 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.Authorizer.V1;
+using Aserto.Authorizer.V2;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -16,8 +16,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
         private bool allowed = true;
         private IsRequest isRequest = null;
         private string decision = "testdecision";
-        private string policyID = "testpolicyID";
-        private string policyRoot = "policyRoot";
+        private string policyName = "testpolicyName";
+        private string policyInstanceLabel = "testpolicyInstanceLabel";
 
         public TestAuthorizerAPIClient()
             : this(false)
@@ -29,32 +29,27 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
             this.allowed = allowed;
         }
 
-        public TestAuthorizerAPIClient(string policyRoot)
-        {
-            this.policyRoot = policyRoot;
-        }
-
         public string Decision
         {
             get { return this.decision; }
         }
 
-        public string PolicyID
+        public string PolicyName
         {
-            get { return this.policyID; }
+            get { return this.policyName; }
         }
 
-        public string PolicyRoot
+        public string PolicyInstanceLabel
         {
-            get { return this.policyRoot; }
+            get { return this.policyInstanceLabel; }
         }
 
-        public Func<string, HttpRequest, string> PolicyPathMapper
+        public Func<HttpRequest, string> PolicyPathMapper
         {
             get { return AsertoOptionsDefaults.DefaultPolicyPathMapper; }
         }
 
-        public Func<string, HttpRequest, Struct> ResourceMapper {
+        public Func<HttpRequest, Struct> ResourceMapper {
             get { return AsertoOptionsDefaults.DefaultResourceMapper; }
         }
 
