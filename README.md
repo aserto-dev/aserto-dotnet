@@ -31,10 +31,10 @@ The middleware accepts the following optional parameters:
 | ServiceUrl | "https://authorizer.prod.aserto.com:8443" | Sets the URL for the authorizer endpoint. |
 | Decision | "allowed" | The decision that will be used by the middleware when creating an authorizer request. |
 | AuthorizerApiKey | "" | The authorizer API Key |
-| TenantID | "" | Te Aserto Tenant ID |
+| TenantID | "" | The Aserto Tenant ID |
 | Inscure | false | Indicates whether insecure service connections are allowed when using SSL |
 | PolicyName | "" | The Aserto policy name |
-| PolicyInstanceLabel | "" | instance label that will be used for all the requests |
+| PolicyInstanceLabel | "" | The label of the active policy runtime |
 
 
 ## Usage
