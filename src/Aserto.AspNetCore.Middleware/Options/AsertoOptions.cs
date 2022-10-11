@@ -39,7 +39,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         public string TenantID { get; set; } = AsertoOptionsDefaults.TenantID;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Policy ID.
+        /// Gets or sets a value indicating the Aserto Policy Name.
         /// </summary>
         public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
 
@@ -49,7 +49,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Policy ID.
+        /// Gets or sets a value indicating the Aserto Instance label.
         /// </summary>
         public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
