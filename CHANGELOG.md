@@ -1,5 +1,23 @@
 # Change Log
 
+## [Version 0.9.0-preview.1](https://github.com/aserto-dev/aserto-dotnet/tree/v0.9.0-preview.1) (2022-10-13)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.7...v0.9.0-preview.1)
+
+**Changed**
+- Bump .NET version to 6
+- The middleware now uses the Authorizer V2 APIs
+- Improved detection for reserved route keys
+- The following configs are no longet mandatory:
+  - AuthorizerApiKey
+  - TenantID
+
+**Removed**
+- Removed `PolicyRoot` config and parameter from mappers
+- Removed `PolicyID` config parameter
+
+**Added**
+- Added `PolicyName` and `PolicyInstanceLabel` optional parameters
+
 ## [Version 0.8.7](https://github.com/aserto-dev/aserto-dotnet/tree/v0.8.7) (2022-09-14)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.6...v0.8.7)
 
