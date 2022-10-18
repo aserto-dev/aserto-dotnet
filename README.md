@@ -22,13 +22,19 @@ dotnet add package Aserto.AspNetCore.Middleware
 ```
 
 ## Configuration
+The following configuration settings are required for Aserto.AspNetCore middleware. You can add them to your `appsettings.json`:
+```json
+"Aserto": {
+    "PolicyRoot": "YOUR_POLICY_ROOT"
+}
+```
 
 The middleware accepts the following optional parameters:
 
 | Parameter name | Default value | Description |
 | -------------- | ------------- | ----------- |
 | Enabled | true | Enables or disables Aserto Authorization |
-| ServiceUrl | "https://authorizer.prod.aserto.com:8443" | Sets the URL for the authorizer endpoint. |
+| ServiceUrl | "https://localhost:8282" | Sets the URL for the authorizer endpoint. |
 | Decision | "allowed" | The decision that will be used by the middleware when creating an authorizer request. |
 | AuthorizerApiKey | "" | The authorizer API Key |
 | TenantID | "" | The Aserto Tenant ID |
@@ -146,7 +152,7 @@ public void ConfigureServices(IServiceCollection services)
    services.AddAsertoAuthorization(options =>
    {
       Configuration.GetSection("Aserto").Bind(options));
-      options.PolicyPathMapper = (httpRequest) =>
+      options.PolicyPathMapper = (policyRoot, httpRequest) =>
       {
           return "custom.policy.path";
       };
@@ -171,7 +177,7 @@ public void ConfigureServices(IServiceCollection services)
    // Adds the Aserto Authorization service
    services.AddAsertoAuthorization(options =>
      {
-       options.ResourceMapper = (httpRequest) =>
+       options.ResourceMapper = (policyRoot, httpRequest) =>
        {
          Struct result = new Struct();
          result.Fields["asset"] = Value.ForString("megaSeeds");

@@ -55,7 +55,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             var identityContext = BuildIdentityContext(identity, supportedClaimTypes);
 
-            var policyPath = client.PolicyPathMapper(request);
+            var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;
 
             policyContext.Name = client.PolicyName;
@@ -65,7 +65,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             isRequest.IdentityContext = identityContext;
             isRequest.PolicyContext = policyContext;
 
-            isRequest.ResourceContext = client.ResourceMapper(request);
+            isRequest.ResourceContext = client.ResourceMapper(client.PolicyRoot, request);
 
             return isRequest;
         }

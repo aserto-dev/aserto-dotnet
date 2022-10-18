@@ -94,6 +94,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
                 o.TenantID = "YOUR_TENANT_ID";
                 o.PolicyName = "YOUR_POLICY_NAME";
                 o.Enabled = false;
+                o.PolicyRoot = "policyRoot";
             });
 
             var builder = new WebHostBuilder()

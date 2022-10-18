@@ -49,6 +49,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
 
         /// <summary>
+        /// Gets or sets a value indicating the Aserto Policy Root.
+        /// </summary>
+        public string PolicyRoot { get; set; } = AsertoOptionsDefaults.PolicyRoot;
+
+        /// <summary>
         /// Gets or sets a value indicating the Aserto Instance label.
         /// </summary>
         public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
@@ -61,12 +66,12 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
-        public Func<HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
 
         /// <summary>
         /// Gets or sets the Resource mapper.
         /// </summary>
-        public Func<HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
+        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
 
         /// <summary>
         /// Validates the provided options.
@@ -78,6 +83,11 @@ namespace Aserto.AspNetCore.Middleware.Options
             if (options is null)
             {
                 throw new ArgumentNullException(nameof(options));
+            }
+
+            if (string.IsNullOrEmpty(options.PolicyRoot))
+            {
+                return false;
             }
 
             if (!ValidateUri(options.ServiceUrl))

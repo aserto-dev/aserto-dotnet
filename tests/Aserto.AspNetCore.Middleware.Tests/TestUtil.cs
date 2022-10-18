@@ -26,6 +26,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
                 o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
                 o.TenantID = "YOUR_TENANT_ID";
                 o.PolicyName = "YOUR_POLICY_NAME";
+                o.PolicyRoot = "pr";
             });
             return options;
         }
