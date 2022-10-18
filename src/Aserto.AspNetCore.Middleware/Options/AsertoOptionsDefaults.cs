@@ -70,9 +70,10 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// The default Policy Path Mapper.
         /// </summary>
+        /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The Aserto Policy path.</returns>
-        public static string DefaultPolicyPathMapper(HttpRequest request)
+        public static string DefaultPolicyPathMapper(string policyRoot, HttpRequest request)
         {
             string policyPath;
             if (request.HttpContext == null || request.HttpContext.GetEndpoint() == null)
@@ -105,15 +106,19 @@ namespace Aserto.AspNetCore.Middleware.Options
             Regex regex = new Regex("[^a-zA-Z0-9._]");
             policyPath = regex.Replace(policyPath, "_");
 
+            // Append policyRoot
+            policyPath = $"{policyRoot}.{policyPath}";
+
             return policyPath;
         }
 
         /// <summary>
         /// The default Resource Context mapper function.
         /// </summary>
+        /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The default Resource Context mapper.</returns>
-        public static Struct DefaultResourceMapper(HttpRequest request)
+        public static Struct DefaultResourceMapper(string policyRoot, HttpRequest request)
         {
             if (request.RouteValues == null || request.RouteValues.Count == 0)
             {
