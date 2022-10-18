@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.9.0-preview.2](https://github.com/aserto-dev/aserto-dotnet/tree/v0.9.0-preview.2) (2022-10-18)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.9.0-preview.1...v0.9.0-preview.2)
+
+**Changed**
+- Re-added `PolicyRoot` as a mandatory parameter.
+
 ## [Version 0.9.0-preview.1](https://github.com/aserto-dev/aserto-dotnet/tree/v0.9.0-preview.1) (2022-10-13)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.8.7...v0.9.0-preview.1)
 
