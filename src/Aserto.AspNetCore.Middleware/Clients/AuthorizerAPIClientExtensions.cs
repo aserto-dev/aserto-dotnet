@@ -58,9 +58,18 @@ namespace Aserto.AspNetCore.Middleware.Clients
             var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;
 
-            policyContext.Name = client.PolicyName;
-            policyContext.InstanceLabel = client.PolicyInstanceLabel;
             policyContext.Decisions.Add(client.Decision);
+
+            if (!string.IsNullOrEmpty(client.PolicyName) || !string.IsNullOrEmpty(client.PolicyInstanceLabel))
+            {
+                var policyInstance = new PolicyInstance
+                {
+                    InstanceLabel = client.PolicyInstanceLabel,
+                    Name = client.PolicyInstanceLabel,
+                };
+
+                isRequest.PolicyInstance = policyInstance;
+            }
 
             isRequest.IdentityContext = identityContext;
             isRequest.PolicyContext = policyContext;
