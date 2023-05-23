@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net6</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net7</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -30,6 +30,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Aserto.AspNetCore.Middleware\Aserto.AspNetCore.Middleware.csproj" />
+    <Content Include ="Assets\appsettings.json">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
