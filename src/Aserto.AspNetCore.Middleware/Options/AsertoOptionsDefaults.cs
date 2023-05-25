@@ -33,6 +33,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         public static string ServiceUrl { get; } = "https://localhost:8282";
 
         /// <summary>
+        /// Gets a value indicating the Aserto service URL.
+        /// </summary>
+        public static string DirectoryServiceUrl { get; } = "https://localhost:9292";
+
+        /// <summary>
         /// Gets a value indicating the Aserto Authorizer API Key.
         /// </summary>
         public static string AuthorizerApiKey { get; } = string.Empty;
@@ -41,6 +46,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Gets a value indicating the Aserto Tenant Identifier.
         /// </summary>
         public static string TenantID { get; } = string.Empty;
+
+        /// <summary>
+        /// Gets a value indicating the Directory Aserto Tenant Identifier.
+        /// </summary>
+        public static string DirectoryTenantID { get; } = string.Empty;
 
         /// <summary>
         /// Gets a value indicating the Policy Name.

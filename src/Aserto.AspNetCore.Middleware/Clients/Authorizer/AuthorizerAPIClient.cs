@@ -13,6 +13,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using Aserto.Authorizer.V2;
     using Aserto.Authorizer.V2.API;
     using Google.Protobuf.WellKnownTypes;
+    using Grpc.Core;
+    using Grpc.Core.Interceptors;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
@@ -25,7 +27,6 @@ namespace Aserto.AspNetCore.Middleware.Clients
     public class AuthorizerAPIClient : IAuthorizerAPIClient
     {
         private readonly AuthorizerClient authorizerClient;
-        private readonly Grpc.Core.Metadata metaData;
         private readonly AsertoOptions options;
         private readonly string decision;
         private readonly ILogger logger;
@@ -67,18 +68,16 @@ namespace Aserto.AspNetCore.Middleware.Clients
                     grpcChannelOptions = new GrpcChannelOptions { HttpHandler = httpHandler };
                 }
 
+                var interceptor = new HeaderInterceptor(this.options.AuthorizerApiKey, this.options.TenantID);
+
                 var channel = GrpcChannel.ForAddress(
                     this.options.ServiceUrl,
                     grpcChannelOptions);
 
-                this.authorizerClient = new AuthorizerClient(channel);
-            }
+                var invoker = channel.Intercept(interceptor);
 
-            this.metaData = new Grpc.Core.Metadata
-            {
-                { "Aserto-Tenant-Id", $"{this.options.TenantID}" },
-                { "Authorization", $"basic {this.options.AuthorizerApiKey}" },
-            };
+                this.authorizerClient = new AuthorizerClient(invoker);
+            }
 
             this.decision = this.options.Decision;
             this.policyName = this.options.PolicyName;
@@ -143,7 +142,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             this.logger.LogDebug($"Policy Context path resolved to: {isRequest.PolicyContext.Path}");
             this.logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
-            var result = await this.authorizerClient.IsAsync(isRequest, this.metaData);
+            var result = await this.authorizerClient.IsAsync(isRequest);
 
             if (result.Decisions.Count == 0)
             {
