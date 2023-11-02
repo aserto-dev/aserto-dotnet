@@ -7,7 +7,9 @@
 namespace Aserto.AspNetCore.Middleware.Clients
 {
     using System;
+    using System.Collections.Generic;
     using System.Net.Http;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
@@ -35,6 +37,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private readonly string policyRoot;
         private readonly Func<string, HttpRequest, string> policyPathMapper;
         private readonly Func<string, HttpRequest, Struct> resourceMapper;
+        private readonly Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> identityMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
@@ -84,6 +87,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.policyInstanceLabel = this.options.PolicyInstanceLabel;
             this.policyPathMapper = this.options.PolicyPathMapper;
             this.resourceMapper = this.options.ResourceMapper;
+            this.identityMapper = this.options.IdentityMapper;
             this.policyRoot = this.options.PolicyRoot;
         }
 
@@ -121,6 +125,12 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public Func<string, HttpRequest, Struct> ResourceMapper
         {
             get { return this.resourceMapper; }
+        }
+
+        /// <inheritdoc/>
+        public Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> IdentityMapper
+        {
+            get { return this.identityMapper; }
         }
 
         /// <inheritdoc/>

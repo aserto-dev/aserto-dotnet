@@ -30,5 +30,20 @@ namespace Aserto.AspNetCore.Middleware.Extensions
 
             return app.UseMiddleware<AsertoMiddleware>();
         }
+
+        /// <summary>
+        /// Adds check middleware for Aserto Authorization.
+        /// </summary>
+        /// <param name="app">The <see cref="IApplicationBuilder"/> instance this method extends.</param>
+        /// <returns>The original <see cref="IApplicationBuilder"/>.</returns>
+        public static IApplicationBuilder UseAsertoCheckAuthorization(this IApplicationBuilder app)
+        {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
+            return app.UseMiddleware<CheckMiddleware>();
+        }
     }
 }

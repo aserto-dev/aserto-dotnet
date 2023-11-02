@@ -53,7 +53,15 @@ namespace Aserto.AspNetCore.Middleware.Clients
             var isRequest = new IsRequest();
             var policyContext = new PolicyContext();
 
-            var identityContext = BuildIdentityContext(identity, supportedClaimTypes);
+            var identityContext = new IdentityContext();
+            if (client.IdentityMapper == null)
+            {
+                identityContext = BuildIdentityContext(identity, supportedClaimTypes);
+            }
+            else
+            {
+                identityContext = client.IdentityMapper(identity, supportedClaimTypes);
+            }
 
             var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;

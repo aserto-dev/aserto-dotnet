@@ -4,12 +4,13 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients
+namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
 {
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Directory.Common.V2;
     using Aserto.Directory.Reader.V2;
@@ -45,7 +46,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             if (options != null)
             {
-                    this.options = options.Value;
+                this.options = options.Value;
             }
             else
             {

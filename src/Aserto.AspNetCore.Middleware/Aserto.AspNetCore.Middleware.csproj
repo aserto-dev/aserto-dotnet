@@ -27,9 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.3" />
-    <PackageReference Include="Aserto.Directory.V2.Client.Grpc" Version="0.0.3" />
-    <PackageReference Include="Google.Protobuf" Version="3.21.7" />
+    <PackageReference Include="Google.Protobuf" Version="3.25.0-rc2" />
     <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.30" />
@@ -46,5 +44,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dotnet-authorizer\src\Aserto.Authorizer.V2.Client.Grpc\Aserto.Authorizer.V2.Client.Grpc.csproj" />
+    <ProjectReference Include="..\..\..\dotnet-directory\src\Aserto.Directory.V3.Client.Grpc\Aserto.Directory.Client.Grpc.csproj" />
   </ItemGroup>
 </Project>
