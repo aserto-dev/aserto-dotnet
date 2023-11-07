@@ -54,11 +54,28 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         /// Adds services and options for the Aserto authorization middleware.
         /// </summary>
         /// <param name="services">/>The <see cref="IServiceCollection"/> for adding services.</param>
-        /// <param name="configure">An action delegate to configure the provided Aserto Options.</param>
+        /// <param name="asertoOptions">An action delegate to configure the provided Aserto Options.</param>
+        /// <param name="checkOptions">An action delegate to configure the provided Check Options.</param>
         /// <returns>The original <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection AddAsertoCheckAuthorization(this IServiceCollection services, Action<CheckOptions> configure)
+        public static IServiceCollection AddAsertoCheckAuthorization(this IServiceCollection services, Action<AsertoOptions> asertoOptions, Action<CheckOptions> checkOptions)
         {
-            services.AddOptions<CheckOptions>().Configure(configure);
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (asertoOptions == null)
+            {
+                throw new ArgumentNullException(nameof(asertoOptions));
+            }
+
+            if (checkOptions == null)
+            {
+                throw new ArgumentNullException(nameof(checkOptions));
+            }
+
+            services.AddOptions<CheckOptions>().Configure(checkOptions);
+            services.AddOptions<AsertoOptions>().Configure(asertoOptions);
             services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

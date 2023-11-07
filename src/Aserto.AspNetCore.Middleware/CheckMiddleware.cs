@@ -69,24 +69,35 @@ namespace Aserto.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
         {
             var endpoint = context.GetEndpoint();
-            var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
-
-            Func<string, HttpRequest, Struct> resourceMapper = null;
-            if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapper, out resourceMapper))
+            if (endpoint != null)
             {
-                this.client.ResourceMapper = resourceMapper;
-            }
+                var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
 
-            var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes);
+                Func<string, HttpRequest, Struct> resourceMapper = null;
+                if (checkAttribute != null)
+                {
+                    if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapper, out resourceMapper))
+                    {
+                        this.client.ResourceMapper = resourceMapper;
+                    }
+                }
 
-            var allowed = await this.client.IsAsync(request);
-            if (!allowed && this.options.Enabled)
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes);
+
+                var allowed = await this.client.IsAsync(request);
+                if (!allowed && this.options.Enabled)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                }
+                else
+                {
+                    this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                    await this.next.Invoke(context);
+                }
             }
             else
             {
-                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
                 await this.next.Invoke(context);
             }
         }

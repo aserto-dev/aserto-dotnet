@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Aserto.AspNetCore.Middleware.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Aserto.NETCore3.Controllers
         }
 
         [HttpGet]
+        [Check("admin")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
