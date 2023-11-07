@@ -36,8 +36,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
         private readonly string policyInstanceLabel;
         private readonly string policyRoot;
         private readonly Func<string, HttpRequest, string> policyPathMapper;
-        private readonly Func<string, HttpRequest, Struct> resourceMapper;
         private readonly Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> identityMapper;
+        private Func<string, HttpRequest, Struct> resourceMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
@@ -50,6 +50,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.logger = loggerFactory.CreateLogger<AuthorizerAPIClient>();
 
             this.options = options.Value;
+
             if (authorizerClient != null)
             {
                 this.authorizerClient = authorizerClient;
@@ -125,6 +126,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public Func<string, HttpRequest, Struct> ResourceMapper
         {
             get { return this.resourceMapper; }
+            set { this.resourceMapper = value; }
         }
 
         /// <inheritdoc/>

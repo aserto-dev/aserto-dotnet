@@ -92,10 +92,10 @@ namespace Aserto.AspNetCore.Middleware.Options
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (string.IsNullOrEmpty(options.PolicyRoot))
+            /*if (string.IsNullOrEmpty(options.PolicyRoot))
             {
                 return false;
-            }
+            }*/
 
             if (!ValidateUri(options.ServiceUrl))
             {

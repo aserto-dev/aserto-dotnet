@@ -10,11 +10,15 @@ namespace Aserto.AspNetCore.Middleware
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
+    using System.Runtime.CompilerServices;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Aserto.AspNetCore.Middleware.Clients;
+    using Aserto.AspNetCore.Middleware.Extensions;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
+    using Aserto.Directory.Reader.V3;
+    using Google.Protobuf.WellKnownTypes;
     using Grpc.Core;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
@@ -29,9 +33,10 @@ namespace Aserto.AspNetCore.Middleware
     {
         private readonly RequestDelegate next;
         private readonly ILogger logger;
-        private readonly IOptionsMonitor<AsertoOptions> optionsMonitor;
-        private AsertoOptions options;
+        private readonly IOptionsMonitor<CheckOptions> optionsMonitor;
+        private CheckOptions options;
         private IAuthorizerAPIClient client;
+        private Dictionary<string, Func<string, HttpRequest, Struct>> resourceMappingRules = new Dictionary<string, Func<string, HttpRequest, Struct>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CheckMiddleware"/> class.
@@ -40,7 +45,7 @@ namespace Aserto.AspNetCore.Middleware
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="optionsMonitor">The options for the Aserto Middleware.</param>
         /// <param name="client">The <see cref="IAuthorizerAPIClient"/>.</param>
-        public CheckMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IOptionsMonitor<AsertoOptions> optionsMonitor, IAuthorizerAPIClient client)
+        public CheckMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IOptionsMonitor<CheckOptions> optionsMonitor, IAuthorizerAPIClient client)
         {
             this.next = next ?? throw new ArgumentNullException(nameof(next));
             this.logger = loggerFactory.CreateLogger<AsertoMiddleware>();
@@ -53,6 +58,7 @@ namespace Aserto.AspNetCore.Middleware
                 this.options = options;
             });
             this.client = client;
+            this.resourceMappingRules = this.options.ResourceMappingRules;
         }
 
         /// <summary>
@@ -62,6 +68,15 @@ namespace Aserto.AspNetCore.Middleware
         /// <returns>The task.</returns>
         public async Task Invoke(HttpContext context)
         {
+            var endpoint = context.GetEndpoint();
+            var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
+
+            Func<string, HttpRequest, Struct> resourceMapper = null;
+            if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapper, out resourceMapper))
+            {
+                this.client.ResourceMapper = resourceMapper;
+            }
+
             var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes);
 
             var allowed = await this.client.IsAsync(request);

@@ -12,6 +12,7 @@ namespace Aserto.AspNetCore.Middleware.Extensions
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.AspNetCore.Middleware.Policies;
+    using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
@@ -42,6 +43,22 @@ namespace Aserto.AspNetCore.Middleware.Extensions
             }
 
             services.AddOptions<AsertoOptions>().Configure(configure).Validate(AsertoOptions.Validate);
+            services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.TryAddSingleton<IAuthorizationHandler, AsertoAuthorizationHandler>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds services and options for the Aserto authorization middleware.
+        /// </summary>
+        /// <param name="services">/>The <see cref="IServiceCollection"/> for adding services.</param>
+        /// <param name="configure">An action delegate to configure the provided Aserto Options.</param>
+        /// <returns>The original <see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddAsertoCheckAuthorization(this IServiceCollection services, Action<CheckOptions> configure)
+        {
+            services.AddOptions<CheckOptions>().Configure(configure);
             services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

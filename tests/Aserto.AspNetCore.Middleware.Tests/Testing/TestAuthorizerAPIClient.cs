@@ -63,6 +63,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
 
         public Func<string, HttpRequest, Struct> ResourceMapper {
             get { return AsertoOptionsDefaults.DefaultResourceMapper; }
+            set { }
         }
 
         public Func<ClaimsPrincipal, IEnumerable<string>,IdentityContext> IdentityMapper

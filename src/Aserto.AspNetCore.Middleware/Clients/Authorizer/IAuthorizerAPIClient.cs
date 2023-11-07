@@ -48,9 +48,9 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public Func<string, HttpRequest, string> PolicyPathMapper { get; }
 
         /// <summary>
-        /// Gets the function that receives an <see cref="HttpRequest"/> and a policy root and converts it to a resource context.
+        /// Gets or sets the function that receives an <see cref="HttpRequest"/> and a policy root and converts it to a resource context.
         /// </summary>
-        public Func<string, HttpRequest, Struct> ResourceMapper { get; }
+        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; }
 
         /// <summary>
         /// Gets the function that receives an identity value and an identity type and converts it to an identity context.
