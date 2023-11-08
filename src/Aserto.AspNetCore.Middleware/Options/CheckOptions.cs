@@ -13,12 +13,18 @@ namespace Aserto.AspNetCore.Middleware.Options
     using Aserto.Authorizer.V2.API;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
 
     /// <summary>
     /// Options for Aserto Check Middleware.
     /// </summary>
-    public class CheckOptions : AsertoOptions
+    public class CheckOptions
     {
+        /// <summary>
+        /// Gets or sets the Aserto Options.
+        /// </summary>
+        public AsertoOptions BaseOptions { get; set; } = new AsertoOptions();
+
         /// <summary>
         /// Gets or sets the resource mapping rules used in check middleware.
         /// </summary>

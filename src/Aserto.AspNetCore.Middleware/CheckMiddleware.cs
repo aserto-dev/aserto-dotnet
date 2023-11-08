@@ -85,9 +85,9 @@ namespace Aserto.AspNetCore.Middleware
                 var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes);
 
                 var allowed = await this.client.IsAsync(request);
-                if (!allowed && this.options.Enabled)
+                if (!allowed && this.options.BaseOptions.Enabled)
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 }
                 else
                 {

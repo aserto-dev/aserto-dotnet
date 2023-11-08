@@ -1,4 +1,5 @@
 using Aserto.AspNetCore.Middleware.Extensions;
+using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Authorizer.V2.API;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Builder;
@@ -41,33 +42,31 @@ namespace Aserto.NETCore3
                 result.Fields.Add("object_type", Value.ForString("group"));
                 result.Fields.Add("relation", Value.ForString("member"));
                 return result;
-            });          
+            });
+
+            var options = new CheckOptions();
+            // Bind base aserto option configurations
+            Configuration.GetSection("Aserto").Bind(options.BaseOptions);
+            options.BaseOptions.PolicyPathMapper = (policyRoot, httpRequest) =>
+            {
+                return "rebac.check"; // hardcoded policy path for aserto policy-rebac example
+            };
+
+            // hardcoded identity mapper example using a citadel aserto user
+            options.BaseOptions.IdentityMapper = (policyRoot, httpRequest) =>
+            {
+                var result = new IdentityContext()
+                {
+                    Type = IdentityType.Sub,
+                    Identity = "rick@the-citadel.com",
+                };
+                return result;
+            };
+            options.ResourceMappingRules = checkResourceRules;
 
             //Aserto options handling
-            services.AddAsertoCheckAuthorization(options =>
-            {
-                Configuration.GetSection("Aserto").Bind(options);                
-                options.PolicyPathMapper = (policyRoot, httpRequest) =>
-                {
-                    return "rebac.check"; // hardcoded policy path for aserto policy-rebac example
-                };
-
-                // hardcoded identity mapper example using a citadel aserto user
-                options.IdentityMapper = (policyRoot, httpRequest) =>
-                  {
-                      var result = new IdentityContext()
-                      {
-                          Type = IdentityType.Sub,
-                          Identity = "rick@the-citadel.com", 
-                      };
-                      return result;
-                  };
-                },
-            checkRules =>
-            {
-                checkRules.ResourceMappingRules = checkResourceRules;
-            }
-            );
+            services.AddAsertoCheckAuthorization(options);
+           
             //end Aserto options handling
 
             services.AddControllers();
