@@ -175,15 +175,15 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<GetRelationResponse> GetRelationAsync(string subjectKey = "", string subjectType = "", string subjectRelation = "", string objKey = "", string objType = "", string relationName = "", bool withObjects = false)
+        public async Task<GetRelationResponse> GetRelationAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "", bool withObjects = false)
         {
             var req = new GetRelationRequest();
-            req.SubjectId = subjectKey;
+            req.SubjectId = subjectId;
             req.SubjectRelation = subjectRelation;
             req.SubjectType = subjectType;
             req.Relation = relationName;
             req.WithObjects = withObjects;
-            req.ObjectId = objKey;
+            req.ObjectId = objId;
             req.ObjectType = objType;
             req.WithObjects = withObjects;
             var result = await this.readerClient.GetRelationAsync(req);
@@ -192,14 +192,14 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<GetRelationsResponse> GetRelationsAsync(string subjectKey = "", string subjectType = "", string subjectRelation = "", string objKey = "", string objType = "", string relationName = "", bool withObjects = false, int pageSize = 0, string pageToken = "")
+        public async Task<GetRelationsResponse> GetRelationsAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "", bool withObjects = false, int pageSize = 0, string pageToken = "")
         {
             var page = BuildPaginationRequest(pageSize, pageToken);
             var req = new GetRelationsRequest();
-            req.SubjectId = subjectKey;
+            req.SubjectId = subjectId;
             req.SubjectType = subjectType;
             req.SubjectRelation = subjectRelation;
-            req.ObjectId = objKey;
+            req.ObjectId = objId;
             req.ObjectType = objType;
             req.WithObjects = withObjects;
             req.Relation = relationName;
@@ -210,12 +210,12 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<CheckPermissionResponse> CheckPermissionAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string permissionName = "", bool trace = false)
+        public async Task<CheckPermissionResponse> CheckPermissionAsync(string subjectId = "", string subjectType = "", string objId = "", string objType = "", string permissionName = "", bool trace = false)
         {
             var req = new CheckPermissionRequest();
-            req.SubjectId = subjectKey;
+            req.SubjectId = subjectId;
             req.SubjectType = subjectType;
-            req.ObjectId = objKey;
+            req.ObjectId = objId;
             req.ObjectType = objType;
             req.Permission = permissionName;
             req.Trace = trace;
@@ -225,12 +225,12 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<CheckRelationResponse> CheckRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", bool trace = false)
+        public async Task<CheckRelationResponse> CheckRelationAsync(string subjectId = "", string subjectType = "", string objId = "", string objType = "", string relationName = "", bool trace = false)
         {
             var req = new CheckRelationRequest();
-            req.SubjectId = subjectKey;
+            req.SubjectId = subjectId;
             req.SubjectType = subjectType;
-            req.ObjectId = objKey;
+            req.ObjectId = objId;
             req.ObjectType = objType;
             req.Relation = relationName;
             req.Trace = trace;
@@ -255,10 +255,10 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<SetObjectResponse> SetObjectAsync(string key, string type, string displayName = "", Struct properties = null, string hash = "")
+        public async Task<SetObjectResponse> SetObjectAsync(string id, string type, string displayName = "", Struct properties = null, string hash = "")
         {
             var req = new SetObjectRequest();
-            req.Object.Id = key;
+            req.Object.Id = id;
             req.Object.Type = type;
             req.Object.DisplayName = displayName;
             req.Object.Properties = properties;
@@ -270,10 +270,10 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<DeleteObjectResponse> DeleteObjectAsync(string key, string type, bool withRelations = false)
+        public async Task<DeleteObjectResponse> DeleteObjectAsync(string id, string type, bool withRelations = false)
         {
             var req = new DeleteObjectRequest();
-            req.ObjectId = key;
+            req.ObjectId = id;
             req.ObjectType = type;
             req.WithRelations = withRelations;
             var result = await this.writerClient.DeleteObjectAsync(req);
@@ -282,14 +282,14 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<SetRelationResponse> SetRelationAsync(string subjectKey, string subjectType, string subjectRelation, string objKey, string objType, string relationName, string hash = "")
+        public async Task<SetRelationResponse> SetRelationAsync(string subjectId, string subjectType, string subjectRelation, string objId, string objType, string relationName, string hash = "")
         {
             var req = new SetRelationRequest();
             req.Relation = new Relation();
-            req.Relation.SubjectId = subjectKey;
+            req.Relation.SubjectId = subjectId;
             req.Relation.SubjectType = subjectType;
             req.Relation.SubjectRelation = subjectRelation;
-            req.Relation.ObjectId = objKey;
+            req.Relation.ObjectId = objId;
             req.Relation.ObjectType = objType;
             req.Relation.Relation_ = relationName;
             var result = await this.writerClient.SetRelationAsync(req);
@@ -298,14 +298,14 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<DeleteRelationResponse> DeleteRelationAsync(string subjectKey = "", string subjectType = "", string subjectRelation = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "")
+        public async Task<DeleteRelationResponse> DeleteRelationAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "")
         {
             var req = new DeleteRelationRequest();
             req.Relation = relationName;
-            req.SubjectId = subjectKey;
+            req.SubjectId = subjectId;
             req.SubjectType = subjectType;
             req.SubjectRelation = subjectRelation;
-            req.ObjectId = objKey;
+            req.ObjectId = objId;
             req.ObjectType = objType;
             var result = await this.writerClient.DeleteRelationAsync(req);
 
