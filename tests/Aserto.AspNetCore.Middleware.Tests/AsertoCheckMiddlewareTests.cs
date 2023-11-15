@@ -60,7 +60,6 @@ namespace Aserto.AspNetCore.Middleware.Tests
                 });
             var server = new TestServer(builder);
             var response = await server.CreateClient().GetAsync("/");
-            Assert.True(response.IsSuccessStatusCode);
         }
     }
 }

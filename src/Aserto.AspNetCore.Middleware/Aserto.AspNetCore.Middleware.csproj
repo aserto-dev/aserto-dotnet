@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.5" />
     <PackageReference Include="Google.Protobuf" Version="3.25.0-rc2" />
     <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
@@ -47,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\dotnet-authorizer\src\Aserto.Authorizer.V2.Client.Grpc\Aserto.Authorizer.V2.Client.Grpc.csproj" />
     <ProjectReference Include="..\..\..\dotnet-directory\src\Aserto.Directory.V3.Client.Grpc\Aserto.Directory.Client.Grpc.csproj" />
   </ItemGroup>
 </Project>
