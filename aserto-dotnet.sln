@@ -43,6 +43,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.NETCore3.Auth0", "ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.MVC.Auth0", "examples\Auth0\Aserto.MVC.Auth0\Aserto.MVC.Auth0.csproj", "{31B35FAF-C70E-42B7-B287-E7043A73C6EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryClientExampleCLI", "DirectoryClientExampleCLI\DirectoryClientExampleCLI.csproj", "{C163C6F1-95E0-4141-9708-B472A460503B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31B35FAF-C70E-42B7-B287-E7043A73C6EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C163C6F1-95E0-4141-9708-B472A460503B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C163C6F1-95E0-4141-9708-B472A460503B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C163C6F1-95E0-4141-9708-B472A460503B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C163C6F1-95E0-4141-9708-B472A460503B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{9717A88D-6516-4AEC-AEF5-1903C6D245C8} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
 		{E003A358-73F4-48C9-A903-A8962E223D90} = {9717A88D-6516-4AEC-AEF5-1903C6D245C8}
 		{31B35FAF-C70E-42B7-B287-E7043A73C6EE} = {9717A88D-6516-4AEC-AEF5-1903C6D245C8}
+		{C163C6F1-95E0-4141-9708-B472A460503B} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE6E7731-2793-4C3B-BC1D-EBD18DC3F967}
