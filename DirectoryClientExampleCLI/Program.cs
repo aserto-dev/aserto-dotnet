@@ -32,21 +32,14 @@ var client = new DirectoryAPIClient(opt, logggerFactory);
 
 var result = await client.GetObjectsAsync("user", 1);
 
+Console.WriteLine(result.ToString());
+
 var request = new GetManifestRequest();
 
-var manifestget = client.GetManifest(request);
+var manifestget = await client.GetManifest(request);
+var manifestBytes = new byte[manifestget.Body.Data.Length];
+manifestget.Body.Data.CopyTo(manifestBytes,0);
 
-while (await manifestget.ResponseStream.MoveNext())
-{
-    Console.WriteLine(manifestget.ResponseStream.Current);
+Console.WriteLine(System.Text.Encoding.UTF8.GetString(manifestBytes));
 
-    if (manifestget.ResponseStream.Current.Body != null)
-    {
-        var data = new byte[manifestget.ResponseStream.Current.Body.Data.Length];
-        manifestget.ResponseStream.Current.Body.Data.CopyTo(data, 0);
-        Console.WriteLine(System.Text.Encoding.UTF8.GetString(data));
-    }    
-}
-
-Console.WriteLine(result.ToString());
 Console.WriteLine("Done!");

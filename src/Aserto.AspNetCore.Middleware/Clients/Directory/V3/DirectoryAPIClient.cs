@@ -317,9 +317,29 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="request">Get manifest request parameter.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
-        public AsyncServerStreamingCall<GetManifestResponse> GetManifest(GetManifestRequest request)
+        public async Task<GetManifestResponse> GetManifest(GetManifestRequest request)
         {
-            return this.modelClient.GetManifest(request);
+            var response = new GetManifestResponse();
+            var stream = this.modelClient.GetManifest(request);
+            while (await stream.ResponseStream.MoveNext())
+            {
+                if (stream.ResponseStream.Current.Metadata != null)
+                {
+                    response.Metadata = stream.ResponseStream.Current.Metadata;
+                }
+
+                if (stream.ResponseStream.Current.Body != null)
+                {
+                    response.Body = stream.ResponseStream.Current.Body;
+                }
+
+                if (stream.ResponseStream.Current.Model != null)
+                {
+                    response.Model = stream.ResponseStream.Current.Model;
+                }
+            }
+
+            return response;
         }
 
         /// <summary>
