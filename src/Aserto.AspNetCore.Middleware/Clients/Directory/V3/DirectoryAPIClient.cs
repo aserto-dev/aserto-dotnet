@@ -320,6 +320,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         public async Task<GetManifestResponse> GetManifest(GetManifestRequest request)
         {
             var response = new GetManifestResponse();
+
             var stream = this.modelClient.GetManifest(request);
             while (await stream.ResponseStream.MoveNext())
             {
@@ -330,12 +331,19 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
 
                 if (stream.ResponseStream.Current.Body != null)
                 {
-                    response.Body = stream.ResponseStream.Current.Body;
+                    if (response.Body == null)
+                    {
+                        response.Body = stream.ResponseStream.Current.Body;
+                    }
+                    else
+                    {
+                        response.Body.MergeFrom(stream.ResponseStream.Current.Body);
+                    }
                 }
 
                 if (stream.ResponseStream.Current.Model != null)
                 {
-                    response.Model = stream.ResponseStream.Current.Model;
+                    response.Model.MergeFrom(stream.ResponseStream.Current.Model);
                 }
             }
 
@@ -345,8 +353,20 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <summary>
         /// Sets a directory manifest.
         /// </summary>
+        /// <param name="request">The set manifest request.</param>
         /// <returns>Returns an async streaming call to set the manifest.</returns>
-        public AsyncClientStreamingCall<SetManifestRequest, SetManifestResponse> SetManifest() => this.modelClient.SetManifest();
+        public async Task<SetManifestResponse> SetManifest(SetManifestRequest request)
+        {
+            var response = new SetManifestResponse();
+
+            var stream = this.modelClient.SetManifest();
+            await stream.RequestStream.WriteAsync(request);
+            await stream.RequestStream.CompleteAsync();
+            var responseTask = await stream.ResponseAsync;
+
+            responseTask.MergeFrom(response);
+            return response;
+        }
 
         /// <summary>
         /// Delete the directory manifest.

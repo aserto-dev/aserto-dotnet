@@ -42,4 +42,12 @@ manifestget.Body.Data.CopyTo(manifestBytes,0);
 
 Console.WriteLine(System.Text.Encoding.UTF8.GetString(manifestBytes));
 
+// Example of set manifest call 
+//byte[] manifestContent = File.ReadAllBytes("<path to your manifest file>");
+
+//var setRequest = new SetManifestRequest();
+//setRequest.Body = new Body();
+//setRequest.Body.Data = ByteString.CopyFrom(manifestContent);
+//var manifestSet = await client.SetManifest(setRequest);
+
 Console.WriteLine("Done!");
