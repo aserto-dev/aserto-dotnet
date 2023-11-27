@@ -156,5 +156,40 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <param name="relationName">The name of the relation type.</param>
         /// <returns>A DeleteRelationResponse object.</returns>
         Task<DeleteRelationResponse> DeleteRelationAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "");
+
+        /// <summary>
+        /// Get the directory manifest.
+        /// </summary>
+        /// <param name="request">Get manifest request.</param>
+        /// <returns>A GetManifestResponse object.</returns>
+        Task<GetManifestResponse> GetManifest(GetManifestRequest request);
+
+        /// <summary>
+        /// Set the directory manifest.
+        /// </summary>
+        /// <param name="request">Set Manifest request.</param>
+        /// <returns>A SetManifestResponse object.</returns>
+        Task<SetManifestResponse> SetManifest(SetManifestRequest request);
+
+        /// <summary>
+        /// Delete the directory manifest.
+        /// </summary>
+        /// <param name="request">A DeleteManifest request object.</param>
+        /// <returns>A DeleteManifestResponse object.</returns>
+        Task<DeleteManifestResponse> DeleteManifest(DeleteManifestRequest request);
+
+        /// <summary>
+        /// Import data into the directory.
+        /// </summary>
+        /// <param name="request">An ImportRequest object.</param>
+        /// <returns>An ImportResponse object.</returns>
+        IAsyncEnumerable<ImportResponse> Import(ImportRequest request);
+
+        /// <summary>
+        /// Export data from the directory.
+        /// </summary>
+        /// <param name="request">An ExportRequest object.</param>
+        /// <returns>An ExportResponse object.</returns>
+        IAsyncEnumerable<ExportResponse> Export(ExportRequest request);
     }
 }

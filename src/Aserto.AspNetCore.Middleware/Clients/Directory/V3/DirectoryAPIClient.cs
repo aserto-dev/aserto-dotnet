@@ -382,14 +382,35 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <summary>
         /// Imports data into a directory.
         /// </summary>
-        /// <returns>Returns an async dublex streaming call to import data.</returns>
-        public AsyncDuplexStreamingCall<ImportRequest, ImportResponse> Import() => this.importerClient.Import();
+        /// <param name="request">The import data request.</param>
+        /// <returns>Returns an async enumerable of import response data.</returns>
+        public async IAsyncEnumerable<ImportResponse> Import(ImportRequest request)
+        {
+            var duplex = this.importerClient.Import();
+
+            await duplex.RequestStream.WriteAsync(request);
+            await duplex.RequestStream.CompleteAsync();
+
+            var results = duplex.ResponseStream.ReadAllAsync();
+            await foreach (var response in results)
+            {
+                yield return response;
+            }
+        }
 
         /// <summary>
         /// Exports data from a directory.
         /// </summary>
         /// <param name="request">Export request parameter.</param>
         /// <returns>Returns an async streaming call to export data.</returns>
-        public AsyncServerStreamingCall<ExportResponse> Export(ExportRequest request) => this.exporterClient.Export(request);
+        public async IAsyncEnumerable<ExportResponse> Export(ExportRequest request)
+        {
+           var stream = this.exporterClient.Export(request);
+           while (await stream.ResponseStream.MoveNext())
+           {
+                var response = stream.ResponseStream.Current;
+                yield return response;
+            }
+        }
     }
 }

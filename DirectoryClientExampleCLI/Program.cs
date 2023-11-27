@@ -2,6 +2,8 @@
 
 using Aserto.AspNetCore.Middleware.Clients.Directory.V3;
 using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Directory.Exporter.V3;
+using Aserto.Directory.Importer.V3;
 using Aserto.Directory.Model.V3;
 using Aserto.Directory.Reader.V3;
 using Google.Protobuf;
@@ -9,6 +11,8 @@ using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Buffers.Text;
+using System.Linq.Expressions;
+using System.Numerics;
 
 var logggerFactory = new NullLoggerFactory();
 
@@ -30,10 +34,12 @@ var opt = Microsoft.Extensions.Options.Options.Create(options);
 
 var client = new DirectoryAPIClient(opt, logggerFactory);
 
+// Example get objects async call
 var result = await client.GetObjectsAsync("user", 1);
 
 Console.WriteLine(result.ToString());
 
+// Example of get manifest request
 var request = new GetManifestRequest();
 
 var manifestget = await client.GetManifest(request);
@@ -49,5 +55,23 @@ Console.WriteLine(System.Text.Encoding.UTF8.GetString(manifestBytes));
 //setRequest.Body = new Body();
 //setRequest.Body.Data = ByteString.CopyFrom(manifestContent);
 //var manifestSet = await client.SetManifest(setRequest);
+
+// Example of import object
+var importRequest = new ImportRequest();
+importRequest.Object = new Aserto.Directory.Common.V3.Object() { Id = "testImport", DisplayName = "testImport", Type="user" };
+
+var importResponse = client.Import(importRequest);
+await foreach (var item in importResponse)
+{
+    Console.WriteLine(item.Object.ToString());
+}
+
+// Example of export all data
+var exportRequest = new ExportRequest();
+exportRequest.Options = ((uint)Aserto.Directory.Exporter.V3.Option.Data) ;
+var exportResponse = client.Export(exportRequest);
+await foreach(var item in exportResponse){
+    Console.WriteLine(item.Object.ToString());
+}
 
 Console.WriteLine("Done!");
