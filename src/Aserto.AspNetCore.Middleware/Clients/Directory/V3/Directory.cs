@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------
-// <copyright file="DirectoryAPIClient.cs" company="Aserto Inc">
+// <copyright file="Directory.cs" company="Aserto Inc">
 // Copyright (c) Aserto Inc. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
     /// <summary>
     /// Client for Aserto Directory API.
     /// </summary>
-    public class DirectoryAPIClient : IDirectoryAPIClient
+    public class Directory : IDirectory
     {
         private readonly ReaderClient readerClient;
         private readonly WriterClient writerClient;
@@ -47,13 +47,13 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DirectoryAPIClient"/> class.
+        /// Initializes a new instance of the <see cref="Directory"/> class.
         /// </summary>
         /// <param name="options">Authorizer API Client options <see cref="AsertoDirectoryOptions"/>.</param>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> for this class.</param>
-        public DirectoryAPIClient(IOptions<AsertoDirectoryOptions> options, ILoggerFactory loggerFactory)
+        public Directory(IOptions<AsertoDirectoryOptions> options, ILoggerFactory loggerFactory)
         {
-            this.logger = loggerFactory.CreateLogger<DirectoryAPIClient>();
+            this.logger = loggerFactory.CreateLogger<Directory>();
 
             if (options != null)
             {
@@ -100,10 +100,10 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <summary>
         /// Creates an <see cref="Object"/> use for the directory calls.
         /// </summary>
-        /// <param name="id">The id of the object.</param>
         /// <param name="type">The type of the object.</param>
+        /// <param name="id">The id of the object.</param>
         /// <returns>A new <see cref="Object"/>.</returns>
-        public static Object BuildObject(string id, string type)
+        public static Object BuildObject(string type, string id)
         {
             var obj = new Object();
             obj.Id = id;
@@ -115,14 +115,14 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <summary>
         /// Creates an <see cref="Relation"/> use for the directory calls.
         /// </summary>
-        /// <param name="subjectId">The ID of the subject of the relation.</param>
-        /// <param name="subjectType">The type of the subject of the relation.</param>
-        /// <param name="objectId">The ID of the object of the relation.</param>
         /// <param name="objectType">The type of the object of the relation.</param>
+        /// <param name="objectId">The ID of the object of the relation.</param>
         /// <param name="relationName">The type name of the relation.</param>
+        /// <param name="subjectType">The type of the subject of the relation.</param>
+        /// <param name="subjectId">The ID of the subject of the relation.</param>
         /// <param name="subjectRelation">Optional: The relation of the subject of the relation.</param>
         /// <returns>A new <see cref="Relation"/>.</returns>
-        public static Relation BuildRelation(string subjectId, string subjectType, string objectId, string objectType, string relationName, string subjectRelation = "")
+        public static Relation BuildRelation(string objectType, string objectId, string relationName, string subjectType, string subjectId, string subjectRelation = "")
         {
             var relation = new Relation();
             relation.SubjectId = subjectId;
@@ -151,19 +151,19 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<GetObjectResponse> GetObjectAsync(string id, string type, bool withRelation = false)
+        public async Task<GetObjectResponse> GetObjectAsync(string type, string id, bool withRelations = false)
         {
             var req = new GetObjectRequest();
             req.ObjectId = id;
             req.ObjectType = type;
-            req.WithRelations = withRelation;
+            req.WithRelations = withRelations;
             var result = await this.readerClient.GetObjectAsync(req);
 
             return result;
         }
 
         /// <inheritdoc/>
-        public async Task<GetObjectsResponse> GetObjectsAsync(string type, int pageSize, string pageToken = "")
+        public async Task<GetObjectsResponse> GetObjectsAsync(string type, int pageSize = 50, string pageToken = "")
         {
             var req = new GetObjectsRequest();
             var page = BuildPaginationRequest(pageSize, pageToken);
@@ -175,7 +175,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<GetRelationResponse> GetRelationAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "", bool withObjects = false)
+        public async Task<GetRelationResponse> GetRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", string subjectRelation = "", bool withObjects = false)
         {
             var req = new GetRelationRequest();
             req.SubjectId = subjectId;
@@ -192,7 +192,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<GetRelationsResponse> GetRelationsAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "", bool withObjects = false, int pageSize = 0, string pageToken = "")
+        public async Task<GetRelationsResponse> GetRelationsAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", string subjectRelation = "", bool withObjects = false, int pageSize = 50, string pageToken = "")
         {
             var page = BuildPaginationRequest(pageSize, pageToken);
             var req = new GetRelationsRequest();
@@ -210,7 +210,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<CheckPermissionResponse> CheckPermissionAsync(string subjectId = "", string subjectType = "", string objId = "", string objType = "", string permissionName = "", bool trace = false)
+        public async Task<CheckPermissionResponse> CheckPermissionAsync(string objType = "", string objId = "", string permissionName = "", string subjectType = "", string subjectId = "", bool trace = false)
         {
             var req = new CheckPermissionRequest();
             req.SubjectId = subjectId;
@@ -225,7 +225,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<CheckRelationResponse> CheckRelationAsync(string subjectId = "", string subjectType = "", string objId = "", string objType = "", string relationName = "", bool trace = false)
+        public async Task<CheckRelationResponse> CheckRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", bool trace = false)
         {
             var req = new CheckRelationRequest();
             req.SubjectId = subjectId;
@@ -240,7 +240,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<CheckResponse> Check(string subjectId = "", string subjectType = "", string relation = "", string objId = "", string objType = "", bool trace = false)
+        public async Task<CheckResponse> CheckAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", bool trace = false)
         {
             var req = new CheckRequest();
             req.SubjectId = subjectId;
@@ -248,14 +248,14 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.ObjectId = objId;
             req.ObjectType = objType;
             req.Trace = trace;
-            req.Relation = relation;
+            req.Relation = relationName;
 
             var result = await this.readerClient.CheckAsync(req);
             return result;
         }
 
         /// <inheritdoc/>
-        public async Task<SetObjectResponse> SetObjectAsync(string id, string type, string displayName = "", Struct properties = null, string hash = "")
+        public async Task<SetObjectResponse> SetObjectAsync(string type, string id, string displayName = "", Struct properties = null, string hash = "")
         {
             var req = new SetObjectRequest();
             req.Object.Id = id;
@@ -270,7 +270,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<DeleteObjectResponse> DeleteObjectAsync(string id, string type, bool withRelations = false)
+        public async Task<DeleteObjectResponse> DeleteObjectAsync(string type, string id, bool withRelations = false)
         {
             var req = new DeleteObjectRequest();
             req.ObjectId = id;
@@ -282,7 +282,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<SetRelationResponse> SetRelationAsync(string subjectId, string subjectType, string subjectRelation, string objId, string objType, string relationName, string hash = "")
+        public async Task<SetRelationResponse> SetRelationAsync(string objType, string objId, string relationName, string subjectType, string subjectId, string subjectRelation, string hash = "")
         {
             var req = new SetRelationRequest();
             req.Relation = new Relation();
@@ -298,7 +298,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
-        public async Task<DeleteRelationResponse> DeleteRelationAsync(string subjectId = "", string subjectType = "", string subjectRelation = "", string objId = "", string objType = "", string relationName = "")
+        public async Task<DeleteRelationResponse> DeleteRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", string subjectRelation = "")
         {
             var req = new DeleteRelationRequest();
             req.Relation = relationName;
@@ -317,7 +317,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="request">Get manifest request parameter.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
-        public async Task<GetManifestResponse> GetManifest(GetManifestRequest request)
+        public async Task<GetManifestResponse> GetManifestAsync(GetManifestRequest request)
         {
             var response = new GetManifestResponse();
 
@@ -355,7 +355,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="request">The set manifest request.</param>
         /// <returns>Returns an async streaming call to set the manifest.</returns>
-        public async Task<SetManifestResponse> SetManifest(SetManifestRequest request)
+        public async Task<SetManifestResponse> SetManifestAsync(SetManifestRequest request)
         {
             var response = new SetManifestResponse();
 
@@ -373,7 +373,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="request">The delete manifest request.</param>
         /// <returns>Deletes the directory manifest.</returns>
-        public async Task<DeleteManifestResponse> DeleteManifest(DeleteManifestRequest request)
+        public async Task<DeleteManifestResponse> DeleteManifestAsync(DeleteManifestRequest request)
         {
             var result = await this.modelClient.DeleteManifestAsync(request);
             return result;
@@ -384,7 +384,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="request">The import data request.</param>
         /// <returns>Returns an async enumerable of import response data.</returns>
-        public async IAsyncEnumerable<ImportResponse> Import(ImportRequest request)
+        public async IAsyncEnumerable<ImportResponse> ImportAsync(ImportRequest request)
         {
             var duplex = this.importerClient.Import();
 
@@ -403,7 +403,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="request">Export request parameter.</param>
         /// <returns>Returns an async streaming call to export data.</returns>
-        public async IAsyncEnumerable<ExportResponse> Export(ExportRequest request)
+        public async IAsyncEnumerable<ExportResponse> ExportAsync(ExportRequest request)
         {
            var stream = this.exporterClient.Export(request);
            while (await stream.ResponseStream.MoveNext())

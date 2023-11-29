@@ -18,7 +18,7 @@ var logggerFactory = new NullLoggerFactory();
 
 
 var builder = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
+               .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json", optional: false);
 
 IConfiguration config = builder.Build();
@@ -32,7 +32,7 @@ AsertoDirectoryOptions options = new AsertoDirectoryOptions(serviceURL, apikey, 
 
 var opt = Microsoft.Extensions.Options.Options.Create(options);
 
-var client = new DirectoryAPIClient(opt, logggerFactory);
+var client = new Aserto.AspNetCore.Middleware.Clients.Directory.V3.Directory(opt, logggerFactory);
 
 // Example get objects async call
 var result = await client.GetObjectsAsync("user", 1);
@@ -42,7 +42,7 @@ Console.WriteLine(result.ToString());
 // Example of get manifest request
 var request = new GetManifestRequest();
 
-var manifestget = await client.GetManifest(request);
+var manifestget = await client.GetManifestAsync(request);
 var manifestBytes = new byte[manifestget.Body.Data.Length];
 manifestget.Body.Data.CopyTo(manifestBytes,0);
 
@@ -54,13 +54,13 @@ Console.WriteLine(System.Text.Encoding.UTF8.GetString(manifestBytes));
 //var setRequest = new SetManifestRequest();
 //setRequest.Body = new Body();
 //setRequest.Body.Data = ByteString.CopyFrom(manifestContent);
-//var manifestSet = await client.SetManifest(setRequest);
+//var manifestSet = await client.SetManifestAsync(setRequest);
 
 // Example of import object
 var importRequest = new ImportRequest();
 importRequest.Object = new Aserto.Directory.Common.V3.Object() { Id = "testImport", DisplayName = "testImport", Type="user" };
 
-var importResponse = client.Import(importRequest);
+var importResponse = client.ImportAsync(importRequest);
 await foreach (var item in importResponse)
 {
     Console.WriteLine(item.Object.ToString());
@@ -69,7 +69,7 @@ await foreach (var item in importResponse)
 // Example of export all data
 var exportRequest = new ExportRequest();
 exportRequest.Options = ((uint)Aserto.Directory.Exporter.V3.Option.Data) ;
-var exportResponse = client.Export(exportRequest);
+var exportResponse = client.ExportAsync(exportRequest);
 await foreach(var item in exportResponse){
     Console.WriteLine(item.Object.ToString());
 }
