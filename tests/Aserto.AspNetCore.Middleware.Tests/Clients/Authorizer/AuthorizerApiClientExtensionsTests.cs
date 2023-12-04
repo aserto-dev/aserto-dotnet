@@ -1,7 +1,6 @@
-﻿using Aserto.API.V1;
-using Aserto.AspNetCore.Middleware.Clients;
+﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.Authorizer;
+using Aserto.Authorizer.V2.API;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -12,7 +11,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using Xunit;
-using static Aserto.Authorizer.Authorizer.V1.Authorizer;
+using static Aserto.Authorizer.V2.Authorizer;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {
@@ -204,19 +203,18 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         }
 
         [Theory]
-        [InlineData("tp", "GET", "/", "tp.GET")]
-        [InlineData("tp", "GET", "", "tp.GET")]
-        [InlineData("tp", "POST", "", "tp.POST")]
-        [InlineData("tp", "PUT", "", "tp.PUT")]
-        [InlineData("tp", "DELETE", "", "tp.DELETE")]
-        [InlineData("t", "GET", "/", "t.GET")]
-        [InlineData("tp", "GET", "/foo", "tp.GET.foo")]
-        [InlineData("tp", "GET", "/foo/", "tp.GET.foo")]
-        [InlineData("tp", "GET", "/foo/bar", "tp.GET.foo.bar")]
-        [InlineData("tp", "GET", "/foo/bar/", "tp.GET.foo.bar")]
-        [InlineData("tp", "POST", "/foo/bar/", "tp.POST.foo.bar")]
-        [InlineData("tp", "DELETE", "/foo/bar/", "tp.DELETE.foo.bar")]
-        public void PolicyPathBuilds(string policyRoot, string method, string path, string expected)
+        [InlineData("polroot","GET", "/", "polroot.GET")]
+        [InlineData("polroot", "GET", "", "polroot.GET")]
+        [InlineData("polroot", "POST", "", "polroot.POST")]
+        [InlineData("polroot", "PUT", "", "polroot.PUT")]
+        [InlineData("polroot", "DELETE", "", "polroot.DELETE")]
+        [InlineData("polroot", "GET", "/foo", "polroot.GET.foo")]
+        [InlineData("polroot", "GET", "/foo/", "polroot.GET.foo")]
+        [InlineData("polroot", "GET", "/foo/bar", "polroot.GET.foo.bar")]
+        [InlineData("polroot", "GET", "/foo/bar/", "polroot.GET.foo.bar")]
+        [InlineData("polroot", "POST", "/foo/bar/", "polroot.POST.foo.bar")]
+        [InlineData("polroot", "DELETE", "/foo/bar/", "polroot.DELETE.foo.bar")]
+        public void PolicyPathBuilds(string policyRoot,string method, string path, string expected)
         {
             this.mockRequest.SetupGet(r => r.Path).Returns(path);
             this.mockRequest.SetupGet(r => r.Method).Returns(method);

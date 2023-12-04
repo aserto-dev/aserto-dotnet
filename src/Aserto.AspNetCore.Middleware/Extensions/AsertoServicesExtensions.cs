@@ -12,6 +12,7 @@ namespace Aserto.AspNetCore.Middleware.Extensions
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.AspNetCore.Middleware.Policies;
+    using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
@@ -42,6 +43,47 @@ namespace Aserto.AspNetCore.Middleware.Extensions
             }
 
             services.AddOptions<AsertoOptions>().Configure(configure).Validate(AsertoOptions.Validate);
+            services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.TryAddSingleton<IAuthorizationHandler, AsertoAuthorizationHandler>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds services and options for the Aserto authorization middleware.
+        /// </summary>
+        /// <param name="services">/>The <see cref="IServiceCollection"/> for adding services.</param>
+        /// <param name="checkOptions">An action delegate to configure the provided Check Options.</param>
+        /// <returns>The original <see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddAsertoCheckAuthorization(this IServiceCollection services, CheckOptions checkOptions)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (checkOptions == null)
+            {
+                throw new ArgumentNullException(nameof(checkOptions));
+            }
+
+            services.AddOptions<CheckOptions>().Configure(check => { check.ResourceMappingRules = checkOptions.ResourceMappingRules; });
+            services.AddOptions<AsertoOptions>().Configure(aserto =>
+            {
+                aserto.AuthorizerApiKey = checkOptions.BaseOptions.AuthorizerApiKey;
+                aserto.PolicyPathMapper = checkOptions.BaseOptions.PolicyPathMapper;
+                aserto.Insecure = checkOptions.BaseOptions.Insecure;
+                aserto.IdentityMapper = checkOptions.BaseOptions.IdentityMapper;
+                aserto.ResourceMapper = checkOptions.BaseOptions.ResourceMapper;
+                aserto.Decision = checkOptions.BaseOptions.Decision;
+                aserto.Enabled = checkOptions.BaseOptions.Enabled;
+                aserto.PolicyInstanceLabel = checkOptions.BaseOptions.PolicyInstanceLabel;
+                aserto.PolicyName = checkOptions.BaseOptions.PolicyName;
+                aserto.PolicyRoot = checkOptions.BaseOptions.PolicyRoot;
+                aserto.ServiceUrl = checkOptions.BaseOptions.ServiceUrl;
+                aserto.TenantID = checkOptions.BaseOptions.TenantID;
+            });
             services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

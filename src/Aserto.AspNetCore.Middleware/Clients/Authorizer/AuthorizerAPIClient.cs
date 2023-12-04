@@ -8,21 +8,20 @@ namespace Aserto.AspNetCore.Middleware.Clients
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Security.Claims;
-    using System.Security.Principal;
-    using System.Text;
     using System.Threading.Tasks;
-    using Aserto.API;
-    using Aserto.API.V1;
     using Aserto.AspNetCore.Middleware.Options;
-    using Aserto.Authorizer.Authorizer.V1;
+    using Aserto.Authorizer.V2;
+    using Aserto.Authorizer.V2.API;
     using Google.Protobuf.WellKnownTypes;
+    using Grpc.Core;
+    using Grpc.Core.Interceptors;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Logging.Abstractions;
     using Microsoft.Extensions.Options;
-    using static Aserto.Authorizer.Authorizer.V1.Authorizer;
+    using static Aserto.Authorizer.V2.Authorizer;
 
     /// <summary>
     /// Client for Aserto Authorizer API.
@@ -30,13 +29,14 @@ namespace Aserto.AspNetCore.Middleware.Clients
     public class AuthorizerAPIClient : IAuthorizerAPIClient
     {
         private readonly AuthorizerClient authorizerClient;
-        private readonly Grpc.Core.Metadata metaData;
         private readonly AsertoOptions options;
+        private readonly string decision;
+        private readonly ILogger logger;
+        private readonly string policyName;
+        private readonly string policyInstanceLabel;
         private readonly string policyRoot;
-        private ILogger logger;
-        private string decision;
-        private string policyID;
-        private Func<string, HttpRequest, string> policyPathMapper;
+        private readonly Func<string, HttpRequest, string> policyPathMapper;
+        private readonly Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> identityMapper;
         private Func<string, HttpRequest, Struct> resourceMapper;
 
         /// <summary>
@@ -50,6 +50,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             this.logger = loggerFactory.CreateLogger<AuthorizerAPIClient>();
 
             this.options = options.Value;
+
             if (authorizerClient != null)
             {
                 this.authorizerClient = authorizerClient;
@@ -57,22 +58,38 @@ namespace Aserto.AspNetCore.Middleware.Clients
             else
             {
                 this.authorizerClient = null;
+
+                var grpcChannelOptions = new GrpcChannelOptions { };
+
+                if (this.options.Insecure)
+                {
+                    var httpHandler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                    };
+
+                    grpcChannelOptions = new GrpcChannelOptions { HttpHandler = httpHandler };
+                }
+
+                var interceptor = new HeaderInterceptor(this.options.AuthorizerApiKey, this.options.TenantID);
+
                 var channel = GrpcChannel.ForAddress(
                     this.options.ServiceUrl,
-                    new GrpcChannelOptions { });
+                    grpcChannelOptions);
 
-                this.authorizerClient = new AuthorizerClient(channel);
+                var invoker = channel.Intercept(interceptor);
+
+                this.authorizerClient = new AuthorizerClient(invoker);
             }
 
-            this.metaData = new Grpc.Core.Metadata();
-            this.metaData.Add("Aserto-Tenant-Id", $"{this.options.TenantID}");
-            this.metaData.Add("Authorization", $"basic {this.options.AuthorizerApiKey}");
-
             this.decision = this.options.Decision;
-            this.policyID = this.options.PolicyID;
-            this.policyRoot = this.options.PolicyRoot;
+            this.policyName = this.options.PolicyName;
+            this.policyInstanceLabel = this.options.PolicyInstanceLabel;
             this.policyPathMapper = this.options.PolicyPathMapper;
             this.resourceMapper = this.options.ResourceMapper;
+            this.identityMapper = this.options.IdentityMapper;
+            this.policyRoot = this.options.PolicyRoot;
         }
 
         /// <inheritdoc/>
@@ -82,9 +99,15 @@ namespace Aserto.AspNetCore.Middleware.Clients
         }
 
         /// <inheritdoc/>
-        public string PolicyID
+        public string PolicyName
         {
-            get { return this.policyID; }
+            get { return this.policyName; }
+        }
+
+        /// <inheritdoc/>
+        public string PolicyInstanceLabel
+        {
+            get { return this.policyInstanceLabel; }
         }
 
         /// <inheritdoc/>
@@ -103,6 +126,13 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public Func<string, HttpRequest, Struct> ResourceMapper
         {
             get { return this.resourceMapper; }
+            set { this.resourceMapper = value; }
+        }
+
+        /// <inheritdoc/>
+        public Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> IdentityMapper
+        {
+            get { return this.identityMapper; }
         }
 
         /// <inheritdoc/>
@@ -124,7 +154,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             this.logger.LogDebug($"Policy Context path resolved to: {isRequest.PolicyContext.Path}");
             this.logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
-            var result = await this.authorizerClient.IsAsync(isRequest, this.metaData);
+            var result = await this.authorizerClient.IsAsync(isRequest);
 
             if (result.Decisions.Count == 0)
             {

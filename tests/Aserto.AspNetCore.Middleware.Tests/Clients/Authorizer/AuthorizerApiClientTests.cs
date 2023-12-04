@@ -1,6 +1,6 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.Authorizer.V1;
+using Aserto.Authorizer.V2;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using Grpc.Core.Testing;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using static Aserto.Authorizer.Authorizer.V1.Authorizer;
+using static Aserto.Authorizer.V2.Authorizer;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {
@@ -99,6 +99,36 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var isAsync = await authorizerAPIClient.IsAsync(isRequest);
 
             Assert.True(isAsync);
+        }
+
+        [Fact]
+        public void AllowInsecure()
+        {
+            // var mockClient = new Moq.Mock<AuthorizerClient>();
+            var mockClaimsPrinipal = new Moq.Mock<ClaimsPrincipal>();
+            var mockRequest = new Moq.Mock<HttpRequest>();
+
+            var asertoOptions = new AsertoOptions();
+            asertoOptions.Insecure = true;
+
+            var options = Microsoft.Extensions.Options.Options.Create(asertoOptions);
+            var logggerFactory = new NullLoggerFactory();
+
+            var isResponse = new IsResponse();
+            isResponse.Decisions.Add(new Decision() { Is = true });
+
+            mockClaimsPrinipal.SetupGet(cp => cp.Identity.AuthenticationType).Returns(() => null);
+            mockRequest.SetupGet(r => r.Path).Returns("/foo");
+            mockRequest.SetupGet(r => r.Method).Returns("GET");
+
+            var fakecall = TestCalls.AsyncUnaryCall<IsResponse>(Task.FromResult(isResponse),
+                Task.FromResult(new Metadata()),
+                () => Status.DefaultSuccess,
+                () => new Metadata(), () => { });
+
+            var authorizerAPIClient = new AuthorizerAPIClient(options, logggerFactory);
+
+            Assert.NotNull(authorizerAPIClient);
         }
     }
 }

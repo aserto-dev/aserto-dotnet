@@ -9,8 +9,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System;
     using System.Collections.Generic;
     using System.Security.Claims;
-    using Aserto.API.V1;
-    using Aserto.Authorizer.Authorizer.V1;
+    using Aserto.Authorizer.V2;
+    using Aserto.Authorizer.V2.API;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
@@ -53,12 +53,31 @@ namespace Aserto.AspNetCore.Middleware.Clients
             var isRequest = new IsRequest();
             var policyContext = new PolicyContext();
 
-            var identityContext = BuildIdentityContext(identity, supportedClaimTypes);
+            var identityContext = new IdentityContext();
+            if (client.IdentityMapper == null)
+            {
+                identityContext = BuildIdentityContext(identity, supportedClaimTypes);
+            }
+            else
+            {
+                identityContext = client.IdentityMapper(identity, supportedClaimTypes);
+            }
 
             var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
             policyContext.Path = policyPath;
-            policyContext.Id = client.PolicyID;
+
             policyContext.Decisions.Add(client.Decision);
+
+            if (!string.IsNullOrEmpty(client.PolicyName) || !string.IsNullOrEmpty(client.PolicyInstanceLabel))
+            {
+                var policyInstance = new PolicyInstance
+                {
+                    InstanceLabel = client.PolicyInstanceLabel,
+                    Name = client.PolicyInstanceLabel,
+                };
+
+                isRequest.PolicyInstance = policyInstance;
+            }
 
             isRequest.IdentityContext = identityContext;
             isRequest.PolicyContext = policyContext;

@@ -2,11 +2,10 @@
 
 [![ci](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml/badge.svg)](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml) [![Coverage Status](https://coveralls.io/repos/github/aserto-dev/aserto-dotnet/badge.svg?branch=main&t=1UzNg5)](https://coveralls.io/github/aserto-dev/aserto-dotnet?branch=main) [![NuGet version](https://img.shields.io/nuget/v/Aserto.AspNetCore.Middleware?style=flat)](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/)[![Maintainability](https://api.codeclimate.com/v1/badges/8d946af86d3dbd10956b/maintainability)](https://codeclimate.com/github/aserto-dev/aserto-dotnet/maintainability)
 
-Aserto.AspNetCore.Middleware is a middleware that allows .NET Asp applications to use Aserto as the Authorization provider.
+Aserto.AspNetCore.Middleware is a middleware that allows .NET Asp applications to use Topaz Authorizer as the Authorization provider.
 
 ## Prerequisites
 * [.NET SDK](https://dotnet.microsoft.com/download) 3.1 or newer.
-* An [Aserto](https://console.aserto.com) account.
 
 ## Installation
 [Aserto.AspNetCore.Middleware](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/) is provided as a NuGet package. 
@@ -25,24 +24,37 @@ dotnet add package Aserto.AspNetCore.Middleware
 ## Configuration
 The following configuration settings are required for Aserto.AspNetCore middleware. You can add them to your `appsettings.json`:
 ```json
-// appsettings.json
-
 "Aserto": {
-    "AuthorizerApiKey": "YOUR_AUTHORIZER_API_KEY",
-    "TenantID": "YOUT_ASERTO_TENANTID",
-    "PolicyID": "YOUR_ASERTO_POLICY_ID",
-    "PolicyRoot": "YOUR_POLICY_ROOT"
+    "PolicyRoot": "YOUR_POLICY_ROOT",
 }
-``` 
-This settings can be retrieved from the [Policy Settings](https://console.aserto.com/ui/policies) page of your Aserto account.
+"AsertoDirectory": {
+   "DirectoryTenantID": "DIRECTORY_TENANT_ID",
+}
+```
 
 The middleware accepts the following optional parameters:
+
+***Aserto section***
 
 | Parameter name | Default value | Description |
 | -------------- | ------------- | ----------- |
 | Enabled | true | Enables or disables Aserto Authorization |
-| ServiceUrl | "https://authorizer.prod.aserto.com:8443" | Sets the URL for the authorizer endpoint. |
+| ServiceUrl | "https://localhost:8282" | Sets the URL for the authorizer endpoint. |
 | Decision | "allowed" | The decision that will be used by the middleware when creating an authorizer request. |
+| AuthorizerApiKey | "" | The authorizer API Key |
+| TenantID | "" | The Aserto Tenant ID |
+| Insecure | false | Indicates whether insecure service connections are allowed when using SSL |
+| PolicyName | "" | The Aserto policy name |
+| PolicyInstanceLabel | "" | The label of the active policy runtime |
+
+***AsertoDirectory section***
+
+| Parameter name | Default value | Description |
+| -------------- | ------------- | ----------- |
+| DirectoryInsecure | false | Indicates whether insecure directory service connections are allowed when using SSL |
+| DirectoryTenantID | "" | The Aserto Tenant ID of the directory service |
+| DirectoryServiceUrl | "https://localhost:9292" | Sets the URL for the directory endpoint. |
+| DirectoryApiKey | "" | The directory API Key |
 
 
 ## Usage
@@ -192,6 +204,46 @@ public void ConfigureServices(IServiceCollection services)
 }
 
 ```
+
+## Directory Client
+A new Directory Client can be creating as follows:
+```csharp
+
+   var logggerFactory = new NullLoggerFactory();
+   // Initialize options using consttructor.
+   var options = new AsertoDirectoryOptions("url_and_port_to_directory_service", "directory_api_key", "directory_tenant_id", false);
+
+   // Intialize optons reading the appsettings.json file.
+   var options = new AsertoDirectoryOptions();
+   Configuration.GetSection("AsertoDirectory").Bind(options);
+
+   var optionsInt = Microsoft.Extensions.Options.Options.Create(options);
+   var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+
+```
+you'll need to provide the directory service URL, an API key and the Tenant ID.
+The client can be configure to use SSL connection as insecure by providing `options.Insecure = true;`.
+
+Example call to the directory client:
+```csharp
+
+   public async Task GetObject()
+   {
+      //...
+
+      var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+
+      // Get an object.
+      var getObjectResp = await directoryClient.GetObjectAsync("object_key","object_type");
+
+      // Get the identities for a user.
+      var getRelationsResp = await directoryAPI.GetRelationsAsync(subjectType: "user", subjectKey: "userID",relationName: "identifier", relationObjectType: "identity", pageSize: 10);
+
+      //...
+   }
+
+```
+
 
 ## Building & testing
 

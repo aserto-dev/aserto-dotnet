@@ -40,7 +40,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
             var testServer = new TestServer(builder);
 
             await Assert.ThrowsAsync<OptionsValidationException>(() => testServer.CreateClient().GetAsync("/foo"));
-            
+
         }
 
         [Fact]
@@ -65,9 +65,9 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
                 o.ServiceUrl = "https://testserver.com";
                 o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
                 o.TenantID = "YOUR_TENANT_ID";
-                o.PolicyID = "YOUR_POLICY_ID";
-                o.PolicyRoot = "policy_root";
+                o.PolicyName = "YOUR_POLICY_NAME";
                 o.Enabled = false;
+                o.PolicyRoot = "policyroot";
             });
 
             var builder = TestUtil.GetPolicyWebHostBuilder(t, options);
@@ -79,27 +79,27 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         }
 
         [Theory]
-        [InlineData("tp", "GET", "https://localhost/", "tp.GET")]
-        [InlineData("tp", "DELETE", "https://localhost/", "tp.DELETE")]
-        [InlineData("tp", "PATCH", "https://localhost/", "tp.PATCH")]
-        [InlineData("tp", "PUT", "https://localhost/", "tp.PUT")]
-        [InlineData("tp", "POST", "https://localhost/foo", "tp.POST.foo")]
-        [InlineData("tp", "GET", "https://localhost/foo", "tp.GET.foo")]
-        [InlineData("tp", "GET", "https://localhost/?a=b", "tp.GET")]
-        [InlineData("tp", "GET", "https://localhost/en-us/api", "tp.GET.en_us.api")]
-        [InlineData("tp", "GET", "https://localhost/en-us?view=3", "tp.GET.en_us")]
-        [InlineData("tp", "GET", "https://localhost/en_us", "tp.GET.en_us")]
-        [InlineData("tp", "GET", "https://localhost/til~de", "tp.GET.til_de")]
-        [InlineData("tp", "GET", "https://localhost/__id", "tp.GET.__id")]
-        [InlineData("tp", "POST", "https://localhost/__id", "tp.POST.__id")]
-        [InlineData("tp", "GET", "https://localhost/v1", "tp.GET.v1")]
-        [InlineData("tp", "GET", "https://localhost/dotted.endpoint", "tp.GET.dotted.endpoint")]
-        [InlineData("tp", "GET", "https://localhost/a?dotted=q.u.e.r.y", "tp.GET.a")]
-        [InlineData("tp", "GET", "https://localhost/nuberic/123456/1", "tp.GET.nuberic.123456.1")]
-        [InlineData("tp", "GET", "https://localhost/Upercase", "tp.GET.Upercase")]
-        [InlineData("tp", "GET", "https://localhost/api/:colons", "tp.GET.api.__colons")]
-        [InlineData("tp", "POST", "https://localhost/api/:colons", "tp.POST.api.__colons")]
-        [InlineData("tp", "DELETE", "https://localhost/api/:colons", "tp.DELETE.api.__colons")]
+        [InlineData("pr", "GET", "https://localhost/", "pr.GET")]
+        [InlineData("pr","DELETE", "https://localhost/", "pr.DELETE")]
+        [InlineData("polroot", "PATCH", "https://localhost/", "polroot.PATCH")]
+        [InlineData("pr", "PUT", "https://localhost/", "pr.PUT")]
+        [InlineData("pr", "POST", "https://localhost/foo", "pr.POST.foo")]
+        [InlineData("pr", "GET", "https://localhost/foo", "pr.GET.foo")]
+        [InlineData("pr", "GET", "https://localhost/?a=b", "pr.GET")]
+        [InlineData("pr", "GET", "https://localhost/en-us/api", "pr.GET.en_us.api")]
+        [InlineData("pr", "GET", "https://localhost/en-us?view=3", "pr.GET.en_us")]
+        [InlineData("pr", "GET", "https://localhost/en_us", "pr.GET.en_us")]
+        [InlineData("pr", "GET", "https://localhost/til~de", "pr.GET.til_de")]
+        [InlineData("pr", "GET", "https://localhost/__id", "pr.GET.__id")]
+        [InlineData("pr", "POST", "https://localhost/__id", "pr.POST.__id")]
+        [InlineData("pr", "GET", "https://localhost/v1", "pr.GET.v1")]
+        [InlineData("pr", "GET", "https://localhost/dotted.endpoint", "pr.GET.dotted.endpoint")]
+        [InlineData("pr", "GET", "https://localhost/a?dotted=q.u.e.r.y", "pr.GET.a")]
+        [InlineData("pr", "GET", "https://localhost/nuberic/123456/1", "pr.GET.nuberic.123456.1")]
+        [InlineData("pr", "GET", "https://localhost/Upercase", "pr.GET.Upercase")]
+        [InlineData("pr", "GET", "https://localhost/api/:colons", "pr.GET.api.__colons")]
+        [InlineData("pr", "POST", "https://localhost/api/:colons", "pr.POST.api.__colons")]
+        [InlineData("pr", "DELETE", "https://localhost/api/:colons", "pr.DELETE.api.__colons")]
         public async Task UriToPolicyPath(string policyRoot, string method, string uri, string expected)
         {
             var t = new TestAuthorizerAPIClient(policyRoot);
@@ -131,18 +131,23 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         }
 
         [Theory]
-        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/:something", "tp.GET.api.__asset")]
-        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/:upperCase", "tp.GET.api.__asset")]
-        [InlineData("tp", "POST", "api/{asset}", "https://localhost/api/:something", "tp.POST.api.__asset")]
-        [InlineData("tp", "PUT", "api/{asset}", "https://localhost/api/:something", "tp.PUT.api.__asset")]
-        [InlineData("tp", "DELETE", "api/{asset}", "https://localhost/api/:something", "tp.DELETE.api.__asset")]
-        [InlineData("tp", "GET", "api/{asset1}/{asset2}", "https://localhost/api/:multiple/:value", "tp.GET.api.__asset1.__asset2")]
-        [InlineData("tp", "GET", "api/{asset}/not_last", "https://localhost/api/:value/not_last", "tp.GET.api.__asset.not_last")]
-        [InlineData("tp", "GET", "api/{asset}/not_last", "https://localhost/api/val/not_last", "tp.GET.api.__asset.not_last")]
-        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/no_colons", "tp.GET.api.__asset")]
-        [InlineData("tp", "GET", "api/{asset}/another/{asset2}", "https://localhost/api/api/another/api", "tp.GET.api.__asset.another.__asset2")]
-        [InlineData("tp", "GET", "api/{asset}", "https://localhost/api/UperCase", "tp.GET.api.__asset")]
-        [InlineData("tp", "GET", "api/{CaseSensitive}", "https://localhost/api/parameter", "tp.GET.api.__CaseSensitive")]
+        [InlineData("pr", "GET", "api/{asset}", "https://localhost/api/:something", "pr.GET.api.__asset")]
+        [InlineData("pr", "GET", "api/{asset}", "https://localhost/api/:upperCase", "pr.GET.api.__asset")]
+        [InlineData("pr", "POST", "api/{asset}", "https://localhost/api/:something", "pr.POST.api.__asset")]
+        [InlineData("pr", "PUT", "api/{asset}", "https://localhost/api/:something", "pr.PUT.api.__asset")]
+        [InlineData("pr", "DELETE", "api/{asset}", "https://localhost/api/:something", "pr.DELETE.api.__asset")]
+        [InlineData("pr", "GET", "api/{asset1}/{asset2}", "https://localhost/api/:multiple/:value", "pr.GET.api.__asset1.__asset2")]
+        [InlineData("pr", "GET", "api/{asset}/not_last", "https://localhost/api/:value/not_last", "pr.GET.api.__asset.not_last")]
+        [InlineData("pr", "GET", "api/{asset}/not_last", "https://localhost/api/val/not_last", "pr.GET.api.__asset.not_last")]
+        [InlineData("pr", "GET", "api/{asset}", "https://localhost/api/no_colons", "pr.GET.api.__asset")]
+        [InlineData("pr", "GET", "api/{asset}/another/{asset2}", "https://localhost/api/api/another/api", "pr.GET.api.__asset.another.__asset2")]
+        [InlineData("pr", "GET", "api/{asset}", "https://localhost/api/UperCase", "pr.GET.api.__asset")]
+        [InlineData("pr", "GET", "api/{CaseSensitive}", "https://localhost/api/parameter", "pr.GET.api.__CaseSensitive")]
+        // Tests reserver routes. eg. Controller and Action.
+        [InlineData("pr", "GET", "api/{controller=Home}/{action=Index}", "https://localhost/api/Home/Account", "pr.GET.api.Home.Account")]
+        // Tests optional route parameters
+        [InlineData("pr", "GET", "api/{id?}", "https://localhost/api", "pr.GET.api")]
+        [InlineData("pr", "GET", "api/{id?}", "https://localhost/api/myid", "pr.GET.api.__id")]
         public async Task RouteValues(string policyRoot, string method, string bindPath, string requestUri, string expected)
         {
             var t = new TestAuthorizerAPIClient(policyRoot);

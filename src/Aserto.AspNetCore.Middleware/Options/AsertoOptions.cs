@@ -9,7 +9,9 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Security.Claims;
     using System.Text;
+    using Aserto.Authorizer.V2.API;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
 
@@ -39,14 +41,24 @@ namespace Aserto.AspNetCore.Middleware.Options
         public string TenantID { get; set; } = AsertoOptionsDefaults.TenantID;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Policy ID.
+        /// Gets or sets a value indicating the Aserto Policy Name.
         /// </summary>
-        public string PolicyID { get; set; } = AsertoOptionsDefaults.PolicyID;
+        public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
+        /// </summary>
+        public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Policy Root.
         /// </summary>
         public string PolicyRoot { get; set; } = AsertoOptionsDefaults.PolicyRoot;
+
+        /// <summary>
+        /// Gets or sets a value indicating the Aserto Instance label.
+        /// </summary>
+        public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
         /// <summary>
         /// Gets or sets a value indicating the decision string to be used.
@@ -64,6 +76,11 @@ namespace Aserto.AspNetCore.Middleware.Options
         public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
 
         /// <summary>
+        /// Gets or sets the Identity mapper for the check middleware.
+        /// </summary>
+        public Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> IdentityMapper { get; set; }
+
+        /// <summary>
         /// Validates the provided options.
         /// </summary>
         /// <param name="options">Authorizer API Client options <see cref="AsertoOptions"/>.</param>
@@ -75,15 +92,12 @@ namespace Aserto.AspNetCore.Middleware.Options
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (!ValidateUri(options.ServiceUrl))
+            if (string.IsNullOrEmpty(options.PolicyRoot))
             {
                 return false;
             }
 
-            if (string.IsNullOrEmpty(options.AuthorizerApiKey) ||
-                string.IsNullOrEmpty(options.PolicyID) ||
-                string.IsNullOrEmpty(options.PolicyRoot) ||
-                string.IsNullOrEmpty(options.TenantID))
+            if (!ValidateUri(options.ServiceUrl))
             {
                 return false;
             }
