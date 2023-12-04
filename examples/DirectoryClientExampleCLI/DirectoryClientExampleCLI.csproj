@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Aserto.AspNetCore.Middleware\Aserto.AspNetCore.Middleware.csproj" />
+    <ProjectReference Include="..\..\src\Aserto.AspNetCore.Middleware\Aserto.AspNetCore.Middleware.csproj" />
   </ItemGroup>
 
 </Project>
