@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using static Aserto.Directory.Reader.V2.Reader;
+using Aserto.AspNetCore.Middleware.Clients.Directory.V2;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {
@@ -38,7 +39,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         {
             var logggerFactory = new NullLoggerFactory();
 
-            Assert.Throws<ArgumentNullException>(() => new DirectoryAPIClient(null, logggerFactory));
+            Assert.Throws<ArgumentNullException>(() => new  DirectoryAPIClient(null, logggerFactory));
         }
 
         [Fact]

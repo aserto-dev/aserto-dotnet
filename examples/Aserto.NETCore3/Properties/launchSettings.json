@@ -20,7 +20,7 @@
     "Aserto.NETCore3": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "wf",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

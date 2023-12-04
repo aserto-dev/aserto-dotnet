@@ -1,6 +1,7 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Authorizer.V2;
+using Aserto.Authorizer.V2.API;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -62,6 +63,12 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
 
         public Func<string, HttpRequest, Struct> ResourceMapper {
             get { return AsertoOptionsDefaults.DefaultResourceMapper; }
+            set { }
+        }
+
+        public Func<ClaimsPrincipal, IEnumerable<string>,IdentityContext> IdentityMapper
+        {
+            get { return null;  }
         }
 
         internal IsRequest IsReq

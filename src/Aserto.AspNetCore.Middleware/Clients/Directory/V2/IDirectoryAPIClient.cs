@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients
+namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
 {
     using System;
     using System.Collections.Generic;
