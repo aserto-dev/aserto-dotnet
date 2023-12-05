@@ -1,5 +1,11 @@
 # Change Log
 
+## [Version 0.30.0](https://github.com/aserto-dev/aserto-dotnet/tree/v0.30.0) (2023-12-5)
+[Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.20.0...v0.30.0)
+
+**Changed**
+- Release v0.30.0
+
 ## [Version 0.20.0](https://github.com/aserto-dev/aserto-dotnet/tree/v0.20.0) (2022-10-24)
 [Full Changelog](https://github.com/aserto-dev/aserto-dotnet/compare/v0.9.0-preview.3...v0.20.0)
 
