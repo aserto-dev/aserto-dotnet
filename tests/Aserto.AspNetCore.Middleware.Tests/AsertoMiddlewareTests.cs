@@ -58,7 +58,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
             var testServer = new TestServer(builder);
 
             var response = await testServer.CreateClient().GetAsync("");
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
             var testServer = new TestServer(builder);
 
             var response = await testServer.CreateClient().GetAsync("");
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]

@@ -12,6 +12,7 @@ namespace Aserto.AspNetCore.Middleware
     using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Extensions;
@@ -88,6 +89,8 @@ namespace Aserto.AspNetCore.Middleware
                 if (!allowed && this.options.BaseOptions.Enabled)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
+                    await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
                 }
                 else
                 {
