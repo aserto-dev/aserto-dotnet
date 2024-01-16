@@ -10,6 +10,7 @@ namespace Aserto.AspNetCore.Middleware
     using System.Collections.Generic;
     using System.Net;
     using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
@@ -64,7 +65,9 @@ namespace Aserto.AspNetCore.Middleware
             var allowed = await this.client.IsAsync(this.client.BuildIsRequest(context, Utils.DefaultClaimTypes));
             if (!allowed && this.options.Enabled)
             {
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
+                await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
             }
             else
             {
