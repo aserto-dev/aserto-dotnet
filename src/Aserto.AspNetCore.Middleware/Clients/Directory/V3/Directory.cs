@@ -103,12 +103,18 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="type">The type of the object.</param>
         /// <param name="id">The id of the object.</param>
+        /// <param name="displayName">The display name of the object.</param>
+        /// <param name="properties">A struct representing the properties bag of the object.</param>
+        /// <param name="hash">The hash of the object.</param>
         /// <returns>A new <see cref="Object"/>.</returns>
-        public static Object BuildObject(string type, string id)
+        public static Object BuildObject(string type, string id, string displayName = "", Struct properties = null, string hash = "")
         {
             var obj = new Object();
             obj.Id = id;
             obj.Type = type;
+            obj.DisplayName = displayName;
+            obj.Properties = properties;
+            obj.Etag = hash;
 
             return obj;
         }
@@ -259,11 +265,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         public async Task<SetObjectResponse> SetObjectAsync(string type, string id, string displayName = "", Struct properties = null, string hash = "")
         {
             var req = new SetObjectRequest();
-            req.Object = BuildObject(type, id);
-            req.Object.DisplayName = displayName;
-            req.Object.Properties = properties;
-            req.Object.CreatedAt = Timestamp.FromDateTime(DateTime.Now);
-            req.Object.Etag = hash;
+            req.Object = BuildObject(type, id, displayName, properties, hash);
             var result = await this.writerClient.SetObjectAsync(req);
 
             return result;
