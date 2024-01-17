@@ -32,6 +32,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
     using static Aserto.Directory.Reader.V3.Reader;
     using static Aserto.Directory.Writer.V3.Writer;
     using Object = Aserto.Directory.Common.V3.Object;
+    using Relation = Aserto.Directory.Common.V3.Relation;
 
     /// <summary>
     /// Client for Aserto Directory API.
@@ -102,12 +103,18 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="type">The type of the object.</param>
         /// <param name="id">The id of the object.</param>
+        /// <param name="displayName">The display name of the object.</param>
+        /// <param name="properties">A struct representing the properties bag of the object.</param>
+        /// <param name="hash">The hash of the object.</param>
         /// <returns>A new <see cref="Object"/>.</returns>
-        public static Object BuildObject(string type, string id)
+        public static Object BuildObject(string type, string id, string displayName = "", Struct properties = null, string hash = "")
         {
             var obj = new Object();
             obj.Id = id;
             obj.Type = type;
+            obj.DisplayName = displayName;
+            obj.Properties = properties;
+            obj.Etag = hash;
 
             return obj;
         }
@@ -258,12 +265,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         public async Task<SetObjectResponse> SetObjectAsync(string type, string id, string displayName = "", Struct properties = null, string hash = "")
         {
             var req = new SetObjectRequest();
-            req.Object.Id = id;
-            req.Object.Type = type;
-            req.Object.DisplayName = displayName;
-            req.Object.Properties = properties;
-            req.Object.CreatedAt = Timestamp.FromDateTime(DateTime.Now);
-            req.Object.Etag = hash;
+            req.Object = BuildObject(type, id, displayName, properties, hash);
             var result = await this.writerClient.SetObjectAsync(req);
 
             return result;
@@ -285,13 +287,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         public async Task<SetRelationResponse> SetRelationAsync(string objType, string objId, string relationName, string subjectType, string subjectId, string subjectRelation, string hash = "")
         {
             var req = new SetRelationRequest();
-            req.Relation = new Relation();
-            req.Relation.SubjectId = subjectId;
-            req.Relation.SubjectType = subjectType;
-            req.Relation.SubjectRelation = subjectRelation;
-            req.Relation.ObjectId = objId;
-            req.Relation.ObjectType = objType;
-            req.Relation.Relation_ = relationName;
+            req.Relation = BuildRelation(objType, objId, relationName, subjectType, subjectId, subjectRelation);
             var result = await this.writerClient.SetRelationAsync(req);
 
             return result;
