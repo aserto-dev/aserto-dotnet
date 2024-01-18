@@ -15,6 +15,7 @@ namespace Aserto.AspNetCore.Middleware
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
+    using Google.Api;
     using Grpc.Core;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
@@ -62,9 +63,10 @@ namespace Aserto.AspNetCore.Middleware
         /// <returns>The task.</returns>
         public async Task Invoke(HttpContext context)
         {
-            var allowed = await this.client.IsAsync(this.client.BuildIsRequest(context, Utils.DefaultClaimTypes));
+            var allowed = await this.client.IsAsync(this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options));
             if (!allowed && this.options.Enabled)
             {
+                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
                 await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);

@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.MVC.Auth0", "example
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectoryClientExampleCLI", "examples\DirectoryClientExampleCLI\DirectoryClientExampleCLI.csproj", "{DB288C6D-0443-40E6-89F2-933F099217C0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.TodoApp", "..\todo-dotnet-v2\Aserto.TodoApp.csproj", "{5FEBC744-CB02-4191-8BA0-8106779B4B38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{DB288C6D-0443-40E6-89F2-933F099217C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB288C6D-0443-40E6-89F2-933F099217C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB288C6D-0443-40E6-89F2-933F099217C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FEBC744-CB02-4191-8BA0-8106779B4B38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FEBC744-CB02-4191-8BA0-8106779B4B38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FEBC744-CB02-4191-8BA0-8106779B4B38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FEBC744-CB02-4191-8BA0-8106779B4B38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

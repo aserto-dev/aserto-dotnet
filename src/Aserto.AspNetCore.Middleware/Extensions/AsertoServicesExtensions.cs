@@ -29,8 +29,9 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         /// </summary>
         /// <param name="services">/>The <see cref="IServiceCollection"/> for adding services.</param>
         /// <param name="configure">An action delegate to configure the provided Aserto Options.</param>
+        /// <param name="authorizerConfig">An action delegate to configure the authorizer client.</param>
         /// <returns>The original <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection AddAsertoAuthorization(this IServiceCollection services, Action<AsertoOptions> configure)
+        public static IServiceCollection AddAsertoAuthorization(this IServiceCollection services, Action<AsertoOptions> configure, Action<AsertoAuthorizerOptions> authorizerConfig)
         {
             if (services == null)
             {
@@ -43,6 +44,7 @@ namespace Aserto.AspNetCore.Middleware.Extensions
             }
 
             services.AddOptions<AsertoOptions>().Configure(configure).Validate(AsertoOptions.Validate);
+            services.AddOptions<AsertoAuthorizerOptions>().Configure(authorizerConfig).Validate(AsertoAuthorizerOptions.Validate);
             services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -55,8 +57,9 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         /// </summary>
         /// <param name="services">/>The <see cref="IServiceCollection"/> for adding services.</param>
         /// <param name="checkOptions">An action delegate to configure the provided Check Options.</param>
+        /// <param name="authorizerConfig">An action delegate to configure the authorizer client.</param>
         /// <returns>The original <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection AddAsertoCheckAuthorization(this IServiceCollection services, CheckOptions checkOptions)
+        public static IServiceCollection AddAsertoCheckAuthorization(this IServiceCollection services, CheckOptions checkOptions, Action<AsertoAuthorizerOptions> authorizerConfig)
         {
             if (services == null)
             {
@@ -68,26 +71,16 @@ namespace Aserto.AspNetCore.Middleware.Extensions
                 throw new ArgumentNullException(nameof(checkOptions));
             }
 
-            services.AddOptions<CheckOptions>().Configure(check => { check.ResourceMappingRules = checkOptions.ResourceMappingRules; });
-            services.AddOptions<AsertoOptions>().Configure(aserto =>
+            services.AddOptions<AsertoAuthorizerOptions>().Configure(authorizerConfig).Validate(AsertoAuthorizerOptions.Validate);
+            services.AddOptions<CheckOptions>().Configure(check =>
             {
-                aserto.AuthorizerApiKey = checkOptions.BaseOptions.AuthorizerApiKey;
-                aserto.PolicyPathMapper = checkOptions.BaseOptions.PolicyPathMapper;
-                aserto.Insecure = checkOptions.BaseOptions.Insecure;
-                aserto.IdentityMapper = checkOptions.BaseOptions.IdentityMapper;
-                aserto.ResourceMapper = checkOptions.BaseOptions.ResourceMapper;
-                aserto.Decision = checkOptions.BaseOptions.Decision;
-                aserto.Enabled = checkOptions.BaseOptions.Enabled;
-                aserto.PolicyInstanceLabel = checkOptions.BaseOptions.PolicyInstanceLabel;
-                aserto.PolicyName = checkOptions.BaseOptions.PolicyName;
-                aserto.PolicyRoot = checkOptions.BaseOptions.PolicyRoot;
-                aserto.ServiceUrl = checkOptions.BaseOptions.ServiceUrl;
-                aserto.TenantID = checkOptions.BaseOptions.TenantID;
+                check.ResourceMappingRules = checkOptions.ResourceMappingRules;
+                check.BaseOptions = checkOptions.BaseOptions;
             });
             services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.TryAddSingleton<IAuthorizationHandler, AsertoAuthorizationHandler>();
+            services.TryAddSingleton<IAuthorizationHandler, CheckAuthorizationHandler>();
             return services;
         }
     }

@@ -26,39 +26,19 @@ namespace Aserto.AspNetCore.Middleware.Options
         public bool Enabled { get; set; } = AsertoOptionsDefaults.Enabled;
 
         /// <summary>
-        /// Gets or sets a value indicating the Aserto Service URL.
-        /// </summary>
-        public string ServiceUrl { get; set; } = AsertoOptionsDefaults.ServiceUrl;
-
-        /// <summary>
-        /// Gets or sets a value indicating the Aserto Authorizer API Key.
-        /// </summary>
-        public string AuthorizerApiKey { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating the Aserto Tenant ID.
-        /// </summary>
-        public string TenantID { get; set; } = AsertoOptionsDefaults.TenantID;
-
-        /// <summary>
         /// Gets or sets a value indicating the Aserto Policy Name.
         /// </summary>
         public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
 
         /// <summary>
-        /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
+        /// Gets or sets a value indicating the Aserto Instance label.
         /// </summary>
-        public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
+        public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Policy Root.
         /// </summary>
         public string PolicyRoot { get; set; } = AsertoOptionsDefaults.PolicyRoot;
-
-        /// <summary>
-        /// Gets or sets a value indicating the Aserto Instance label.
-        /// </summary>
-        public string PolicyInstanceLabel { get; set; } = AsertoOptionsDefaults.PolicyInstanceLabel;
 
         /// <summary>
         /// Gets or sets a value indicating the decision string to be used.
@@ -93,28 +73,6 @@ namespace Aserto.AspNetCore.Middleware.Options
             }
 
             if (string.IsNullOrEmpty(options.PolicyRoot))
-            {
-                return false;
-            }
-
-            if (!ValidateUri(options.ServiceUrl))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool ValidateUri(string uri)
-        {
-            if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
-            {
-                return false;
-            }
-
-            var serviceUri = new Uri(uri);
-
-            if (serviceUri.Scheme != Uri.UriSchemeHttps && serviceUri.Scheme != Uri.UriSchemeHttp)
             {
                 return false;
             }

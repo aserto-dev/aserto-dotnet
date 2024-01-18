@@ -79,22 +79,27 @@ namespace Aserto.AspNetCore.Middleware
                 {
                     if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapper, out resourceMapper))
                     {
-                        this.client.ResourceMapper = resourceMapper;
+                        this.options.BaseOptions.ResourceMapper = resourceMapper;
                     }
-                }
 
-                var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes);
+                    var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
 
-                var allowed = await this.client.IsAsync(request);
-                if (!allowed && this.options.BaseOptions.Enabled)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
-                    await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
+                    var allowed = await this.client.IsAsync(request);
+                    if (!allowed && this.options.BaseOptions.Enabled)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
+                        await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
+                    }
+                    else
+                    {
+                        this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                        await this.next.Invoke(context);
+                    }
                 }
                 else
                 {
-                    this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                    this.logger.LogInformation($"Endpoint information for: {context.Request.Path} does not have check attribute - allowing request");
                     await this.next.Invoke(context);
                 }
             }
