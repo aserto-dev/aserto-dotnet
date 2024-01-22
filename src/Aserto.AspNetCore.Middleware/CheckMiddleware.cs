@@ -60,6 +60,11 @@ namespace Aserto.AspNetCore.Middleware
             });
             this.client = client;
             this.resourceMappingRules = this.options.ResourceMappingRules;
+
+            if (this.options.BaseOptions.PolicyPathMapper == null)
+            {
+                this.options.BaseOptions.PolicyPathMapper = this.DefaultCheckPolicyPathMapper;
+            }
         }
 
         /// <summary>
@@ -77,9 +82,13 @@ namespace Aserto.AspNetCore.Middleware
                 Func<string, HttpRequest, Struct> resourceMapper = null;
                 if (checkAttribute != null)
                 {
-                    if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapper, out resourceMapper))
+                    if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapperName, out resourceMapper))
                     {
                         this.options.BaseOptions.ResourceMapper = resourceMapper;
+                    }
+                    else if (checkAttribute.ResourceMapper != null)
+                    {
+                        this.options.BaseOptions.ResourceMapper = checkAttribute.ResourceMapper;
                     }
 
                     var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
@@ -108,6 +117,17 @@ namespace Aserto.AspNetCore.Middleware
                 this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
                 await this.next.Invoke(context);
             }
+        }
+
+        /// <summary>
+        /// Default policy mapper for Check Middleware.
+        /// </summary>
+        /// <param name="policyRoot">The policy root.</param>
+        /// <param name="request">The Incoming Http request.</param>
+        /// <returns>The policy path.</returns>
+        private string DefaultCheckPolicyPathMapper(string policyRoot, HttpRequest request)
+        {
+            return policyRoot + "." + "check";
         }
     }
 }
