@@ -38,14 +38,22 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         /// <param name="objectID">The id of the object to be included in the resource context.</param>
         /// <param name="objectType">The type of the object to be included in the resource context.</param>
         /// <param name="relationName">The name of the relation that authorizer to check against.</param>
-        public CheckAttribute(string objectID, string objectType, string relationName)
+        /// <param name="objectIdFromPath">The http path parameter that will be retrieved as the object id.</param>
+        public CheckAttribute(string objectID, string objectType, string relationName, string objectIdFromPath = "")
         {
             this.ResourceMapper = (policyRoot, httpRequest) =>
             {
                 Struct result = new Struct();
-                result.Fields.Add("object_id", Value.ForString(objectID));
                 result.Fields.Add("object_type", Value.ForString(objectType));
                 result.Fields.Add("relation", Value.ForString(relationName));
+                if (string.IsNullOrEmpty(objectIdFromPath))
+                {
+                    result.Fields.Add("object_id", Value.ForString(objectID));
+                }
+                else
+                {
+                     result.Fields.Add("object_id", Value.ForString((string)httpRequest.RouteValues[objectIdFromPath]));
+                }
 
                 return result;
             };

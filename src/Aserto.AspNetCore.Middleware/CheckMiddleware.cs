@@ -82,7 +82,7 @@ namespace Aserto.AspNetCore.Middleware
                 Func<string, HttpRequest, Struct> resourceMapper = null;
                 if (checkAttribute != null)
                 {
-                    if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapperName, out resourceMapper))
+                    if (checkAttribute.ResourceMapperName != null && this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapperName, out resourceMapper))
                     {
                         this.options.BaseOptions.ResourceMapper = resourceMapper;
                     }
