@@ -65,7 +65,11 @@ namespace Aserto.NETCore3
             options.ResourceMappingRules = checkResourceRules;
 
             //Aserto options handling
-            services.AddAsertoCheckAuthorization(options);
+            services.AddAsertoCheckAuthorization(options,
+            authorizerConfig =>
+            {
+                Configuration.GetSection("Aserto").Bind(authorizerConfig);
+            });
            
             //end Aserto options handling
 

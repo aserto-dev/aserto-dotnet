@@ -41,7 +41,8 @@ namespace Aserto.NETCore3.Auth0
             });
 
             //Aserto options handling
-            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options));
+            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options),
+            authorizerOptions => Configuration.GetSection("Aserto").Bind(authorizerOptions));
             //end Aserto options handling
 
             services.AddAuthorization(options =>

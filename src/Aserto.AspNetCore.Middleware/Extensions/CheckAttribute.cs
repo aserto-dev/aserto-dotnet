@@ -37,15 +37,27 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         /// </summary>
         /// <param name="objectID">The id of the object to be included in the resource context.</param>
         /// <param name="objectType">The type of the object to be included in the resource context.</param>
-        /// <param name="relationName">The name of the relation that authorizer to check against.</param>
+        /// <param name="relation">The name of the relation that authorizer to check against.</param>
         /// <param name="objectIdFromPath">The http path parameter that will be retrieved as the object id.</param>
-        public CheckAttribute(string objectID, string objectType, string relationName, string objectIdFromPath = "")
+        /// <param name="customMapper"> The name of the object mapper to use for the Check call.</param>
+        public CheckAttribute(string objectID = "", string objectType = "", string relation = "", string objectIdFromPath = "", string customMapper = "")
         {
+            // validate params
+            if (string.IsNullOrEmpty(objectID) && string.IsNullOrEmpty(objectIdFromPath))
+            {
+                if (string.IsNullOrEmpty(customMapper))
+                {
+                    throw new ArgumentException("One of \"objectID\", \"objectIdFromPath\"  or \"customMapper\" must be provided");
+                }
+
+                this.ObjectMapperName = customMapper;
+            }
+
             this.ResourceMapper = (policyRoot, httpRequest) =>
             {
                 Struct result = new Struct();
                 result.Fields.Add("object_type", Value.ForString(objectType));
-                result.Fields.Add("relation", Value.ForString(relationName));
+                result.Fields.Add("relation", Value.ForString(relation));
                 if (string.IsNullOrEmpty(objectIdFromPath))
                 {
                     result.Fields.Add("object_id", Value.ForString(objectID));
@@ -68,5 +80,10 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         /// Gets or sets the resource mapper used by the check attribute.
         /// </summary>
         public Func<string, HttpRequest, Struct> ResourceMapper { get; set; }
+
+        /// <summary>
+        /// Gets or sets the object mapper used by the check attribute.
+        /// </summary>
+        public string ObjectMapperName { get; set; }
     }
 }

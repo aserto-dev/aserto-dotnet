@@ -29,5 +29,10 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Gets or sets the resource mapping rules used in check middleware.
         /// </summary>
         public Dictionary<string, Func<string, HttpRequest, Struct>> ResourceMappingRules { get; set; } = new Dictionary<string, Func<string, HttpRequest, Struct>>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets or sets the object mapping rules used in check middleware.
+        /// </summary>
+        public Dictionary<string, Func<string, HttpRequest, CheckObject>> ObjectMappingRules { get; set; } = new Dictionary<string, Func<string, HttpRequest, CheckObject>>(StringComparer.OrdinalIgnoreCase);
     }
 }

@@ -18,6 +18,7 @@ namespace Aserto.AspNetCore.Middleware
     using Aserto.AspNetCore.Middleware.Extensions;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
+    using Aserto.Authorizer.V2.API;
     using Aserto.Directory.Reader.V3;
     using Google.Protobuf.WellKnownTypes;
     using Grpc.Core;
@@ -78,19 +79,9 @@ namespace Aserto.AspNetCore.Middleware
             if (endpoint != null)
             {
                 var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
-
-                Func<string, HttpRequest, Struct> resourceMapper = null;
                 if (checkAttribute != null)
                 {
-                    if (checkAttribute.ResourceMapperName != null && this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapperName, out resourceMapper))
-                    {
-                        this.options.BaseOptions.ResourceMapper = resourceMapper;
-                    }
-                    else if (checkAttribute.ResourceMapper != null)
-                    {
-                        this.options.BaseOptions.ResourceMapper = checkAttribute.ResourceMapper;
-                    }
-
+                    this.GetOptionsFromAttribute(context, checkAttribute);
                     var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
 
                     var allowed = await this.client.IsAsync(request);
@@ -117,6 +108,64 @@ namespace Aserto.AspNetCore.Middleware
                 this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
                 await this.next.Invoke(context);
             }
+        }
+
+        /// <summary>
+        /// Gets the resource mapper and/or the object mapper from check attribute.
+        /// </summary>
+        /// <param name="context">The Http context.</param>
+        /// <param name="attribute">The check attribute object.</param>
+        private void GetOptionsFromAttribute(HttpContext context, Extensions.CheckAttribute attribute)
+        {
+            var obj = new CheckObject();
+            if (!string.IsNullOrEmpty(attribute.ObjectMapperName))
+            {
+                Func<string, HttpRequest, CheckObject> objMapper = null;
+                this.options.ObjectMappingRules.TryGetValue(attribute.ObjectMapperName, out objMapper);
+                obj = objMapper(this.options.BaseOptions.PolicyRoot, context.Request);
+            }
+
+            Func<string, HttpRequest, Struct> resourceMapper = null;
+            if (attribute.ResourceMapperName != null)
+            {
+                this.resourceMappingRules.TryGetValue(attribute.ResourceMapperName, out resourceMapper);
+            }
+            else if (attribute.ResourceMapper != null)
+            {
+                resourceMapper = attribute.ResourceMapper;
+            }
+
+            if (!string.IsNullOrEmpty(obj.SubjectType) && obj.SubjectType != "user")
+            {
+                this.options.BaseOptions.IdentityMapper = (identity, supportedClaimTypes) =>
+                {
+                    var identityContext = new IdentityContext();
+                    identityContext.Type = IdentityType.Manual;
+                    identityContext.Identity = obj.SubjectID;
+
+                    return identityContext;
+                };
+            }
+
+            this.options.BaseOptions.ResourceMapper = (policyRoot, httpRequest) =>
+            {
+                Struct result = new Struct();
+                var resourceMapperValues = resourceMapper(policyRoot, httpRequest);
+
+                string objID = (!string.IsNullOrEmpty(obj.ObjectID)) ? obj.ObjectID : resourceMapperValues.Fields["object_id"].StringValue;
+                string objType = (!string.IsNullOrEmpty(obj.ObjectType)) ? obj.ObjectType : resourceMapperValues.Fields["object_type"].StringValue;
+                string relation = (!string.IsNullOrEmpty(obj.Relation)) ? obj.Relation : resourceMapperValues.Fields["relation"].StringValue;
+
+                result.Fields.Add("object_type", Value.ForString(objType));
+                result.Fields.Add("relation", Value.ForString(relation));
+                result.Fields.Add("object_id", Value.ForString(objID));
+                if (!string.IsNullOrEmpty(obj.SubjectType))
+                {
+                    result.Fields.Add("subject_type", Value.ForString(obj.SubjectType));
+                }
+
+                return result;
+            };
         }
 
         /// <summary>

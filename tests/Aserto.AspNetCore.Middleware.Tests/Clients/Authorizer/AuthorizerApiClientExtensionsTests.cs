@@ -20,13 +20,15 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         Moq.Mock<AuthorizerClient> mockAuthorizerClient;
         Moq.Mock<HttpRequest> mockRequest;
 
-        IOptions<AsertoOptions> options;
+        AsertoOptions asertoOptions;
+        IOptions<AsertoAuthorizerOptions> authorizerOptions;
         ILoggerFactory loggerFactory;
 
         public AuthorizerApiClientExtensionsTests()
         {
             this.mockAuthorizerClient = new Moq.Mock<AuthorizerClient>();
-            this.options = Microsoft.Extensions.Options.Options.Create(new AsertoOptions());
+            this.asertoOptions = new AsertoOptions();
+            this.authorizerOptions = Microsoft.Extensions.Options.Options.Create(new AsertoAuthorizerOptions());
             this.loggerFactory = new NullLoggerFactory();
 
             this.mockRequest = new Moq.Mock<HttpRequest>();
@@ -38,9 +40,9 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             HttpRequest request = null;
             ClaimsPrincipal claimsPrinipal = new DefaultHttpContext().User;
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, loggerFactory, mockAuthorizerClient.Object);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, loggerFactory, mockAuthorizerClient.Object);
 
-            Assert.Throws<ArgumentNullException>(() => authorizerAPIClient.BuildIsRequest(request, claimsPrinipal, Utils.DefaultClaimTypes));
+            Assert.Throws<ArgumentNullException>(() => authorizerAPIClient.BuildIsRequest(request, claimsPrinipal, Utils.DefaultClaimTypes, this.asertoOptions));
         }
 
         [Fact]
@@ -49,9 +51,9 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             HttpRequest request = new DefaultHttpContext().Request;
             ClaimsPrincipal claimsPrinipal = null;
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
 
-            Assert.Throws<ArgumentNullException>(() => authorizerAPIClient.BuildIsRequest(request, claimsPrinipal, Utils.DefaultClaimTypes));
+            Assert.Throws<ArgumentNullException>(() => authorizerAPIClient.BuildIsRequest(request, claimsPrinipal, Utils.DefaultClaimTypes, this.asertoOptions));
         }
 
         [Fact]
@@ -63,8 +65,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(this.mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(this.mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(IdentityType.None, isRequest.IdentityContext.Type);
         }
@@ -83,8 +85,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("email", isRequest.IdentityContext.Identity);
@@ -103,8 +105,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("userName", isRequest.IdentityContext.Identity);
@@ -122,8 +124,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("userName", isRequest.IdentityContext.Identity);
@@ -141,8 +143,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, new List<string>() { "my_custom_claim_type" });
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, new List<string>() { "my_custom_claim_type" }, this.asertoOptions);
 
             Assert.Equal(IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("custom_value", isRequest.IdentityContext.Identity);
@@ -162,8 +164,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, new List<string>() { "my_custom_claim_type1", "my_custom_claim_type2" });
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, new List<string>() { "my_custom_claim_type1", "my_custom_claim_type2" }, this.asertoOptions);
 
             Assert.Equal(IdentityType.Sub, isRequest.IdentityContext.Type);
             Assert.Equal("custom_value1", isRequest.IdentityContext.Identity);
@@ -181,8 +183,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(IdentityType.None, isRequest.IdentityContext.Type);
         }
@@ -196,8 +198,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity(claims, "test authentication");
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(IdentityType.None, isRequest.IdentityContext.Type);
         }
@@ -220,10 +222,10 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             this.mockRequest.SetupGet(r => r.Method).Returns(method);
             var testIdentity = new ClaimsIdentity();
             var testPrincipal = new ClaimsPrincipal(testIdentity);
-            this.options.Value.PolicyRoot = policyRoot;
+            this.asertoOptions.PolicyRoot = policyRoot;
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal(expected, isRequest.PolicyContext.Path);
         }
@@ -236,13 +238,13 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var testIdentity = new ClaimsIdentity();
             var testPrincipal = new ClaimsPrincipal(testIdentity);
 
-            this.options.Value.PolicyPathMapper = (policyRoot, httpRequest) =>
+            this.asertoOptions.PolicyPathMapper = (policyRoot, httpRequest) =>
             {
                 return "custom.policy.mapper";
             };
 
-            var authorizerAPIClient = new AuthorizerAPIClient(this.options, this.loggerFactory, this.mockAuthorizerClient.Object);
-            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes);
+            var authorizerAPIClient = new AuthorizerAPIClient(this.authorizerOptions, this.loggerFactory, this.mockAuthorizerClient.Object);
+            var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, this.asertoOptions);
 
             Assert.Equal("custom.policy.mapper", isRequest.PolicyContext.Path);
         }

@@ -7,7 +7,10 @@
 namespace Aserto.AspNetCore.Middleware.Options
 {
     using System;
+    using System.Collections.Generic;
+    using System.Security.Claims;
     using System.Text.RegularExpressions;
+    using Aserto.Authorizer.V2.API;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
@@ -150,6 +153,34 @@ namespace Aserto.AspNetCore.Middleware.Options
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// The default Identity Context mapper function.
+        /// </summary>
+        /// <param name="identity">The provided identity.</param>
+        /// <param name="supportedClaimTypes">A list containing supported claims type.</param>
+        /// <returns>The default Identity Context mapper.</returns>
+        public static IdentityContext DefaultIdentityContext(ClaimsPrincipal identity, IEnumerable<string> supportedClaimTypes)
+        {
+            var identityContext = new IdentityContext();
+            identityContext.Type = IdentityType.None;
+
+            if (identity.Identity.AuthenticationType != null && identity.Identity != null)
+            {
+                foreach (string supportedClaimType in supportedClaimTypes)
+                {
+                    var claim = identity.FindFirst(c => c.Type == supportedClaimType);
+                    if (claim != null)
+                    {
+                        identityContext.Type = IdentityType.Sub;
+                        identityContext.Identity = claim.Value;
+                        break;
+                    }
+                }
+            }
+
+            return identityContext;
         }
 
         private static string ParseRouteEndpoint(HttpRequest request)

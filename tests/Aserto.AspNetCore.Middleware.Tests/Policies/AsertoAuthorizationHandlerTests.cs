@@ -33,10 +33,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
             };
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(testConfig).Build();
             Action<AsertoOptions> options = new Action<AsertoOptions>(o => new AsertoOptions());
+            Action<AsertoAuthorizerOptions> authzOptions = new Action<AsertoAuthorizerOptions>(o => new AsertoAuthorizerOptions());
             configuration.GetSection("Aserto").Bind(options);
 
             var t = new TestAuthorizerAPIClient(false);
-            var builder = TestUtil.GetPolicyWebHostBuilder(t, options);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t, options, authzOptions);
             var testServer = new TestServer(builder);
 
             await Assert.ThrowsAsync<OptionsValidationException>(() => testServer.CreateClient().GetAsync("/foo"));
@@ -60,17 +61,21 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         {
             var t = new TestAuthorizerAPIClient(false);
 
-            Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
+            Action<AsertoAuthorizerOptions> options = new Action<AsertoAuthorizerOptions>(o =>
             {
                 o.ServiceUrl = "https://testserver.com";
                 o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
                 o.TenantID = "YOUR_TENANT_ID";
+            });
+
+            Action<AsertoOptions> asertoOptions = new Action<AsertoOptions>(o =>
+            {
                 o.PolicyName = "YOUR_POLICY_NAME";
                 o.Enabled = false;
                 o.PolicyRoot = "policyroot";
             });
 
-            var builder = TestUtil.GetPolicyWebHostBuilder(t, options);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t, asertoOptions, options);
             var testServer = new TestServer(builder);
 
             var response = await testServer.CreateClient().GetAsync("/foo");

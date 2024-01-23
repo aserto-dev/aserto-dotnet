@@ -58,7 +58,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets the Identity mapper for the check middleware.
         /// </summary>
-        public Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> IdentityMapper { get; set; }
+        public Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> IdentityMapper { get; set; } = AsertoOptionsDefaults.DefaultIdentityContext;
 
         /// <summary>
         /// Validates the provided options.
