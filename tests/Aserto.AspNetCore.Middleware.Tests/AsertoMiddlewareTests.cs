@@ -2,6 +2,7 @@ using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Extensions;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ using Xunit;
 
 namespace Aserto.AspNetCore.Middleware.Tests
 {
+    //TODO: needs endpoint configuration in test server
     public class AsertoMiddlewareTests
     {
         [Fact]
@@ -49,16 +51,21 @@ namespace Aserto.AspNetCore.Middleware.Tests
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoAuthorization(TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
+                    services.AddRouting();
                     services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>();
+                    services.AddAsertoAuthorization(TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
+                    services.AddControllers();                  
+                    
                 })
                 .Configure(app =>
                 {
+                    app.UseRouting();
                     app.UseAsertoAuthorization();
+                 
                 });
             var testServer = new TestServer(builder);
 
-            var response = await testServer.CreateClient().GetAsync("");
+            var response = await testServer.CreateClient().GetAsync("/test");
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
@@ -81,7 +88,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
                 });
             var testServer = new TestServer(builder);
 
-            var response = await testServer.CreateClient().GetAsync("");
+            var response = await testServer.CreateClient().GetAsync("/test");
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 

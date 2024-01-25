@@ -108,7 +108,15 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
         public async Task UriToPolicyPath(string policyRoot, string method, string uri, string expected)
         {
             var t = new TestAuthorizerAPIClient(policyRoot);
-            var builder = TestUtil.GetPolicyWebHostBuilder(t, new UriBuilder(uri).Path);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  options =>
+            {
+                options.PolicyRoot = policyRoot;
+            }, 
+            authoritzer =>
+            {
+
+            },
+            new UriBuilder(uri).Path);
             var testServer = new TestServer(builder);
 
             var testClient = testServer.CreateClient();
