@@ -81,7 +81,7 @@ namespace Aserto.AspNetCore.Middleware
                 var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
                 if (checkAttribute != null)
                 {
-                    this.GetOptionsFromAttribute(context, checkAttribute);
+                    this.ApplyOptionsFromAttribute(context, checkAttribute);
                     var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
 
                     var allowed = await this.client.IsAsync(request);
@@ -111,16 +111,16 @@ namespace Aserto.AspNetCore.Middleware
         }
 
         /// <summary>
-        /// Gets the resource mapper and/or the object mapper from check attribute.
+        /// Applies the resource mapper and/or the object mapper from check attribute to middleware options.
         /// </summary>
         /// <param name="context">The Http context.</param>
         /// <param name="attribute">The check attribute object.</param>
-        private void GetOptionsFromAttribute(HttpContext context, Extensions.CheckAttribute attribute)
+        private void ApplyOptionsFromAttribute(HttpContext context, Extensions.CheckAttribute attribute)
         {
-            var obj = new CheckObject();
+            var obj = new CheckParams();
             if (!string.IsNullOrEmpty(attribute.ObjectMapperName))
             {
-                Func<string, HttpRequest, CheckObject> objMapper = null;
+                Func<string, HttpRequest, CheckParams> objMapper = null;
                 this.options.ObjectMappingRules.TryGetValue(attribute.ObjectMapperName, out objMapper);
                 obj = objMapper(this.options.BaseOptions.PolicyRoot, context.Request);
             }

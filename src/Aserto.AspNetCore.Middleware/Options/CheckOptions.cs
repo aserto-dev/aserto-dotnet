@@ -33,6 +33,6 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets the object mapping rules used in check middleware.
         /// </summary>
-        public Dictionary<string, Func<string, HttpRequest, CheckObject>> ObjectMappingRules { get; set; } = new Dictionary<string, Func<string, HttpRequest, CheckObject>>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, Func<string, HttpRequest, CheckParams>> ObjectMappingRules { get; set; } = new Dictionary<string, Func<string, HttpRequest, CheckParams>>(StringComparer.OrdinalIgnoreCase);
     }
 }

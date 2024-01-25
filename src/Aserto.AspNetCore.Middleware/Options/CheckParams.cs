@@ -1,4 +1,4 @@
-// <copyright file="CheckObject.cs" company="Aserto Inc">
+// <copyright file="CheckParams.cs" company="Aserto Inc">
 // Copyright (c) Aserto Inc. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     /// <summary>
     /// Options for Aserto Check Middleware.
     /// </summary>
-    public class CheckObject
+    public class CheckParams
     {
         /// <summary>
         /// Gets or sets the Object ID.
