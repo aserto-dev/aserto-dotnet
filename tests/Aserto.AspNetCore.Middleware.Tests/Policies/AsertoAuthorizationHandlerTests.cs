@@ -40,7 +40,6 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
             var builder = TestUtil.GetPolicyWebHostBuilder(t, options, authzOptions);
 
             Assert.Throws<OptionsValidationException>(() => new TestServer(builder));
-
         }
 
         [Fact]

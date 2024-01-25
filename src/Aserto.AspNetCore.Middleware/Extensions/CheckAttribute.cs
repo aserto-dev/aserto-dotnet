@@ -43,13 +43,13 @@ namespace Aserto.AspNetCore.Middleware.Extensions
         public CheckAttribute(string objectID = "", string objectType = "", string relation = "", string objectIdFromPath = "", string customMapper = "")
         {
             // validate params
-            if (string.IsNullOrEmpty(objectID) && string.IsNullOrEmpty(objectIdFromPath))
+            if (string.IsNullOrEmpty(objectID) && string.IsNullOrEmpty(objectIdFromPath) && string.IsNullOrEmpty(customMapper))
             {
-                if (string.IsNullOrEmpty(customMapper))
-                {
-                    throw new ArgumentException("One of \"objectID\", \"objectIdFromPath\"  or \"customMapper\" must be provided");
-                }
+                throw new ArgumentException("One of \"objectID\", \"objectIdFromPath\"  or \"customMapper\" must be provided");
+            }
 
+            if (!string.IsNullOrEmpty(customMapper))
+            {
                 this.ObjectMapperName = customMapper;
             }
 

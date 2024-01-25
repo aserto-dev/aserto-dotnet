@@ -76,6 +76,7 @@ namespace Aserto.AspNetCore.Middleware.Extensions
             {
                 check.ResourceMappingRules = checkOptions.ResourceMappingRules;
                 check.BaseOptions = checkOptions.BaseOptions;
+                check.ObjectMappingRules = checkOptions.ObjectMappingRules;
             });
             services.TryAddSingleton<IAuthorizerAPIClient, AuthorizerAPIClient>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

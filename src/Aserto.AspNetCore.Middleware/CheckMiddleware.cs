@@ -119,8 +119,10 @@ namespace Aserto.AspNetCore.Middleware
             if (!string.IsNullOrEmpty(attribute.ObjectMapperName))
             {
                 Func<string, HttpRequest, CheckParams> objMapper = null;
-                this.options.ObjectMappingRules.TryGetValue(attribute.ObjectMapperName, out objMapper);
-                obj = objMapper(this.options.BaseOptions.PolicyRoot, context.Request);
+                if (this.options.ObjectMappingRules.TryGetValue(attribute.ObjectMapperName, out objMapper))
+                {
+                    obj = objMapper(this.options.BaseOptions.PolicyRoot, context.Request);
+                }
             }
 
             Func<string, HttpRequest, Struct> resourceMapper = null;
@@ -148,7 +150,11 @@ namespace Aserto.AspNetCore.Middleware
             this.options.BaseOptions.ResourceMapper = (policyRoot, httpRequest) =>
             {
                 Struct result = new Struct();
-                var resourceMapperValues = resourceMapper(policyRoot, httpRequest);
+                Struct resourceMapperValues = new Struct();
+                if (resourceMapper != null)
+                {
+                    resourceMapperValues = resourceMapper(policyRoot, httpRequest);
+                }
 
                 string objID = (!string.IsNullOrEmpty(obj.ObjectID)) ? obj.ObjectID : resourceMapperValues.Fields["object_id"].StringValue;
                 string objType = (!string.IsNullOrEmpty(obj.ObjectType)) ? obj.ObjectType : resourceMapperValues.Fields["object_type"].StringValue;
