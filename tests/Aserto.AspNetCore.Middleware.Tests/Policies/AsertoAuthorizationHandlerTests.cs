@@ -38,9 +38,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
 
             var t = new TestAuthorizerAPIClient(false);
             var builder = TestUtil.GetPolicyWebHostBuilder(t, options, authzOptions);
-            var testServer = new TestServer(builder);
 
-            await Assert.ThrowsAsync<OptionsValidationException>(() => testServer.CreateClient().GetAsync("/foo"));
+            Assert.Throws<OptionsValidationException>(() => new TestServer(builder));
 
         }
 
@@ -53,7 +52,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
 
             var response = await testServer.CreateClient().GetAsync("/foo");
 
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]

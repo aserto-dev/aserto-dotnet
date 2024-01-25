@@ -71,23 +71,18 @@ namespace Aserto.AspNetCore.Middleware.Tests
                         options.Authority = "https://domain";
                         options.Audience = "https://audience";
                     });
-
-                    services.AddAuthorization(options =>
-                    {
-                        options.AddPolicy("Aserto", policy => policy.Requirements.Add(new AsertoDecisionRequirement()));
-                    });
                     services.AddControllers();
                 })
                 .Configure(app =>
                 {
                     app.UseRouting();
-                    app.UseAuthorization();
+                    app.UseAsertoAuthorization();
                     app.UseEndpoints(endpoints =>
                     {
                         endpoints.Map(uri, async context =>
                         {
                             await context.Response.WriteAsync("Hello World");
-                        }).RequireAuthorization("Aserto");
+                        }).Add(endpointBuilder => endpointBuilder.Metadata.Add(new AsertoAttribute()));
                     });
                 });
             return builder;

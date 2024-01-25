@@ -16,7 +16,6 @@ using Xunit;
 
 namespace Aserto.AspNetCore.Middleware.Tests
 {
-    //TODO: needs endpoint configuration in test server
     public class AsertoMiddlewareTests
     {
         [Fact]
@@ -48,21 +47,12 @@ namespace Aserto.AspNetCore.Middleware.Tests
         [Fact]
         public async Task MissingEnabledRejects()
         {
-            var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddRouting();
-                    services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>();
-                    services.AddAsertoAuthorization(TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
-                    services.AddControllers();                  
-                    
-                })
-                .Configure(app =>
-                {
-                    app.UseRouting();
-                    app.UseAsertoAuthorization();
-                 
-                });
+            var t = new TestAuthorizerAPIClient(false);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  options =>
+            {
+                options.PolicyRoot = "pr";
+            }, 
+            authoritzer => {}, "/test");
             var testServer = new TestServer(builder);
 
             var response = await testServer.CreateClient().GetAsync("/test");
@@ -72,20 +62,13 @@ namespace Aserto.AspNetCore.Middleware.Tests
         [Fact]
         public async Task UnauthorizedRejects()
         {
-             var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddAsertoAuthorization(TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
-                    TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
-                    services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
-                    {
-                        return new TestAuthorizerAPIClient(false);
-                    });
-                })
-                .Configure(app =>
-                {
-                    app.UseAsertoAuthorization();
-                });
+            var t = new TestAuthorizerAPIClient(false);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  options =>
+            {
+                options.PolicyRoot = "pr";
+                options.Enabled = true;
+            }, 
+            authoritzer => {}, "/test");
             var testServer = new TestServer(builder);
 
             var response = await testServer.CreateClient().GetAsync("/test");
@@ -109,22 +92,10 @@ namespace Aserto.AspNetCore.Middleware.Tests
                 o.TenantID = "YOUR_TENANT_ID";
             });
 
-            var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddAsertoAuthorization(asertoOptions, authzOptions);
-                    TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
-                    services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
-                    {
-                        return new TestAuthorizerAPIClient(false);
-                    });
-                })
-                .Configure(app =>
-                {
-                    app.UseAsertoAuthorization();
-                });
-            var server = new TestServer(builder);
-            var response = await server.CreateClient().GetAsync("/");
+            var t = new TestAuthorizerAPIClient("pr");
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  asertoOptions, authzOptions, "/");
+            var testServer = new TestServer(builder);
+            var response = await testServer.CreateClient().GetAsync("/");
         }
 
         [Fact]
