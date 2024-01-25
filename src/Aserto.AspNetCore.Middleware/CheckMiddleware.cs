@@ -76,36 +76,34 @@ namespace Aserto.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
         {
             var endpoint = context.GetEndpoint();
-            if (endpoint != null)
+            if (endpoint == null)
             {
-                var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
-                if (checkAttribute != null)
-                {
-                    this.ApplyOptionsFromAttribute(context, checkAttribute);
-                    var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
+                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                await this.next.Invoke(context);
+                return;
+            }
 
-                    var allowed = await this.client.IsAsync(request);
-                    if (!allowed && this.options.BaseOptions.Enabled)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
-                        await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
-                    }
-                    else
-                    {
-                        this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
-                        await this.next.Invoke(context);
-                    }
-                }
-                else
-                {
-                    this.logger.LogInformation($"Endpoint information for: {context.Request.Path} does not have check attribute - allowing request");
-                    await this.next.Invoke(context);
-                }
+            var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
+            if (checkAttribute == null)
+            {
+                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} does not have check attribute - allowing request");
+                await this.next.Invoke(context);
+                return;
+            }
+
+            this.ApplyOptionsFromAttribute(context, checkAttribute);
+            var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
+
+            var allowed = await this.client.IsAsync(request);
+            if (!allowed && this.options.BaseOptions.Enabled)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
+                await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
             }
             else
             {
-                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
                 await this.next.Invoke(context);
             }
         }
