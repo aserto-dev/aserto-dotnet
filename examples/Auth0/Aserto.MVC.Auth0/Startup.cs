@@ -96,7 +96,8 @@ namespace Aserto.MVC.Auth0
             });
 
             //Aserto options handling
-            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options));
+            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options),
+            authorizerConfig => Configuration.GetSection("Aserto").Bind(authorizerConfig));
 
             //end Aserto options handling
 

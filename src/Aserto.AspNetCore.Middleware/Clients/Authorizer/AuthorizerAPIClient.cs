@@ -29,23 +29,16 @@ namespace Aserto.AspNetCore.Middleware.Clients
     public class AuthorizerAPIClient : IAuthorizerAPIClient
     {
         private readonly AuthorizerClient authorizerClient;
-        private readonly AsertoOptions options;
-        private readonly string decision;
+        private readonly AsertoAuthorizerOptions options;
         private readonly ILogger logger;
-        private readonly string policyName;
-        private readonly string policyInstanceLabel;
-        private readonly string policyRoot;
-        private readonly Func<string, HttpRequest, string> policyPathMapper;
-        private readonly Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> identityMapper;
-        private Func<string, HttpRequest, Struct> resourceMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizerAPIClient"/> class.
         /// </summary>
-        /// <param name="options">Authorizer API Client options <see cref="AsertoOptions"/>.</param>
+        /// <param name="options">Authorizer API Client options <see cref="AsertoAuthorizerOptions"/>.</param>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> for this class.</param>
         /// <param name="authorizerClient">Optional <see cref="AuthorizerClient"/> to use when sending requests.</param>
-        public AuthorizerAPIClient(IOptions<AsertoOptions> options, ILoggerFactory loggerFactory, AuthorizerClient authorizerClient = null)
+        public AuthorizerAPIClient(IOptions<AsertoAuthorizerOptions> options, ILoggerFactory loggerFactory, AuthorizerClient authorizerClient = null)
         {
             this.logger = loggerFactory.CreateLogger<AuthorizerAPIClient>();
 
@@ -82,57 +75,6 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
                 this.authorizerClient = new AuthorizerClient(invoker);
             }
-
-            this.decision = this.options.Decision;
-            this.policyName = this.options.PolicyName;
-            this.policyInstanceLabel = this.options.PolicyInstanceLabel;
-            this.policyPathMapper = this.options.PolicyPathMapper;
-            this.resourceMapper = this.options.ResourceMapper;
-            this.identityMapper = this.options.IdentityMapper;
-            this.policyRoot = this.options.PolicyRoot;
-        }
-
-        /// <inheritdoc/>
-        public string Decision
-        {
-            get { return this.decision; }
-        }
-
-        /// <inheritdoc/>
-        public string PolicyName
-        {
-            get { return this.policyName; }
-        }
-
-        /// <inheritdoc/>
-        public string PolicyInstanceLabel
-        {
-            get { return this.policyInstanceLabel; }
-        }
-
-        /// <inheritdoc/>
-        public string PolicyRoot
-        {
-            get { return this.policyRoot; }
-        }
-
-        /// <inheritdoc/>
-        public Func<string, HttpRequest, string> PolicyPathMapper
-        {
-            get { return this.policyPathMapper; }
-        }
-
-        /// <inheritdoc/>
-        public Func<string, HttpRequest, Struct> ResourceMapper
-        {
-            get { return this.resourceMapper; }
-            set { this.resourceMapper = value; }
-        }
-
-        /// <inheritdoc/>
-        public Func<ClaimsPrincipal, IEnumerable<string>, IdentityContext> IdentityMapper
-        {
-            get { return this.identityMapper; }
         }
 
         /// <inheritdoc/>

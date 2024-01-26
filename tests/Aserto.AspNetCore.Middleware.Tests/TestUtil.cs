@@ -18,40 +18,48 @@ namespace Aserto.AspNetCore.Middleware.Tests
 {
     public static class TestUtil
     {
-        internal static Action<AsertoOptions> GetValidConfig()
+        internal static Action<AsertoOptions> GetValidAsertoConfig()
         {
             Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
             {
-                o.ServiceUrl = "https://testserver.com";
-                o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
-                o.TenantID = "YOUR_TENANT_ID";
                 o.PolicyName = "YOUR_POLICY_NAME";
                 o.PolicyRoot = "pr";
             });
             return options;
         }
 
+        internal static Action<AsertoAuthorizerOptions> GetValidAuthorizerConfig()
+        {
+            Action<AsertoAuthorizerOptions> options = new Action<AsertoAuthorizerOptions>(o =>
+            {
+                o.ServiceUrl = "https://testserver.com";
+                o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
+                o.TenantID = "YOUR_TENANT_ID";
+            });
+            return options;
+        }
+
         internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient)
         {
-            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, TestUtil.GetValidConfig());
+            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
         }
 
         internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient, string uri)
         {
-            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, TestUtil.GetValidConfig(), uri);
+            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig(), uri);
         }
 
-        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient, Action<AsertoOptions> options)
+        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizerAPIClient, Action<AsertoOptions> asertoOptions, Action<AsertoAuthorizerOptions> authzOptions)
         {
-            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, options, "/foo");
+            return GetPolicyWebHostBuilder(testAuthorizerAPIClient, asertoOptions, authzOptions, "/foo");
         }
 
-        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizationAPIClient, Action<AsertoOptions> options, string uri)
+        internal static IWebHostBuilder GetPolicyWebHostBuilder(TestAuthorizerAPIClient testAuthorizationAPIClient, Action<AsertoOptions> options, Action<AsertoAuthorizerOptions> authzOpts, string uri)
         {
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoAuthorization(options);
+                    services.AddAsertoAuthorization(options, authzOpts);
                     TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
                     services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
                     {
@@ -63,23 +71,18 @@ namespace Aserto.AspNetCore.Middleware.Tests
                         options.Authority = "https://domain";
                         options.Audience = "https://audience";
                     });
-
-                    services.AddAuthorization(options =>
-                    {
-                        options.AddPolicy("Aserto", policy => policy.Requirements.Add(new AsertoDecisionRequirement()));
-                    });
                     services.AddControllers();
                 })
                 .Configure(app =>
                 {
                     app.UseRouting();
-                    app.UseAuthorization();
+                    app.UseAsertoAuthorization();
                     app.UseEndpoints(endpoints =>
                     {
                         endpoints.Map(uri, async context =>
                         {
                             await context.Response.WriteAsync("Hello World");
-                        }).RequireAuthorization("Aserto");
+                        }).Add(endpointBuilder => endpointBuilder.Metadata.Add(new AsertoAttribute()));
                     });
                 });
             return builder;

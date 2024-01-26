@@ -52,18 +52,16 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// </summary>
         /// <param name="options">Authorizer API Client options <see cref="AsertoDirectoryOptions"/>.</param>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> for this class.</param>
-        public Directory(IOptions<AsertoDirectoryOptions> options, ILoggerFactory loggerFactory)
+        public Directory(AsertoDirectoryOptions options, ILoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger<Directory>();
 
-            if (options != null)
-            {
-                this.options = options.Value;
-            }
-            else
+            if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
+
+            this.options = options;
 
             if (!AsertoDirectoryOptions.Validate(this.options))
             {

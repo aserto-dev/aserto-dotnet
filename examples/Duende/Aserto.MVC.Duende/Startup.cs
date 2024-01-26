@@ -58,7 +58,8 @@ namespace Aserto.MVC.Duende
                 });
 
             //Aserto options handling
-            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options));
+            services.AddAsertoAuthorization(options => Configuration.GetSection("Aserto").Bind(options),
+            authorizerConfig => Configuration.GetSection("Aserto").Bind(authorizerConfig));
             //end Aserto options handling
             services.AddAuthorization(options =>
             {

@@ -18,6 +18,7 @@ namespace Aserto.AspNetCore.Middleware
     using Aserto.AspNetCore.Middleware.Extensions;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
+    using Aserto.Authorizer.V2.API;
     using Aserto.Directory.Reader.V3;
     using Google.Protobuf.WellKnownTypes;
     using Grpc.Core;
@@ -60,6 +61,11 @@ namespace Aserto.AspNetCore.Middleware
             });
             this.client = client;
             this.resourceMappingRules = this.options.ResourceMappingRules;
+
+            if (this.options.BaseOptions.PolicyPathMapper == null)
+            {
+                this.options.BaseOptions.PolicyPathMapper = this.DefaultCheckPolicyPathMapper;
+            }
         }
 
         /// <summary>
@@ -70,39 +76,111 @@ namespace Aserto.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
         {
             var endpoint = context.GetEndpoint();
-            if (endpoint != null)
+            if (endpoint == null)
             {
-                var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                await this.next.Invoke(context);
+                return;
+            }
 
-                Func<string, HttpRequest, Struct> resourceMapper = null;
-                if (checkAttribute != null)
-                {
-                    if (this.resourceMappingRules.TryGetValue(checkAttribute.ResourceMapper, out resourceMapper))
-                    {
-                        this.client.ResourceMapper = resourceMapper;
-                    }
-                }
+            var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
+            if (checkAttribute == null)
+            {
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} does not have check attribute - allowing request");
+                await this.next.Invoke(context);
+                return;
+            }
 
-                var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes);
+            this.ApplyOptionsFromAttribute(context, checkAttribute);
+            var request = this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options.BaseOptions);
 
-                var allowed = await this.client.IsAsync(request);
-                if (!allowed && this.options.BaseOptions.Enabled)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
-                    await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
-                }
-                else
-                {
-                    this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
-                    await this.next.Invoke(context);
-                }
+            var allowed = await this.client.IsAsync(request);
+            if (!allowed && this.options.BaseOptions.Enabled)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
+                await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
             }
             else
             {
-                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                this.logger.LogDebug($"Decision to allow: {context.Request.Path} was: {allowed}");
                 await this.next.Invoke(context);
             }
+        }
+
+        /// <summary>
+        /// Applies the resource mapper and/or the object mapper from check attribute to middleware options.
+        /// </summary>
+        /// <param name="context">The Http context.</param>
+        /// <param name="attribute">The check attribute object.</param>
+        private void ApplyOptionsFromAttribute(HttpContext context, Extensions.CheckAttribute attribute)
+        {
+            var obj = new CheckParams();
+            if (!string.IsNullOrEmpty(attribute.ObjectMapperName))
+            {
+                Func<string, HttpRequest, CheckParams> objMapper = null;
+                if (this.options.ObjectMappingRules.TryGetValue(attribute.ObjectMapperName, out objMapper))
+                {
+                    obj = objMapper(this.options.BaseOptions.PolicyRoot, context.Request);
+                }
+            }
+
+            Func<string, HttpRequest, Struct> resourceMapper = null;
+            if (attribute.ResourceMapperName != null)
+            {
+                this.resourceMappingRules.TryGetValue(attribute.ResourceMapperName, out resourceMapper);
+            }
+            else if (attribute.ResourceMapper != null)
+            {
+                resourceMapper = attribute.ResourceMapper;
+            }
+
+            if (!string.IsNullOrEmpty(obj.SubjectType) && obj.SubjectType != "user")
+            {
+                this.options.BaseOptions.IdentityMapper = (identity, supportedClaimTypes) =>
+                {
+                    var identityContext = new IdentityContext();
+                    identityContext.Type = IdentityType.Manual;
+                    identityContext.Identity = obj.SubjectID;
+
+                    return identityContext;
+                };
+            }
+
+            this.options.BaseOptions.ResourceMapper = (policyRoot, httpRequest) =>
+            {
+                Struct result = new Struct();
+                Struct resourceMapperValues = new Struct();
+                if (resourceMapper != null)
+                {
+                    resourceMapperValues = resourceMapper(policyRoot, httpRequest);
+                }
+
+                string objID = (!string.IsNullOrEmpty(obj.ObjectID)) ? obj.ObjectID : resourceMapperValues.Fields["object_id"].StringValue;
+                string objType = (!string.IsNullOrEmpty(obj.ObjectType)) ? obj.ObjectType : resourceMapperValues.Fields["object_type"].StringValue;
+                string relation = (!string.IsNullOrEmpty(obj.Relation)) ? obj.Relation : resourceMapperValues.Fields["relation"].StringValue;
+
+                result.Fields.Add("object_type", Value.ForString(objType));
+                result.Fields.Add("relation", Value.ForString(relation));
+                result.Fields.Add("object_id", Value.ForString(objID));
+                if (!string.IsNullOrEmpty(obj.SubjectType))
+                {
+                    result.Fields.Add("subject_type", Value.ForString(obj.SubjectType));
+                }
+
+                return result;
+            };
+        }
+
+        /// <summary>
+        /// Default policy mapper for Check Middleware.
+        /// </summary>
+        /// <param name="policyRoot">The policy root.</param>
+        /// <param name="request">The Incoming Http request.</param>
+        /// <returns>The policy path.</returns>
+        private string DefaultCheckPolicyPathMapper(string policyRoot, HttpRequest request)
+        {
+            return policyRoot + "." + "check";
         }
     }
 }

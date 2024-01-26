@@ -15,6 +15,7 @@ namespace Aserto.AspNetCore.Middleware
     using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
+    using Google.Api;
     using Grpc.Core;
     using Grpc.Net.Client;
     using Microsoft.AspNetCore.Http;
@@ -62,7 +63,23 @@ namespace Aserto.AspNetCore.Middleware
         /// <returns>The task.</returns>
         public async Task Invoke(HttpContext context)
         {
-            var allowed = await this.client.IsAsync(this.client.BuildIsRequest(context, Utils.DefaultClaimTypes));
+            var endpoint = context.GetEndpoint();
+            if (endpoint == null)
+            {
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                await this.next.Invoke(context);
+                return;
+            }
+
+            var asertoAttribute = endpoint.Metadata.GetMetadata<Extensions.AsertoAttribute>();
+            if (asertoAttribute == null)
+            {
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} does not have aserto attribute - allowing request");
+                await this.next.Invoke(context);
+                return;
+            }
+
+            var allowed = await this.client.IsAsync(this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options));
             if (!allowed && this.options.Enabled)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -71,7 +88,7 @@ namespace Aserto.AspNetCore.Middleware
             }
             else
             {
-                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                this.logger.LogDebug($"Decision to allow: {context.Request.Path} was: {allowed}");
                 await this.next.Invoke(context);
             }
         }

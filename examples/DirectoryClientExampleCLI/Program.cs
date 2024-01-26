@@ -30,9 +30,7 @@ var insecure = Convert.ToBoolean(config.GetSection("Directory:Insecure").Value);
 
 AsertoDirectoryOptions options = new AsertoDirectoryOptions(serviceURL, apikey, tenantID, insecure);
 
-var opt = Microsoft.Extensions.Options.Options.Create(options);
-
-var client = new Aserto.AspNetCore.Middleware.Clients.Directory.V3.Directory(opt, logggerFactory);
+var client = new Aserto.AspNetCore.Middleware.Clients.Directory.V3.Directory(options, logggerFactory);
 
 // Example get objects async call
 var result = await client.GetObjectsAsync("user", 1);

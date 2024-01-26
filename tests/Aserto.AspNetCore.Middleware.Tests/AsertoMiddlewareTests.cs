@@ -2,6 +2,7 @@ using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Extensions;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
               .ConfigureServices(services =>
               {
                   services = null;
-                  services.AddAsertoAuthorization(TestUtil.GetValidConfig());
+                  services.AddAsertoAuthorization(TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
               });
             await Assert.ThrowsAsync<ArgumentNullException>(() => new TestServer(builder).SendAsync(_ => { }));
         }
@@ -33,11 +34,12 @@ namespace Aserto.AspNetCore.Middleware.Tests
         public async Task NullConfigThrows()
         {
             Action<AsertoOptions> configuration = null;
+            Action<AsertoAuthorizerOptions> authzConfiguration = null;
 
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoAuthorization(configuration);
+                    services.AddAsertoAuthorization(configuration, authzConfiguration);
                 });
             await Assert.ThrowsAsync<ArgumentNullException>(() => new TestServer(builder).SendAsync(_ => { }));
         }
@@ -45,74 +47,55 @@ namespace Aserto.AspNetCore.Middleware.Tests
         [Fact]
         public async Task MissingEnabledRejects()
         {
-            var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddAsertoAuthorization(TestUtil.GetValidConfig());
-                    services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>();
-                })
-                .Configure(app =>
-                {
-                    app.UseAsertoAuthorization();
-                });
+            var t = new TestAuthorizerAPIClient(false);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  options =>
+            {
+                options.PolicyRoot = "pr";
+            }, 
+            authoritzer => {}, "/test");
             var testServer = new TestServer(builder);
 
-            var response = await testServer.CreateClient().GetAsync("");
+            var response = await testServer.CreateClient().GetAsync("/test");
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]
         public async Task UnauthorizedRejects()
         {
-             var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddAsertoAuthorization(TestUtil.GetValidConfig());
-                    TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
-                    services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
-                    {
-                        return new TestAuthorizerAPIClient(false);
-                    });
-                })
-                .Configure(app =>
-                {
-                    app.UseAsertoAuthorization();
-                });
+            var t = new TestAuthorizerAPIClient(false);
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  options =>
+            {
+                options.PolicyRoot = "pr";
+                options.Enabled = true;
+            }, 
+            authoritzer => {}, "/test");
             var testServer = new TestServer(builder);
 
-            var response = await testServer.CreateClient().GetAsync("");
+            var response = await testServer.CreateClient().GetAsync("/test");
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]
         public async Task AsertoAuthorizationDisabledAllows()
         {
-            Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
+            Action<AsertoOptions> asertoOptions = new Action<AsertoOptions>(o =>
+            {
+                o.PolicyName = "YOUR_POLICY_NAME";
+                o.PolicyRoot = "policyRoot";
+                o.Enabled = false;
+            });
+
+            Action<AsertoAuthorizerOptions> authzOptions = new Action<AsertoAuthorizerOptions>(o =>
             {
                 o.ServiceUrl = "https://testserver.com";
                 o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
                 o.TenantID = "YOUR_TENANT_ID";
-                o.PolicyName = "YOUR_POLICY_NAME";
-                o.Enabled = false;
-                o.PolicyRoot = "policyRoot";
             });
 
-            var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddAsertoAuthorization(options);
-                    TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
-                    services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
-                    {
-                        return new TestAuthorizerAPIClient(false);
-                    });
-                })
-                .Configure(app =>
-                {
-                    app.UseAsertoAuthorization();
-                });
-            var server = new TestServer(builder);
-            var response = await server.CreateClient().GetAsync("/");
+            var t = new TestAuthorizerAPIClient("pr");
+            var builder = TestUtil.GetPolicyWebHostBuilder(t,  asertoOptions, authzOptions, "/");
+            var testServer = new TestServer(builder);
+            var response = await testServer.CreateClient().GetAsync("/");
         }
 
         [Fact]
@@ -121,7 +104,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoAuthorization(TestUtil.GetValidConfig());
+                    services.AddAsertoAuthorization(TestUtil.GetValidAsertoConfig(), TestUtil.GetValidAuthorizerConfig());
                     TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
                     services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
                     {

@@ -23,12 +23,17 @@ namespace Aserto.AspNetCore.Middleware.Tests
         public async Task AsertoCheckAllows()
         {
 
+            Action<AsertoAuthorizerOptions> authzOptions = new Action<AsertoAuthorizerOptions>(o =>
+            {
+                o.ServiceUrl = "https://testserver.com";
+                o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
+                o.TenantID = "YOUR_TENANT_ID";
+            });
             var checkOptions = new CheckOptions();
             checkOptions.BaseOptions = new AsertoOptions();
             checkOptions.BaseOptions.PolicyName = "test";
             checkOptions.BaseOptions.PolicyInstanceLabel = "test";
             checkOptions.BaseOptions.PolicyRoot = "testRoot";
-            checkOptions.BaseOptions.ServiceUrl = "https://testserver.com";
             checkOptions.BaseOptions.Enabled = false;
 
             var checkResourceRules = new Dictionary<string, Func<string, HttpRequest, Struct>>();
@@ -47,7 +52,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAsertoCheckAuthorization(checkOptions);
+                    services.AddAsertoCheckAuthorization(checkOptions, authzOptions);
                     TestAuthorizerAPIClient t = new TestAuthorizerAPIClient();
                     services.AddSingleton<IAuthorizerAPIClient, TestAuthorizerAPIClient>(t =>
                     {

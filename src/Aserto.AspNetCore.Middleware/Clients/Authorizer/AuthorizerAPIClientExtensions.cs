@@ -9,6 +9,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
     using System;
     using System.Collections.Generic;
     using System.Security.Claims;
+    using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
     using Aserto.Authorizer.V2.API;
     using Microsoft.AspNetCore.Http;
@@ -24,10 +25,11 @@ namespace Aserto.AspNetCore.Middleware.Clients
         /// <param name="client">The <see cref="IAuthorizerAPIClient"/>.</param>
         /// <param name="context">The <see cref="HttpContext"/> to use for building the Is request.</param>
         /// <param name="supportedClaimTypes">A list of Claim types to check.</param>
+        /// <param name="options"><see cref="AsertoOptions"/>.A list of options to build the request.</param>
         /// <returns>A new <see cref="IsRequest"/> configured for the <paramref name="context"/>.</returns>
-        public static IsRequest BuildIsRequest(this IAuthorizerAPIClient client, HttpContext context, IEnumerable<string> supportedClaimTypes)
+        public static IsRequest BuildIsRequest(this IAuthorizerAPIClient client, HttpContext context, IEnumerable<string> supportedClaimTypes, AsertoOptions options)
         {
-            return BuildIsRequest(client, context.Request, context.User, supportedClaimTypes);
+            return BuildIsRequest(client, context.Request, context.User, supportedClaimTypes, options);
         }
 
         /// <summary>
@@ -37,8 +39,9 @@ namespace Aserto.AspNetCore.Middleware.Clients
         /// <param name="request">The <see cref="HttpRequest"/> to use for building the Is request.</param>
         /// <param name="identity">The <see cref="ClaimsPrincipal"/> to use for building the Is request.</param>
         /// <param name="supportedClaimTypes">A list of Claim types to check.</param>
+        /// <param name="options">The <see cref="AsertoOptions"/> A list of options to build the request.</param>
         /// <returns>A new <see cref="IsRequest"/> configured for the <paramref name="request"/> and the <paramref name="identity"/>.</returns>
-        public static IsRequest BuildIsRequest(this IAuthorizerAPIClient client, HttpRequest request, ClaimsPrincipal identity, IEnumerable<string> supportedClaimTypes)
+        public static IsRequest BuildIsRequest(this IAuthorizerAPIClient client, HttpRequest request, ClaimsPrincipal identity, IEnumerable<string> supportedClaimTypes, AsertoOptions options)
         {
             if (request == null)
             {
@@ -54,26 +57,26 @@ namespace Aserto.AspNetCore.Middleware.Clients
             var policyContext = new PolicyContext();
 
             var identityContext = new IdentityContext();
-            if (client.IdentityMapper == null)
+            if (options.IdentityMapper == null)
             {
                 identityContext = BuildIdentityContext(identity, supportedClaimTypes);
             }
             else
             {
-                identityContext = client.IdentityMapper(identity, supportedClaimTypes);
+                identityContext = options.IdentityMapper(identity, supportedClaimTypes);
             }
 
-            var policyPath = client.PolicyPathMapper(client.PolicyRoot, request);
+            var policyPath = options.PolicyPathMapper(options.PolicyRoot, request);
             policyContext.Path = policyPath;
 
-            policyContext.Decisions.Add(client.Decision);
+            policyContext.Decisions.Add(options.Decision);
 
-            if (!string.IsNullOrEmpty(client.PolicyName) || !string.IsNullOrEmpty(client.PolicyInstanceLabel))
+            if (!string.IsNullOrEmpty(options.PolicyName) || !string.IsNullOrEmpty(options.PolicyInstanceLabel))
             {
                 var policyInstance = new PolicyInstance
                 {
-                    InstanceLabel = client.PolicyInstanceLabel,
-                    Name = client.PolicyInstanceLabel,
+                    InstanceLabel = options.PolicyInstanceLabel,
+                    Name = options.PolicyInstanceLabel,
                 };
 
                 isRequest.PolicyInstance = policyInstance;
@@ -82,7 +85,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
             isRequest.IdentityContext = identityContext;
             isRequest.PolicyContext = policyContext;
 
-            isRequest.ResourceContext = client.ResourceMapper(client.PolicyRoot, request);
+            isRequest.ResourceContext = options.ResourceMapper(options.PolicyRoot, request);
 
             return isRequest;
         }
