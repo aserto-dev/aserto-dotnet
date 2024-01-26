@@ -66,7 +66,7 @@ namespace Aserto.AspNetCore.Middleware
             var endpoint = context.GetEndpoint();
             if (endpoint == null)
             {
-                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} is null - allowing request");
                 await this.next.Invoke(context);
                 return;
             }
@@ -74,7 +74,7 @@ namespace Aserto.AspNetCore.Middleware
             var asertoAttribute = endpoint.Metadata.GetMetadata<Extensions.AsertoAttribute>();
             if (asertoAttribute == null)
             {
-                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} does not have aserto attribute - allowing request");
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} does not have aserto attribute - allowing request");
                 await this.next.Invoke(context);
                 return;
             }
@@ -82,14 +82,13 @@ namespace Aserto.AspNetCore.Middleware
             var allowed = await this.client.IsAsync(this.client.BuildIsRequest(context, Utils.DefaultClaimTypes, this.options));
             if (!allowed && this.options.Enabled)
             {
-                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 var errorMessage = Encoding.UTF8.GetBytes(HttpStatusCode.Forbidden.ToString());
                 await context.Response.Body.WriteAsync(errorMessage, 0, errorMessage.Length);
             }
             else
             {
-                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                this.logger.LogDebug($"Decision to allow: {context.Request.Path} was: {allowed}");
                 await this.next.Invoke(context);
             }
         }

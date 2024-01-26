@@ -78,7 +78,7 @@ namespace Aserto.AspNetCore.Middleware
             var endpoint = context.GetEndpoint();
             if (endpoint == null)
             {
-                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} is null - allowing request");
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} is null - allowing request");
                 await this.next.Invoke(context);
                 return;
             }
@@ -86,7 +86,7 @@ namespace Aserto.AspNetCore.Middleware
             var checkAttribute = endpoint.Metadata.GetMetadata<Extensions.CheckAttribute>();
             if (checkAttribute == null)
             {
-                this.logger.LogInformation($"Endpoint information for: {context.Request.Path} does not have check attribute - allowing request");
+                this.logger.LogDebug($"Endpoint information for: {context.Request.Path} does not have check attribute - allowing request");
                 await this.next.Invoke(context);
                 return;
             }
@@ -103,7 +103,7 @@ namespace Aserto.AspNetCore.Middleware
             }
             else
             {
-                this.logger.LogInformation($"Decision to allow: {context.Request.Path} was: {allowed}");
+                this.logger.LogDebug($"Decision to allow: {context.Request.Path} was: {allowed}");
                 await this.next.Invoke(context);
             }
         }
