@@ -28,7 +28,7 @@ var serviceURL = config.GetSection("Directory:ServiceUrl").Value;
 var tenantID = config.GetSection("Directory:TenantID").Value;
 var insecure = Convert.ToBoolean(config.GetSection("Directory:Insecure").Value);
 
-AsertoDirectoryOptions options = new AsertoDirectoryOptions(serviceURL, apikey, tenantID, insecure);
+AsertoDirectoryOptions options = new AsertoDirectoryOptions(serviceURL: serviceURL, apiKey: apikey, tenantID: tenantID, insecure: insecure);
 
 var client = new Aserto.AspNetCore.Middleware.Clients.Directory.V3.Directory(options, logggerFactory);
 

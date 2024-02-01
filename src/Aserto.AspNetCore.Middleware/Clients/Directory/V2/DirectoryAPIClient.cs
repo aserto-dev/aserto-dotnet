@@ -53,10 +53,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (!AsertoDirectoryOptions.Validate(this.options))
-            {
-                throw new ArgumentException("wrong url provided for directory service urls");
-            }
+            AsertoDirectoryOptions.Validate(this.options);
 
             var grpcChannelOptions = new GrpcChannelOptions { };
 

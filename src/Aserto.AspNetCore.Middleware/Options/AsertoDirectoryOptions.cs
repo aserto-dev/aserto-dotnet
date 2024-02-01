@@ -111,37 +111,37 @@ namespace Aserto.AspNetCore.Middleware.Options
             string.IsNullOrEmpty(options.DirectoryWriterUrl) && string.IsNullOrEmpty(options.DirectoryImporterUrl) &&
             string.IsNullOrEmpty(options.DirectoryExporterUrl) && string.IsNullOrEmpty(options.DirectoryModelUrl))
             {
-                return false;
+                throw new ArgumentException("no url provided for directory services");
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryServiceUrl) && !ValidateUri(options.DirectoryServiceUrl))
             {
-                return false;
+                throw new ArgumentException("wrong url provided for directory service url");
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryReaderUrl) && !ValidateUri(options.DirectoryReaderUrl))
             {
-                return false;
+                throw new ArgumentException("wrong url provided for directory reader service");
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) && !ValidateUri(options.DirectoryWriterUrl))
             {
-                return false;
+                throw new ArgumentException("wrong url provided for directory writer service");
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryImporterUrl) && !ValidateUri(options.DirectoryImporterUrl))
             {
-                return false;
+                throw new ArgumentException("wrong url provided for directory importer service");
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryExporterUrl) && !ValidateUri(options.DirectoryExporterUrl))
             {
-                return false;
+                throw new ArgumentException("wrong url provided for directory exporter service");
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryModelUrl) && !ValidateUri(options.DirectoryModelUrl))
             {
-                return false;
+                throw new ArgumentException("wrong url provided for directory model service");
             }
 
             return true;

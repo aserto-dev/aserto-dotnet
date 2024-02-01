@@ -71,7 +71,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
             options.Value.DirectoryWriterUrl = "https://localhost:9292";
             var dirClient = new DirectoryAPIClient(options, logggerFactory);
-            Assert.ThrowsAsync<ArgumentException>(() => dirClient.GetObjectAsync("type", "key"));
+            await Assert.ThrowsAsync<ArgumentException>(() => dirClient.GetObjectAsync("type", "key"));
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             options.Value.DirectoryWriterUrl = "https://localhost:9292";
             options.Value.DirectoryServiceUrl = "https://localhost:9292";
             var dirClient = new DirectoryAPIClient(options, logggerFactory);
-            Assert.ThrowsAsync<Grpc.Core.RpcException>(() => dirClient.GetObjectAsync("type", "key"));
+            await Assert.ThrowsAsync<Grpc.Core.RpcException>(() => dirClient.GetObjectAsync("type", "key"));
         }
     }
 }
