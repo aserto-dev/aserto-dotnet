@@ -99,8 +99,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Validates the provided options.
         /// </summary>
         /// <param name="options">Directory API Client options <see cref="AsertoDirectoryOptions"/>.</param>
-        /// <returns>true if the configuration is valid.</returns>
-        internal static bool Validate(AsertoDirectoryOptions options)
+        internal static void Validate(AsertoDirectoryOptions options)
         {
             if (options is null)
             {
@@ -144,7 +143,7 @@ namespace Aserto.AspNetCore.Middleware.Options
                 throw new ArgumentException("wrong url provided for directory model service");
             }
 
-            return true;
+            return;
         }
 
         private static bool ValidateUri(string uri)
