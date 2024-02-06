@@ -26,23 +26,6 @@ namespace Aserto.AspNetCore.Middleware.Tests.Policies
     public class AsertoAuthorizationHandlerTests
     {
         [Fact]
-        public async Task MissingConfigThrows()
-        {
-            var testConfig = new Dictionary<string, string>
-            {
-            };
-            var configuration = new ConfigurationBuilder().AddInMemoryCollection(testConfig).Build();
-            Action<AsertoOptions> options = new Action<AsertoOptions>(o => new AsertoOptions());
-            Action<AsertoAuthorizerOptions> authzOptions = new Action<AsertoAuthorizerOptions>(o => new AsertoAuthorizerOptions());
-            configuration.GetSection("Aserto").Bind(options);
-
-            var t = new TestAuthorizerAPIClient(false);
-            var builder = TestUtil.GetPolicyWebHostBuilder(t, options, authzOptions);
-
-            Assert.Throws<OptionsValidationException>(() => new TestServer(builder));
-        }
-
-        [Fact]
         public async Task UnauthorizedRejects()
         {
             var t = new TestAuthorizerAPIClient(false);

@@ -30,16 +30,16 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Initializes a new instance of the <see cref="AsertoDirectoryOptions"/> class.
         /// </summary>
         /// <param name="serviceURL">Directory service url.</param>
+        /// <param name="readerURL">Directory reader url.</param>
+        /// <param name="writerURL">Directory writer url.</param>
+        /// <param name="importerURL">Directory importer url.</param>
+        /// <param name="exporterURL">Directory exporter url.</param>
+        /// <param name="modelURL">Directory model url.</param>
         /// <param name="apiKey">Directory service API Key.</param>
         /// <param name="tenantID">Directory service tenant ID.</param>
         /// <param name="insecure">Bool indicating whether insecure service connections are allowed when using SSL.</param>
-        public AsertoDirectoryOptions(string serviceURL, string apiKey, string tenantID, bool insecure)
+        public AsertoDirectoryOptions(string serviceURL = "", string readerURL = "", string writerURL = "", string importerURL = "", string exporterURL = "", string modelURL = "", string apiKey = "", string tenantID = "", bool insecure = false)
         {
-            if (serviceURL != string.Empty)
-            {
-                this.DirectoryServiceUrl = serviceURL;
-            }
-
             this.DirectoryApiKey = apiKey;
 
             if (tenantID != string.Empty)
@@ -53,7 +53,32 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets a value indicating the Directory Service URL.
         /// </summary>
-        public string DirectoryServiceUrl { get; set; } = AsertoOptionsDefaults.DirectoryServiceUrl;
+        public string DirectoryServiceUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the Directory reader URL.
+        /// </summary>
+        public string DirectoryReaderUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the Directory writer URL.
+        /// </summary>
+        public string DirectoryWriterUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the Directory importer URL.
+        /// </summary>
+        public string DirectoryImporterUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the Directory exporter URL.
+        /// </summary>
+        public string DirectoryExporterUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the Directory model URL.
+        /// </summary>
+        public string DirectoryModelUrl { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Directory API Key.
@@ -74,20 +99,51 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// Validates the provided options.
         /// </summary>
         /// <param name="options">Directory API Client options <see cref="AsertoDirectoryOptions"/>.</param>
-        /// <returns>true if the configuration is valid.</returns>
-        internal static bool Validate(AsertoDirectoryOptions options)
+        internal static void Validate(AsertoDirectoryOptions options)
         {
             if (options is null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (!ValidateUri(options.DirectoryServiceUrl))
+            if (string.IsNullOrEmpty(options.DirectoryServiceUrl) && string.IsNullOrEmpty(options.DirectoryReaderUrl) &&
+            string.IsNullOrEmpty(options.DirectoryWriterUrl) && string.IsNullOrEmpty(options.DirectoryImporterUrl) &&
+            string.IsNullOrEmpty(options.DirectoryExporterUrl) && string.IsNullOrEmpty(options.DirectoryModelUrl))
             {
-                return false;
+                throw new ArgumentException("no url provided for directory services");
             }
 
-            return true;
+            if (!string.IsNullOrEmpty(options.DirectoryServiceUrl) && !ValidateUri(options.DirectoryServiceUrl))
+            {
+                throw new ArgumentException("wrong url provided for directory service url");
+            }
+
+            if (!string.IsNullOrEmpty(options.DirectoryReaderUrl) && !ValidateUri(options.DirectoryReaderUrl))
+            {
+                throw new ArgumentException("wrong url provided for directory reader service");
+            }
+
+            if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) && !ValidateUri(options.DirectoryWriterUrl))
+            {
+                throw new ArgumentException("wrong url provided for directory writer service");
+            }
+
+            if (!string.IsNullOrEmpty(options.DirectoryImporterUrl) && !ValidateUri(options.DirectoryImporterUrl))
+            {
+                throw new ArgumentException("wrong url provided for directory importer service");
+            }
+
+            if (!string.IsNullOrEmpty(options.DirectoryExporterUrl) && !ValidateUri(options.DirectoryExporterUrl))
+            {
+                throw new ArgumentException("wrong url provided for directory exporter service");
+            }
+
+            if (!string.IsNullOrEmpty(options.DirectoryModelUrl) && !ValidateUri(options.DirectoryModelUrl))
+            {
+                throw new ArgumentException("wrong url provided for directory model service");
+            }
+
+            return;
         }
 
         private static bool ValidateUri(string uri)

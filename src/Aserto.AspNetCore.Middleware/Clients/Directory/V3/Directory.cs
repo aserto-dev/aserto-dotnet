@@ -63,10 +63,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
 
             this.options = options;
 
-            if (!AsertoDirectoryOptions.Validate(this.options))
-            {
-                throw new ArgumentException("wrong url provided for DirectoryServiceUrl");
-            }
+            AsertoDirectoryOptions.Validate(this.options);
 
             var grpcChannelOptions = new GrpcChannelOptions { };
 
@@ -83,17 +80,88 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
 
             var interceptor = new HeaderInterceptor(this.options.DirectoryApiKey, this.options.DirectoryTenantID);
 
-            var channel = GrpcChannel.ForAddress(
-                this.options.DirectoryServiceUrl,
-                grpcChannelOptions);
+            var channels = this.BuildGrpcChannels(this.options, grpcChannelOptions);
 
-            var invoker = channel.Intercept(interceptor);
+            GrpcChannel readerChannel = null;
+            GrpcChannel writerChannel = null;
+            GrpcChannel importerChannel = null;
+            GrpcChannel exporterChannel = null;
+            GrpcChannel modelChannel = null;
+            GrpcChannel serviceChannel = null;
+            if (!string.IsNullOrEmpty(this.options.DirectoryReaderUrl) && channels.TryGetValue(this.options.DirectoryReaderUrl, out readerChannel))
+            {
+                var invoker = readerChannel.Intercept(interceptor);
+                this.readerClient = new ReaderClient(invoker);
+            }
+            else if (!string.IsNullOrEmpty(this.options.DirectoryServiceUrl) && channels.TryGetValue(this.options.DirectoryServiceUrl, out serviceChannel))
+            {
+                var invoker = serviceChannel.Intercept(interceptor);
+                this.readerClient = new ReaderClient(invoker);
+            }
+            else
+            {
+                this.readerClient = null;
+            }
 
-            this.readerClient = new ReaderClient(invoker);
-            this.writerClient = new WriterClient(invoker);
-            this.importerClient = new ImporterClient(invoker);
-            this.exporterClient = new ExporterClient(invoker);
-            this.modelClient = new ModelClient(invoker);
+            if (!string.IsNullOrEmpty(this.options.DirectoryWriterUrl) && channels.TryGetValue(this.options.DirectoryWriterUrl, out writerChannel))
+            {
+                var invoker = writerChannel.Intercept(interceptor);
+                this.writerClient = new WriterClient(invoker);
+            }
+            else if (!string.IsNullOrEmpty(this.options.DirectoryServiceUrl) && channels.TryGetValue(this.options.DirectoryServiceUrl, out serviceChannel))
+            {
+                var invoker = serviceChannel.Intercept(interceptor);
+                this.writerClient = new WriterClient(invoker);
+            }
+            else
+            {
+                this.writerClient = null;
+            }
+
+            if (!string.IsNullOrEmpty(this.options.DirectoryImporterUrl) && channels.TryGetValue(this.options.DirectoryImporterUrl, out importerChannel))
+            {
+                var invoker = importerChannel.Intercept(interceptor);
+                this.importerClient = new ImporterClient(invoker);
+            }
+            else if (!string.IsNullOrEmpty(this.options.DirectoryServiceUrl) && channels.TryGetValue(this.options.DirectoryServiceUrl, out serviceChannel))
+            {
+                var invoker = serviceChannel.Intercept(interceptor);
+                this.importerClient = new ImporterClient(invoker);
+            }
+            else
+            {
+                this.importerClient = null;
+            }
+
+            if (!string.IsNullOrEmpty(this.options.DirectoryExporterUrl) && channels.TryGetValue(this.options.DirectoryExporterUrl, out exporterChannel))
+            {
+                var invoker = exporterChannel.Intercept(interceptor);
+                this.exporterClient = new ExporterClient(invoker);
+            }
+            else if (!string.IsNullOrEmpty(this.options.DirectoryServiceUrl) && channels.TryGetValue(this.options.DirectoryServiceUrl, out serviceChannel))
+            {
+                var invoker = serviceChannel.Intercept(interceptor);
+                this.exporterClient = new ExporterClient(invoker);
+            }
+            else
+            {
+                this.exporterClient = null;
+            }
+
+            if (!string.IsNullOrEmpty(this.options.DirectoryModelUrl) && channels.TryGetValue(this.options.DirectoryModelUrl, out modelChannel))
+            {
+                var invoker = modelChannel.Intercept(interceptor);
+                this.modelClient = new ModelClient(invoker);
+            }
+            else if (!string.IsNullOrEmpty(this.options.DirectoryServiceUrl) && channels.TryGetValue(this.options.DirectoryServiceUrl, out serviceChannel))
+            {
+                var invoker = serviceChannel.Intercept(interceptor);
+                this.modelClient = new ModelClient(invoker);
+            }
+            else
+            {
+                this.modelClient = null;
+            }
         }
 
         /// <summary>
@@ -162,7 +230,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.ObjectId = id;
             req.ObjectType = type;
             req.WithRelations = withRelations;
-            var result = await this.readerClient.GetObjectAsync(req);
+            var result = await this.ReaderClient().GetObjectAsync(req);
 
             return result;
         }
@@ -174,7 +242,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             var page = BuildPaginationRequest(pageSize, pageToken);
             req.ObjectType = type;
             req.Page = page;
-            var result = await this.readerClient.GetObjectsAsync(req);
+            var result = await this.ReaderClient().GetObjectsAsync(req);
 
             return result;
         }
@@ -191,7 +259,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.ObjectId = objId;
             req.ObjectType = objType;
             req.WithObjects = withObjects;
-            var result = await this.readerClient.GetRelationAsync(req);
+            var result = await this.ReaderClient().GetRelationAsync(req);
 
             return result;
         }
@@ -209,7 +277,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.WithObjects = withObjects;
             req.Relation = relationName;
             req.Page = page;
-            var result = await this.readerClient.GetRelationsAsync(req);
+            var result = await this.ReaderClient().GetRelationsAsync(req);
 
             return result;
         }
@@ -224,7 +292,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.ObjectType = objType;
             req.Permission = permissionName;
             req.Trace = trace;
-            var result = await this.readerClient.CheckPermissionAsync(req);
+            var result = await this.ReaderClient().CheckPermissionAsync(req);
 
             return result;
         }
@@ -239,7 +307,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.ObjectType = objType;
             req.Relation = relationName;
             req.Trace = trace;
-            var result = await this.readerClient.CheckRelationAsync(req);
+            var result = await this.ReaderClient().CheckRelationAsync(req);
 
             return result;
         }
@@ -255,7 +323,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.Trace = trace;
             req.Relation = relationName;
 
-            var result = await this.readerClient.CheckAsync(req);
+            var result = await this.ReaderClient().CheckAsync(req);
             return result;
         }
 
@@ -264,7 +332,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         {
             var req = new SetObjectRequest();
             req.Object = BuildObject(type, id, displayName, properties, hash);
-            var result = await this.writerClient.SetObjectAsync(req);
+            var result = await this.WriterClient().SetObjectAsync(req);
 
             return result;
         }
@@ -276,7 +344,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.ObjectId = id;
             req.ObjectType = type;
             req.WithRelations = withRelations;
-            var result = await this.writerClient.DeleteObjectAsync(req);
+            var result = await this.WriterClient().DeleteObjectAsync(req);
 
             return result;
         }
@@ -286,7 +354,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         {
             var req = new SetRelationRequest();
             req.Relation = BuildRelation(objType, objId, relationName, subjectType, subjectId, subjectRelation);
-            var result = await this.writerClient.SetRelationAsync(req);
+            var result = await this.WriterClient().SetRelationAsync(req);
 
             return result;
         }
@@ -301,7 +369,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
             req.SubjectRelation = subjectRelation;
             req.ObjectId = objId;
             req.ObjectType = objType;
-            var result = await this.writerClient.DeleteRelationAsync(req);
+            var result = await this.WriterClient().DeleteRelationAsync(req);
 
             return result;
         }
@@ -315,7 +383,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         {
             var response = new GetManifestResponse();
 
-            var stream = this.modelClient.GetManifest(request);
+            var stream = this.ModelClient().GetManifest(request);
             while (await stream.ResponseStream.MoveNext())
             {
                 if (stream.ResponseStream.Current.Metadata != null)
@@ -353,7 +421,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         {
             var response = new SetManifestResponse();
 
-            var stream = this.modelClient.SetManifest();
+            var stream = this.ModelClient().SetManifest();
             await stream.RequestStream.WriteAsync(request);
             await stream.RequestStream.CompleteAsync();
             var responseTask = await stream.ResponseAsync;
@@ -369,7 +437,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <returns>Deletes the directory manifest.</returns>
         public async Task<DeleteManifestResponse> DeleteManifestAsync(DeleteManifestRequest request)
         {
-            var result = await this.modelClient.DeleteManifestAsync(request);
+            var result = await this.ModelClient().DeleteManifestAsync(request);
             return result;
         }
 
@@ -380,7 +448,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <returns>Returns an async enumerable of import response data.</returns>
         public async IAsyncEnumerable<ImportResponse> ImportAsync(ImportRequest request)
         {
-            var duplex = this.importerClient.Import();
+            var duplex = this.ImporterClient().Import();
 
             await duplex.RequestStream.WriteAsync(request);
             await duplex.RequestStream.CompleteAsync();
@@ -399,12 +467,104 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <returns>Returns an async streaming call to export data.</returns>
         public async IAsyncEnumerable<ExportResponse> ExportAsync(ExportRequest request)
         {
-           var stream = this.exporterClient.Export(request);
+           var stream = this.ExporterClient().Export(request);
            while (await stream.ResponseStream.MoveNext())
            {
                 var response = stream.ResponseStream.Current;
                 yield return response;
             }
+        }
+
+        private ReaderClient ReaderClient()
+        {
+            if (this.readerClient == null)
+            {
+                throw new ArgumentException("reader service address not specified");
+            }
+
+            return this.readerClient;
+        }
+
+        private WriterClient WriterClient()
+        {
+            if (this.writerClient == null)
+            {
+                throw new ArgumentException("writer service address not specified");
+            }
+
+            return this.writerClient;
+        }
+
+        private ModelClient ModelClient()
+        {
+            if (this.modelClient == null)
+            {
+                throw new ArgumentException("model service address not specified");
+            }
+
+            return this.modelClient;
+        }
+
+        private ImporterClient ImporterClient()
+        {
+            if (this.importerClient == null)
+            {
+                throw new ArgumentException("importer service address not specified");
+            }
+
+            return this.importerClient;
+        }
+
+        private ExporterClient ExporterClient()
+        {
+            if (this.exporterClient == null)
+            {
+                throw new ArgumentException("exporter service address not specified");
+            }
+
+            return this.exporterClient;
+        }
+
+        private Dictionary<string, GrpcChannel> BuildGrpcChannels(AsertoDirectoryOptions opts, GrpcChannelOptions grpcChannelOptions)
+        {
+            Dictionary<string, GrpcChannel> channels = new Dictionary<string, GrpcChannel>();
+            if (!string.IsNullOrEmpty(opts.DirectoryReaderUrl))
+            {
+                channels[opts.DirectoryReaderUrl] = GrpcChannel.ForAddress(
+                this.options.DirectoryServiceUrl, grpcChannelOptions);
+            }
+
+            if (!string.IsNullOrEmpty(opts.DirectoryWriterUrl))
+            {
+                channels[opts.DirectoryWriterUrl] = GrpcChannel.ForAddress(
+                this.options.DirectoryWriterUrl, grpcChannelOptions);
+            }
+
+            if (!string.IsNullOrEmpty(opts.DirectoryImporterUrl))
+            {
+                channels[opts.DirectoryImporterUrl] = GrpcChannel.ForAddress(
+                this.options.DirectoryImporterUrl, grpcChannelOptions);
+            }
+
+            if (!string.IsNullOrEmpty(opts.DirectoryExporterUrl))
+            {
+                channels[opts.DirectoryExporterUrl] = GrpcChannel.ForAddress(
+                this.options.DirectoryExporterUrl, grpcChannelOptions);
+            }
+
+            if (!string.IsNullOrEmpty(opts.DirectoryModelUrl))
+            {
+                channels[opts.DirectoryModelUrl] = GrpcChannel.ForAddress(
+                this.options.DirectoryModelUrl, grpcChannelOptions);
+            }
+
+            if (channels.Count != 5 && !string.IsNullOrEmpty(opts.DirectoryServiceUrl))
+            {
+                channels[opts.DirectoryServiceUrl] = GrpcChannel.ForAddress(
+                this.options.DirectoryServiceUrl, grpcChannelOptions);
+            }
+
+            return channels;
         }
     }
 }

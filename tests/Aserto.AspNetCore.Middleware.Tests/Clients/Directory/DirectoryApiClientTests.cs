@@ -63,5 +63,26 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
 
             Assert.Throws<ArgumentException>(() => new DirectoryAPIClient(opt, logggerFactory));
         }
+
+        [Fact]
+        async public void AccesingReaderWithoutAddressThrows()
+        {
+            var logggerFactory = new NullLoggerFactory();
+            var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
+            options.Value.DirectoryWriterUrl = "https://localhost:9292";
+            var dirClient = new DirectoryAPIClient(options, logggerFactory);
+            await Assert.ThrowsAsync<ArgumentException>(() => dirClient.GetObjectAsync("type", "key"));
+        }
+
+        [Fact]
+        async public void AccesingReaderWithServiceAddressDoesNotThrow()
+        {
+            var logggerFactory = new NullLoggerFactory();
+            var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
+            options.Value.DirectoryWriterUrl = "https://localhost:9292";
+            options.Value.DirectoryServiceUrl = "https://localhost:9292";
+            var dirClient = new DirectoryAPIClient(options, logggerFactory);
+            await Assert.ThrowsAsync<Grpc.Core.RpcException>(() => dirClient.GetObjectAsync("type", "key"));
+        }
     }
 }
