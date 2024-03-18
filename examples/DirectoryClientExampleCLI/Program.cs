@@ -28,15 +28,19 @@ var serviceURL = config.GetSection("Directory:ServiceUrl").Value;
 var tenantID = config.GetSection("Directory:TenantID").Value;
 var insecure = Convert.ToBoolean(config.GetSection("Directory:Insecure").Value);
 
-AsertoDirectoryOptions options = new AsertoDirectoryOptions(serviceURL: serviceURL, apiKey: apikey, tenantID: tenantID, insecure: insecure);
+AsertoDirectoryOptions options = new AsertoDirectoryOptions(apiKey: apikey, tenantID: tenantID, insecure: insecure);
+options.DirectoryServiceUrl= serviceURL;
 
 var client = new Aserto.AspNetCore.Middleware.Clients.Directory.V3.Directory(options, logggerFactory);
+
+// Example of get graph call with citadel users with explanation
+//var graphResult = await client.GetGraphAsync("user", "rick@the-citadel.com", "manager", "user", "morty@the-citadel.com","", true);
+//Console.WriteLine(graphResult.ToString());
 
 // Example get objects async call
 var result = await client.GetObjectsAsync("user", 1);
 
 Console.WriteLine(result.ToString());
-
 // Example of get manifest request
 var request = new GetManifestRequest();
 

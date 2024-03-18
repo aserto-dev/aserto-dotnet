@@ -8,6 +8,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
@@ -473,6 +474,23 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
                 var response = stream.ResponseStream.Current;
                 yield return response;
             }
+        }
+
+        /// <inheritdoc/>
+        public async Task<GetGraphResponse> GetGraphAsync(string objType, string objId, string relationName, string subjectType, string subjectId, string subjectRelation, bool explain = false, bool trace = false)
+        {
+            var request = new GetGraphRequest();
+            request.ObjectType = objType;
+            request.ObjectId = objId;
+            request.Relation = relationName;
+            request.SubjectType = subjectType;
+            request.SubjectId = subjectId;
+            request.SubjectRelation = subjectRelation;
+            request.Explain = explain;
+            request.Trace = trace;
+
+            var response = await this.ReaderClient().GetGraphAsync(request);
+            return response;
         }
 
         private ReaderClient ReaderClient()
