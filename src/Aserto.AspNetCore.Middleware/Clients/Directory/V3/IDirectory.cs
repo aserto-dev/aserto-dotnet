@@ -158,6 +158,20 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         Task<DeleteRelationResponse> DeleteRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", string subjectRelation = "");
 
         /// <summary>
+        /// Get graph of directory objects.
+        /// </summary>
+        /// <param name="objType">The type of the object.</param>
+        /// <param name="objId">The Id of the object.</param>
+        /// <param name="relationName">The name of the relation type.</param>
+        /// <param name="subjectType">The type of the subject.</param>
+        /// <param name="subjectId">The Id of the subject.</param>
+        /// <param name="subjectRelation">The relaton of the subject.</param>
+        /// <param name="explain">Explain the graph ressult.</param>
+        /// <param name="trace">Trace the graph result.</param>
+        /// <returns>A GetGraphResponse object.</returns>
+        Task<GetGraphResponse> GetGraphAsync(string objType, string objId, string relationName, string subjectType, string subjectId, string subjectRelation, bool explain = false, bool trace = false);
+
+        /// <summary>
         /// Get the directory manifest.
         /// </summary>
         /// <param name="request">Get manifest request.</param>
