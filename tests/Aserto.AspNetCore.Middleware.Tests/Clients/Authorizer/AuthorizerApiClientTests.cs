@@ -21,14 +21,14 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
     public class AuthorizerApiClientTests
     {
         [Fact]
-        public void RequestNullThrows()
+        public async Task RequestNullThrows()
         {
             var mockClient = new Moq.Mock<AuthorizerClient>();
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoAuthorizerOptions());
             var logggerFactory = new NullLoggerFactory();
             IsRequest isRequest = null;
 
-            Assert.ThrowsAsync<ArgumentNullException>(() => new AuthorizerAPIClient(options, logggerFactory, mockClient.Object).IsAsync(isRequest));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => new AuthorizerAPIClient(options, logggerFactory, mockClient.Object).IsAsync(isRequest));
         }
 
         [Fact]
