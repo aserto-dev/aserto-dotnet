@@ -284,6 +284,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<CheckPermissionResponse> CheckPermissionAsync(string objType = "", string objId = "", string permissionName = "", string subjectType = "", string subjectId = "", bool trace = false)
         {
             var req = new CheckPermissionRequest();
@@ -299,6 +300,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<CheckRelationResponse> CheckRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", bool trace = false)
         {
             var req = new CheckRelationRequest();

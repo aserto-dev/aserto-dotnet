@@ -115,6 +115,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="properties">A struct representing the properties bag of the object.</param>
         /// <param name="hash">The hash of the object.</param>
         /// <returns>A new <see cref="Aserto.Directory.Common.V2.Object"/>.</returns>
+        [Obsolete]
         public static Aserto.Directory.Common.V2.Object BuildObject(string key, string type, string displayName, Struct properties = null, string hash = "")
         {
             var obj = new Aserto.Directory.Common.V2.Object();
@@ -133,6 +134,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="key">The key of the object.</param>
         /// <param name="type">The type of the object.</param>
         /// <returns>A new <see cref="ObjectIdentifier"/>.</returns>
+        [Obsolete]
         public static ObjectIdentifier BuildObjectIdentifier(string key, string type)
         {
             var obj = new ObjectIdentifier();
@@ -150,6 +152,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="relationTypeName">The type name of the relation.</param>
         /// <param name="hash">The hash of the object.</param>
         /// <returns>A new <see cref="Relation"/>.</returns>
+        [Obsolete]
         public static Relation BuildRelation(ObjectIdentifier subject, ObjectIdentifier obj, string relationTypeName, string hash = "")
         {
             var relation = new Relation();
@@ -167,6 +170,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="name">The name of the relation type.</param>
         /// <param name="objectType">The type of the object.</param>
         /// <returns>A new <see cref="RelationTypeIdentifier"/>.</returns>
+        [Obsolete]
         public static RelationTypeIdentifier BuildRelationTypeIdentifier(string name, string objectType)
         {
             var relType = new RelationTypeIdentifier();
@@ -183,6 +187,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="obj">The <see cref="ObjectIdentifier"/> object of the relation.</param>
         /// <param name="relationType">The <see cref="RelationTypeIdentifier"/> describing the relation between the first two objects.</param>
         /// <returns>A new <see cref="RelationIdentifier"/>.</returns>
+        [Obsolete]
         public static RelationIdentifier BuildRelationIdentifier(ObjectIdentifier subject, ObjectIdentifier obj, RelationTypeIdentifier relationType)
         {
             var relation = new RelationIdentifier();
@@ -199,6 +204,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="size">The number of items per page.</param>
         /// <param name="token">The token representing the page from which to start reading.</param>
         /// <returns>A new <see cref="PaginationRequest"/>.</returns>
+        [Obsolete]
         public static PaginationRequest BuildPaginationRequest(int size, string token)
         {
             var page = new PaginationRequest();
@@ -209,6 +215,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<GetObjectResponse> GetObjectAsync(string key, string type)
         {
             var objIdentifier = BuildObjectIdentifier(key, type);
@@ -220,6 +227,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<GetObjectsResponse> GetObjectsAsync(string type, int pageSize, string pageToken = "")
         {
             var req = new GetObjectsRequest();
@@ -234,6 +242,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<GetRelationResponse> GetRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "", bool withObjects = false)
         {
             var subjectIdentifier = BuildObjectIdentifier(subjectKey, subjectType);
@@ -249,6 +258,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<GetRelationsResponse> GetRelationsAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "", int pageSize = 0, string pageToken = "")
         {
             var subjectIdentifier = BuildObjectIdentifier(subjectKey, subjectType);
@@ -265,6 +275,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<CheckPermissionResponse> CheckPermissionAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string permissionName = "", bool trace = false)
         {
             var subject = BuildObjectIdentifier(subjectKey, subjectType);
@@ -282,6 +293,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<CheckRelationResponse> CheckRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "", bool trace = false)
         {
             var subject = BuildObjectIdentifier(subjectKey, subjectType);
@@ -298,6 +310,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<SetObjectResponse> SetObjectAsync(string key, string type, string displayName = "", Struct properties = null, string hash = "")
         {
             var obj = BuildObject(key, type, displayName, properties, hash);
@@ -309,6 +322,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<DeleteObjectResponse> DeleteObjectAsync(string key, string type)
         {
             var obj = BuildObjectIdentifier(key, type);
@@ -320,6 +334,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<SetRelationResponse> SetRelationAsync(string subjectKey, string subjectType, string objKey, string objType, string relationTypeName, string hash = "")
         {
             var subject = BuildObjectIdentifier(subjectKey, subjectType);
@@ -333,6 +348,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         }
 
         /// <inheritdoc/>
+        [Obsolete]
         public async Task<DeleteRelationResponse> DeleteRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "")
         {
             var subjectIdentifier = BuildObjectIdentifier(subjectKey, subjectType);

@@ -65,7 +65,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         }
 
         [Fact]
-        async public void AccesingReaderWithoutAddressThrows()
+        [Obsolete]
+        async public Task AccesingReaderWithoutAddressThrows()
         {
             var logggerFactory = new NullLoggerFactory();
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
@@ -75,7 +76,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         }
 
         [Fact]
-        async public void AccesingReaderWithServiceAddressDoesNotThrow()
+        [Obsolete]
+        async public Task AccesingReaderWithServiceAddressDoesNotThrow()
         {
             var logggerFactory = new NullLoggerFactory();
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());

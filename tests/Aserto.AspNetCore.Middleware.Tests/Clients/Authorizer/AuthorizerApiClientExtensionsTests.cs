@@ -1,6 +1,6 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.V2.API;
+using Aserto.Authorizer.V2.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

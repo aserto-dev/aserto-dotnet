@@ -1,7 +1,7 @@
 ﻿using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Authorizer.V2;
-using Aserto.Authorizer.V2.API;
+using Aserto.Authorizer.V2.Api;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Http;
 using System;

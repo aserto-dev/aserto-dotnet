@@ -10,7 +10,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.Collections.Generic;
     using System.Security.Claims;
     using System.Text.RegularExpressions;
-    using Aserto.Authorizer.V2.API;
+    using Aserto.Authorizer.V2.Api;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
