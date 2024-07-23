@@ -4,7 +4,7 @@
     <AssemblyTitle>Aserto.AspNetCore.Middleware</AssemblyTitle>
     <AssemblyName>Aserto.AspNetCore.Middleware</AssemblyName>
     <PackageId>Aserto.AspNetCore.Middleware</PackageId>
-    <TargetFrameworks>net7;net8</TargetFrameworks>
+    <TargetFrameworks>net6;net7;net8</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
  
@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.5" />
-    <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.2" />
+    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.6" />
+    <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.3" />
     <PackageReference Include="Google.Protobuf" Version="3.27.2" />
-    <PackageReference Include="Grpc.Core.Api" Version="2.63.0" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
+    <PackageReference Include="Grpc.Core.Api" Version="2.64.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.64.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
