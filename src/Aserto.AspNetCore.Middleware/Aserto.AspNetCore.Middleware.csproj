@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.6" />
-    <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.3" />
+    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.7" />
+    <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.4" />
     <PackageReference Include="Google.Protobuf" Version="3.27.2" />
     <PackageReference Include="Grpc.Core.Api" Version="2.64.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.64.0" />
@@ -49,6 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
