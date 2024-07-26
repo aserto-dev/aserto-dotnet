@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Aserto.AspNetCore.Middleware\Aserto.AspNetCore.Middleware.csproj" />
+    <ProjectReference Include="..\..\src\Aserto.Clients\Aserto.Clients.csproj" />
     <Content Include="Assets\appsettings.json">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

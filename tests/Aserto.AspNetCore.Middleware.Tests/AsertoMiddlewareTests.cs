@@ -1,7 +1,7 @@
-using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Extensions;
-using Aserto.AspNetCore.Middleware.Options;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
+using Aserto.Clients.Authorizer;
+using Aserto.Clients.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -34,7 +34,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
         public async Task NullConfigThrows()
         {
             Action<AsertoOptions> configuration = null;
-            Action<AsertoAuthorizerOptions> authzConfiguration = null;
+            Action< Aserto.Clients.Options.AsertoAuthorizerOptions> authzConfiguration = null;
 
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>

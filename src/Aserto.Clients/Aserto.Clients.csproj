@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- <Import Project="..\..\build\common.props" /> -->
+  <PropertyGroup>
+	  <AssemblyTitle>Aserto.Clients</AssemblyTitle>
+	  <AssemblyName>Aserto.Clients</AssemblyName>
+	  <PackageId>Aserto.Clients</PackageId>
+	  <TargetFrameworks>net6;net7;net8;netstandard2.0</TargetFrameworks>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<WarningLevel>4</WarningLevel>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<!-- Generate the nupkg package on Release build -->
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.7" />
+    <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />	
+  </ItemGroup>
+	
+  <ItemGroup>
+	<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

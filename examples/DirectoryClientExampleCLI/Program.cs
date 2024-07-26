@@ -1,7 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Aserto.AspNetCore.Middleware.Clients.Directory.V3;
 using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Clients.Directory;
+using Aserto.Clients.Options;
 using Aserto.Directory.Exporter.V3;
 using Aserto.Directory.Importer.V3;
 using Aserto.Directory.Model.V3;
@@ -31,7 +32,7 @@ var insecure = Convert.ToBoolean(config.GetSection("Directory:Insecure").Value);
 AsertoDirectoryOptions options = new AsertoDirectoryOptions(apiKey: apikey, tenantID: tenantID, insecure: insecure);
 options.DirectoryServiceUrl= serviceURL;
 
-var client = new Aserto.AspNetCore.Middleware.Clients.Directory.V3.Directory(options, logggerFactory);
+var client = new Aserto.Clients.Directory.V3.Directory(options, logggerFactory);
 
 // Example of get graph call with citadel users with explanation
 //var graphResult = await client.GetGraphAsync("user", "rick@the-citadel.com", "manager", "user", "morty@the-citadel.com","", true);

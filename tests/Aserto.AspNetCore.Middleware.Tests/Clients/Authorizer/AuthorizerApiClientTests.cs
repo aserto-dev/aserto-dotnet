@@ -1,6 +1,7 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.AspNetCore.Middleware.Options;
+﻿using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Authorizer.V2;
+using Aserto.Clients.Authorizer;
+using Aserto.Clients.Options;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using Grpc.Core.Testing;

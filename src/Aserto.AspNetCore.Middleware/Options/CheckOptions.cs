@@ -11,6 +11,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.Security.Claims;
     using System.Text;
     using Aserto.Authorizer.V2.Api;
+    using Aserto.Clients.Options;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Options;

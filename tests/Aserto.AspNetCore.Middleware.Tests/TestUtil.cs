@@ -1,5 +1,4 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.AspNetCore.Middleware.Tests.Testing;
+﻿using Aserto.AspNetCore.Middleware.Tests.Testing;
 using Aserto.AspNetCore.Middleware.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Aserto.AspNetCore.Middleware.Policies;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Clients.Options;
+using Aserto.Clients.Authorizer;
 
 namespace Aserto.AspNetCore.Middleware.Tests
 {
@@ -24,6 +25,9 @@ namespace Aserto.AspNetCore.Middleware.Tests
             {
                 o.PolicyName = "YOUR_POLICY_NAME";
                 o.PolicyRoot = "pr";
+                o.PolicyPathMapper = Aserto.AspNetCore.Middleware.Options.Defaults.DefaultPolicyPathMapper;
+                o.IdentityMapper = Aserto.AspNetCore.Middleware.Options.Defaults.DefaultIdentityContext;
+                o.ResourceMapper = Aserto.AspNetCore.Middleware.Options.Defaults.DefaultResourceMapper;
             });
             return options;
         }
@@ -34,7 +38,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
             {
                 o.ServiceUrl = "https://testserver.com";
                 o.AuthorizerApiKey = "YOUR_AUTHORIZER_API_KEY";
-                o.TenantID = "YOUR_TENANT_ID";
+                o.TenantID = "YOUR_TENANT_ID";                
             });
             return options;
         }

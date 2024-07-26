@@ -1,5 +1,5 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.AspNetCore.Middleware.Options;
+﻿using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Clients.Authorizer;
 using Aserto.Authorizer.V2;
 using Aserto.Authorizer.V2.Api;
 using Google.Protobuf.WellKnownTypes;
@@ -58,11 +58,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
 
         public Func<string, HttpRequest, string> PolicyPathMapper
         {
-            get { return AsertoOptionsDefaults.DefaultPolicyPathMapper; }
+            get { return Defaults.DefaultPolicyPathMapper; }
         }
 
         public Func<string, HttpRequest, Struct> ResourceMapper {
-            get { return AsertoOptionsDefaults.DefaultResourceMapper; }
+            get { return Defaults.DefaultResourceMapper; }
             set { }
         }
 

@@ -1,7 +1,7 @@
-using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Directory.Reader.V2;
 using Aserto.Directory.Common.V2;
+using Aserto.Clients.Options;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using Grpc.Core.Testing;
@@ -18,7 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using static Aserto.Directory.Reader.V2.Reader;
-using Aserto.AspNetCore.Middleware.Clients.Directory.V2;
+using Aserto.Clients.Directory.V2;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {

@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients
+namespace Aserto.Clients.Authorizer
 {
     using System;
     using System.Collections.Generic;

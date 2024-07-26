@@ -4,21 +4,21 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients
+namespace Aserto.Clients.Authorizer
 {
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
     using Aserto.Authorizer.V2.Api;
+    using Aserto.Clients.Options;
+    using Aserto.Clients.Interceptors;
     using Google.Protobuf.WellKnownTypes;
     using Grpc.Core;
     using Grpc.Core.Interceptors;
     using Grpc.Net.Client;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using static Aserto.Authorizer.V2.Authorizer;
@@ -40,7 +40,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
         /// <param name="authorizerClient">Optional <see cref="AuthorizerClient"/> to use when sending requests.</param>
         public AuthorizerAPIClient(IOptions<AsertoAuthorizerOptions> options, ILoggerFactory loggerFactory, AuthorizerClient authorizerClient = null)
         {
-            this.logger = loggerFactory.CreateLogger<AuthorizerAPIClient>();
+            logger = loggerFactory.CreateLogger<AuthorizerAPIClient>();
 
             this.options = options.Value;
 
@@ -58,8 +58,7 @@ namespace Aserto.AspNetCore.Middleware.Clients
                 {
                     var httpHandler = new HttpClientHandler
                     {
-                        ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
                     };
 
                     grpcChannelOptions = new GrpcChannelOptions { HttpHandler = httpHandler };
@@ -87,20 +86,20 @@ namespace Aserto.AspNetCore.Middleware.Clients
 
             if (isRequest.IdentityContext.Type == IdentityType.None)
             {
-                this.logger.LogDebug("No Authentication type provided. Using Anonymous identity context.");
+                logger.LogDebug("No Authentication type provided. Using Anonymous identity context.");
             }
             else
             {
-                this.logger.LogDebug($"Authentication type set to {isRequest.IdentityContext.Type}. Using identity ${isRequest.IdentityContext.Identity}");
+                logger.LogDebug($"Authentication type set to {isRequest.IdentityContext.Type}. Using identity ${isRequest.IdentityContext.Identity}");
             }
 
-            this.logger.LogDebug($"Policy Context path resolved to: {isRequest.PolicyContext.Path}");
-            this.logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
-            var result = await this.authorizerClient.IsAsync(isRequest);
+            logger.LogDebug($"Policy Context path resolved to: {isRequest.PolicyContext.Path}");
+            logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
+            var result = await authorizerClient.IsAsync(isRequest);
 
             if (result.Decisions.Count == 0)
             {
-                this.logger.LogDebug("No decisions were returned by the authorizer.");
+                logger.LogDebug("No decisions were returned by the authorizer.");
                 return false;
             }
 

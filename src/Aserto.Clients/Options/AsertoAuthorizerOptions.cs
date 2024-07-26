@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Options
+namespace Aserto.Clients.Options
 {
     using System;
     using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Aserto.AspNetCore.Middleware.Options
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
-    /// Options for Aserto Middleware.
+    /// Options for Aserto Authorizer Client.
     /// </summary>
     public class AsertoAuthorizerOptions
     {
@@ -43,9 +43,9 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Validates the provided options.
         /// </summary>
-        /// <param name="options">Authorizer API Client options <see cref="AsertoOptions"/>.</param>
+        /// <param name="options">Authorizer API Client options <see cref="Aserto.Clients.Options.AsertoOptions"/>.</param>
         /// <returns>true if the configuration is valid.</returns>
-        internal static bool Validate(AsertoAuthorizerOptions options)
+        public static bool Validate(AsertoAuthorizerOptions options)
         {
             if (options is null)
             {

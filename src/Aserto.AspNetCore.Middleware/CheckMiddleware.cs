@@ -14,11 +14,11 @@ namespace Aserto.AspNetCore.Middleware
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
-    using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Extensions;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
     using Aserto.Authorizer.V2.Api;
+    using Aserto.Clients.Authorizer;
     using Aserto.Directory.Reader.V3;
     using Google.Protobuf.WellKnownTypes;
     using Grpc.Core;

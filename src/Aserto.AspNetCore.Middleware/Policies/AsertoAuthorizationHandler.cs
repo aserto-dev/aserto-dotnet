@@ -10,8 +10,9 @@ namespace Aserto.AspNetCore.Middleware.Policies
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
-    using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
+    using Aserto.Clients.Authorizer;
+    using Aserto.Clients.Options;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Options;

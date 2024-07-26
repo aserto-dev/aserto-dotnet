@@ -1,6 +1,8 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
+﻿
 using Aserto.AspNetCore.Middleware.Extensions;
 using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Clients.Authorizer;
+using Aserto.Clients.Options;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Hosting;

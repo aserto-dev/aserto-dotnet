@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Options
+namespace Aserto.Clients.Options
 {
     using System;
     using System.Collections.Generic;
