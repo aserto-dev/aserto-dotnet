@@ -49,12 +49,12 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
-        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the Resource mapper.
         /// </summary>
-        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
+        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the Identity mapper for the check middleware.

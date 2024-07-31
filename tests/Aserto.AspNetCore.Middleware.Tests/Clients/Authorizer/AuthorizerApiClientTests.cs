@@ -58,6 +58,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             mockClient.Setup(c => c.IsAsync(Moq.It.IsAny<IsRequest>(), Moq.It.IsAny<Metadata>(), null, CancellationToken.None)).Returns(fakecall);
 
             var asertoOptions = new AsertoOptions();
+            asertoOptions.PolicyPathMapper = (root, request) => { return request.Path; };
+            asertoOptions.ResourceMapper = (root, request) => { return new Google.Protobuf.WellKnownTypes.Struct(); };
             var authorizerAPIClient = new AuthorizerAPIClient(options, logggerFactory, mockClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, mockClaimsPrinipal.Object, Utils.DefaultClaimTypes, asertoOptions);
             var isAsync = await authorizerAPIClient.IsAsync(isRequest);
@@ -71,7 +73,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var mockClient = new Moq.Mock<AuthorizerClient>();
             var mockRequest = new Moq.Mock<HttpRequest>();
 
-            var options = Microsoft.Extensions.Options.Options.Create(new AsertoAuthorizerOptions());
+            var options = Microsoft.Extensions.Options.Options.Create(new AsertoAuthorizerOptions());            
             var logggerFactory = new NullLoggerFactory();
 
             var isResponse = new IsResponse();
@@ -97,6 +99,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             mockClient.Setup(c => c.IsAsync(Moq.It.IsAny<IsRequest>(), Moq.It.IsAny<Metadata>(), null, CancellationToken.None)).Returns(fakecall);
 
             var asertoOptions = new AsertoOptions();
+            asertoOptions.PolicyPathMapper = (root, request) => { return request.Path; };
+            asertoOptions.ResourceMapper = (root, request) => { return new Google.Protobuf.WellKnownTypes.Struct(); };
             var authorizerAPIClient = new AuthorizerAPIClient(options, logggerFactory, mockClient.Object);
             var isRequest = authorizerAPIClient.BuildIsRequest(mockRequest.Object, testPrincipal, Utils.DefaultClaimTypes, asertoOptions);
             var isAsync = await authorizerAPIClient.IsAsync(isRequest);

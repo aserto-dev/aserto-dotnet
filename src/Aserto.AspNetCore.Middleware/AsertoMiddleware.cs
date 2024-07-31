@@ -48,6 +48,16 @@ namespace Aserto.AspNetCore.Middleware
 
             this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
             this.options = optionsMonitor.CurrentValue;
+            if (this.options.PolicyPathMapper == null)
+            {
+                this.options.PolicyPathMapper = Defaults.DefaultPolicyPathMapper;
+            }
+
+            if (this.options.ResourceMapper == null)
+            {
+                this.options.ResourceMapper = Defaults.DefaultResourceMapper;
+            }
+
             this.optionsMonitor.OnChange(options =>
             {
                 // Clear the cached settings so the next EnsuredConfigured will re-evaluate.

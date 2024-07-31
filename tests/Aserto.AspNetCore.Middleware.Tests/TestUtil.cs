@@ -24,10 +24,7 @@ namespace Aserto.AspNetCore.Middleware.Tests
             Action<AsertoOptions> options = new Action<AsertoOptions>(o =>
             {
                 o.PolicyName = "YOUR_POLICY_NAME";
-                o.PolicyRoot = "pr";
-                o.PolicyPathMapper = Aserto.AspNetCore.Middleware.Options.Defaults.DefaultPolicyPathMapper;
-                o.IdentityMapper = Aserto.AspNetCore.Middleware.Options.Defaults.DefaultIdentityContext;
-                o.ResourceMapper = Aserto.AspNetCore.Middleware.Options.Defaults.DefaultResourceMapper;
+                o.PolicyRoot = "pr";                
             });
             return options;
         }
