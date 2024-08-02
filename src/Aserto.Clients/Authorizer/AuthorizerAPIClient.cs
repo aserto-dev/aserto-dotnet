@@ -22,6 +22,7 @@ namespace Aserto.Clients.Authorizer
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using static Aserto.Authorizer.V2.Authorizer;
+    using System.Linq;
 
     /// <summary>
     /// Client for Aserto Authorizer API.
@@ -104,6 +105,82 @@ namespace Aserto.Clients.Authorizer
             }
 
             return result.Decisions[0].Is;
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<Module>> ListPoliciesAsync(ListPoliciesRequest listRequest)
+        {
+            if (listRequest == null)
+            {
+                throw new ArgumentNullException(nameof(listRequest));
+            }
+            
+            logger.LogDebug($"List Policies - policies instance name: {listRequest.PolicyInstance.Name}");
+            logger.LogDebug($"List Policies - policies instance label: {listRequest.PolicyInstance.InstanceLabel}");            
+            var result = await authorizerClient.ListPoliciesAsync(listRequest);
+            return result.Result.ToList();            
+        }
+
+        /// <inheritdoc/>
+        public async Task<Module> GetPolicyAsync(GetPolicyRequest getRequest)
+        {
+            if (getRequest == null)
+            {
+                throw new ArgumentNullException(nameof(getRequest));
+            }
+
+            logger.LogDebug($"Get Policy - policy ID: {getRequest.Id}");
+            logger.LogDebug($"Get Policy - policy instance name: {getRequest.PolicyInstance.Name}");
+            logger.LogDebug($"Get Policy - policy instance label: {getRequest.PolicyInstance.InstanceLabel}");
+            var result = await authorizerClient.GetPolicyAsync(getRequest);
+            return result.Result;
+        }
+
+
+        /// <inheritdoc/>
+        public async Task<QueryResponse> QueryAsync(QueryRequest queryRequest)
+        {
+            if (queryRequest == null)
+            {
+                throw new ArgumentNullException(nameof(queryRequest));
+            }
+
+            logger.LogDebug($"Query Policy: {queryRequest.Query}");
+            logger.LogDebug($"Identity Context resolved to: {queryRequest.IdentityContext}");
+            var result = await authorizerClient.QueryAsync(queryRequest);
+            
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<CompileResponse> CompileAsync(CompileRequest compileRequest)
+        {
+            if (compileRequest == null)
+            {
+                throw new ArgumentNullException(nameof(compileRequest));
+            }
+
+            logger.LogDebug($"Query Policy: {compileRequest.Query}");
+            logger.LogDebug($"Identity Context resolved to: {compileRequest.IdentityContext}");
+            var result = await authorizerClient.CompileAsync(compileRequest);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<DecisionTreeResponse> DecisionTreeAsync(DecisionTreeRequest decisionTreeRequest)
+        {
+            if (decisionTreeRequest == null)
+            {
+                throw new ArgumentNullException(nameof(decisionTreeRequest));
+            }
+
+            logger.LogDebug($"Identity Context resolved to: {decisionTreeRequest.IdentityContext}");
+            logger.LogDebug($"Policy Context resolved to: {decisionTreeRequest.PolicyContext}");
+            logger.LogDebug($"Resource Context resolved to: {decisionTreeRequest.ResourceContext}");
+            var result = await authorizerClient.DecisionTreeAsync(decisionTreeRequest);
+
+            return result;
         }
     }
 }

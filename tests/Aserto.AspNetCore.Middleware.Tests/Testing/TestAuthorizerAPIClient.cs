@@ -81,5 +81,30 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
             this.isRequest = isRequest;
             return Task.FromResult(this.allowed);
         }
+
+        public Task<List<Module>> ListPoliciesAsync(ListPoliciesRequest request)
+        {
+            return Task.FromResult(new List<Module>());
+        }
+
+        public Task<Module> GetPolicyAsync(GetPolicyRequest request)
+        {
+            return Task.FromResult<Module>(null);
+        }
+
+        public Task<QueryResponse> QueryAsync(QueryRequest request)
+        {
+            return Task.FromResult(new QueryResponse());
+        }
+
+        public Task<CompileResponse> CompileAsync(CompileRequest request)
+        {
+            return Task.FromResult(new CompileResponse());
+        }
+
+        public Task<DecisionTreeResponse> DecisionTreeAsync(DecisionTreeRequest request)
+        {
+            return Task.FromResult<DecisionTreeResponse>(new DecisionTreeResponse());
+        }
     }
 }
