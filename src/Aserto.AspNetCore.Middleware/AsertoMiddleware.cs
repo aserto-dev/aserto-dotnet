@@ -50,12 +50,12 @@ namespace Aserto.AspNetCore.Middleware
             this.options = optionsMonitor.CurrentValue;
             if (this.options.PolicyPathMapper == null)
             {
-                this.options.PolicyPathMapper = Defaults.DefaultPolicyPathMapper;
+                this.options.PolicyPathMapper = AsertoOptionsDefaults.DefaultPolicyPathMapper;
             }
 
             if (this.options.ResourceMapper == null)
             {
-                this.options.ResourceMapper = Defaults.DefaultResourceMapper;
+                this.options.ResourceMapper = AsertoOptionsDefaults.DefaultResourceMapper;
             }
 
             this.optionsMonitor.OnChange(options =>

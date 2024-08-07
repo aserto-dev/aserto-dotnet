@@ -23,7 +23,7 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Service URL.
         /// </summary>
-        public string ServiceUrl { get; set; } = AsertoOptionsDefaults.ServiceUrl;
+        public string ServiceUrl { get; set; } = "https://localhost:8282";
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Authorizer API Key.
@@ -33,17 +33,17 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Tenant ID.
         /// </summary>
-        public string TenantID { get; set; } = AsertoOptionsDefaults.TenantID;
+        public string TenantID { get; set; } 
 
         /// <summary>
         /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
         /// </summary>
-        public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
+        public bool Insecure { get; set; }
 
         /// <summary>
         /// Validates the provided options.
         /// </summary>
-        /// <param name="options">Authorizer API Client options <see cref="Aserto.Clients.Options.AsertoOptions"/>.</param>
+        /// <param name="options">Authorizer API Client options <see cref="Aserto.Clients.Options.AsertoAuthorizerOptions"/>.</param>
         /// <returns>true if the configuration is valid.</returns>
         public static bool Validate(AsertoAuthorizerOptions options)
         {

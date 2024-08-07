@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.MVC.Auth0", "example
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectoryClientExampleCLI", "examples\DirectoryClientExampleCLI\DirectoryClientExampleCLI.csproj", "{DB288C6D-0443-40E6-89F2-933F099217C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aserto.Clients", "src\Aserto.Clients\Aserto.Clients.csproj", "{632100F3-747D-4D06-8FD9-76F48752EF6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.Clients", "src\Aserto.Clients\Aserto.Clients.csproj", "{632100F3-747D-4D06-8FD9-76F48752EF6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

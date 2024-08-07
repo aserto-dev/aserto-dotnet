@@ -83,6 +83,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
             options.Value.DirectoryWriterUrl = "https://localhost:9292";
             options.Value.DirectoryServiceUrl = "https://localhost:9292";
+            options.Value.DirectoryTenantID = "test";            
             var dirClient = new DirectoryAPIClient(options, logggerFactory);
             await Assert.ThrowsAsync<Grpc.Core.RpcException>(() => dirClient.GetObjectAsync("type", "key"));
         }

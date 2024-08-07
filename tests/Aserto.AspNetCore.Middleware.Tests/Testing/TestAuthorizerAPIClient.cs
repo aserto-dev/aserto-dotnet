@@ -58,11 +58,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
 
         public Func<string, HttpRequest, string> PolicyPathMapper
         {
-            get { return Defaults.DefaultPolicyPathMapper; }
+            get { return AsertoOptionsDefaults.DefaultPolicyPathMapper; }
         }
 
         public Func<string, HttpRequest, Struct> ResourceMapper {
-            get { return Defaults.DefaultResourceMapper; }
+            get { return AsertoOptionsDefaults.DefaultResourceMapper; }
             set { }
         }
 

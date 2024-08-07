@@ -9,9 +9,9 @@ namespace Aserto.Clients.Authorizer
     using System;
     using System.Collections.Generic;
     using System.Security.Claims;
+    using Aserto.AspNetCore.Middleware.Options;
     using Aserto.Authorizer.V2;
     using Aserto.Authorizer.V2.Api;
-    using Aserto.Clients.Options;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>

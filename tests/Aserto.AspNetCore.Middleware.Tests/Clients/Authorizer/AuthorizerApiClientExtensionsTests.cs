@@ -28,9 +28,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         public AuthorizerApiClientExtensionsTests()
         {
             this.mockAuthorizerClient = new Moq.Mock<AuthorizerClient>();
-            this.asertoOptions = new AsertoOptions();
-            asertoOptions.PolicyPathMapper = Aserto.Clients.Options.AsertoOptionsDefaults.DefaultPolicyPathMapper;
-            asertoOptions.ResourceMapper = Aserto.Clients.Options.AsertoOptionsDefaults.DefaultResourceMapper;
+            this.asertoOptions = new AsertoOptions();            
             this.authorizerOptions = Microsoft.Extensions.Options.Options.Create(new AsertoAuthorizerOptions());
             this.loggerFactory = new NullLoggerFactory();
 

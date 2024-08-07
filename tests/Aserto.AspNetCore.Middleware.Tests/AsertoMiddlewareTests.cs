@@ -1,6 +1,7 @@
 using Aserto.AspNetCore.Middleware.Extensions;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
 using Aserto.Clients.Authorizer;
+using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Clients.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

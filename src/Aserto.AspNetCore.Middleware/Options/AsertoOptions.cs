@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.Clients.Options
+namespace Aserto.AspNetCore.Middleware.Options
 {
     using System;
     using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Policy Name.
         /// </summary>
-        public string PolicyName { get; set; } =AsertoOptionsDefaults.PolicyName;
+        public string PolicyName { get; set; } = AsertoOptionsDefaults.PolicyName;
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Instance label.
@@ -49,12 +49,12 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
-        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = null;
+        public Func<string, HttpRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
 
         /// <summary>
         /// Gets or sets the Resource mapper.
         /// </summary>
-        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = null;
+        public Func<string, HttpRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
 
         /// <summary>
         /// Gets or sets the Identity mapper for the check middleware.

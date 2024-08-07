@@ -9,7 +9,6 @@ namespace Aserto.Clients.Options
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Diagnostics;
     using System.Text;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
@@ -41,12 +40,6 @@ namespace Aserto.Clients.Options
         /// <param name="insecure">Bool indicating whether insecure service connections are allowed when using SSL.</param>
         public AsertoDirectoryOptions(string serviceURL = "", string readerURL = "", string writerURL = "", string importerURL = "", string exporterURL = "", string modelURL = "", string apiKey = "", string tenantID = "", bool insecure = false)
         {
-            this.DirectoryServiceUrl = serviceURL;
-            this.DirectoryReaderUrl = readerURL;
-            this.DirectoryWriterUrl = writerURL;
-            this.DirectoryImporterUrl = importerURL;
-            this.DirectoryExporterUrl = exporterURL;
-            this.DirectoryModelUrl = modelURL;
             this.DirectoryApiKey = apiKey;
 
             if (tenantID != string.Empty)
@@ -95,12 +88,12 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Tenant ID.
         /// </summary>
-        public string DirectoryTenantID { get; set; } = AsertoOptionsDefaults.DirectoryTenantID;
+        public string DirectoryTenantID { get; set; } 
 
         /// <summary>
         /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
         /// </summary>
-        public bool DirectoryInsecure { get; set; } = AsertoOptionsDefaults.Insecure;
+        public bool DirectoryInsecure { get; set; } 
 
         /// <summary>
         /// Validates the provided options.
