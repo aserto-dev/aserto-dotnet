@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectoryClientExampleCLI",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.Clients", "src\Aserto.Clients\Aserto.Clients.csproj", "{632100F3-747D-4D06-8FD9-76F48752EF6C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aserto.Owin.Middleware", "src\Aserto.Owin.Middleware\Aserto.Owin.Middleware.csproj", "{301D12F6-1ABF-4409-B2CE-DCE8D71C7CBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "examples\WebApi\WebApi\WebApi.csproj", "{4BFDE9EC-FE23-4857-A779-94F5585F9D18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,14 @@ Global
 		{632100F3-747D-4D06-8FD9-76F48752EF6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{632100F3-747D-4D06-8FD9-76F48752EF6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{632100F3-747D-4D06-8FD9-76F48752EF6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{301D12F6-1ABF-4409-B2CE-DCE8D71C7CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{301D12F6-1ABF-4409-B2CE-DCE8D71C7CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{301D12F6-1ABF-4409-B2CE-DCE8D71C7CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{301D12F6-1ABF-4409-B2CE-DCE8D71C7CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BFDE9EC-FE23-4857-A779-94F5585F9D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BFDE9EC-FE23-4857-A779-94F5585F9D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BFDE9EC-FE23-4857-A779-94F5585F9D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BFDE9EC-FE23-4857-A779-94F5585F9D18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +101,8 @@ Global
 		{31B35FAF-C70E-42B7-B287-E7043A73C6EE} = {9717A88D-6516-4AEC-AEF5-1903C6D245C8}
 		{DB288C6D-0443-40E6-89F2-933F099217C0} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
 		{632100F3-747D-4D06-8FD9-76F48752EF6C} = {D5BD9281-22D3-46B4-B048-7F5ED1936743}
+		{301D12F6-1ABF-4409-B2CE-DCE8D71C7CBA} = {D5BD9281-22D3-46B4-B048-7F5ED1936743}
+		{4BFDE9EC-FE23-4857-A779-94F5585F9D18} = {627E0D90-0947-433D-BED0-8ABCB6DD0D39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE6E7731-2793-4C3B-BC1D-EBD18DC3F967}

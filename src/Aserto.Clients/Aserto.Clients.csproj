@@ -28,6 +28,7 @@
   <ItemGroup>
     <PackageReference Include="Aserto.Authorizer.V2.Client.Grpc" Version="0.0.7" />
     <PackageReference Include="Aserto.Directory.V3.Client.Grpc" Version="0.31.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />	
   </ItemGroup>
