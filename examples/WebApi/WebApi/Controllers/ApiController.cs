@@ -28,17 +28,6 @@ namespace WebApi.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("private-scoped")]
-        [ScopeAuthorize("read:messages")]
-        public IHttpActionResult Scoped()
-        {
-            return Json(new
-            {
-                Message = "Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this."
-            });
-        }
-
         [Authorize]
         [Route("claims")]
         [HttpGet]

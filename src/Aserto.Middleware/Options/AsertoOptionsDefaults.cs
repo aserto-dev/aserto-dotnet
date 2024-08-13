@@ -4,10 +4,11 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.Owin.Middleware.Options
+namespace Aserto.Middleware.Options
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Claims;
     using System.Text.RegularExpressions;
     using Aserto.Authorizer.V2.Api;
@@ -87,7 +88,7 @@ namespace Aserto.Owin.Middleware.Options
         public static string DefaultPolicyPathMapper(string policyRoot, IOwinRequest request)
         {
             string policyPath = request.Path.ToString();
-            
+
 
             // replace "{" with "__" in endpoint
             policyPath = policyPath.Replace("{", "__");
@@ -125,17 +126,16 @@ namespace Aserto.Owin.Middleware.Options
         public static Struct DefaultResourceMapper(string policyRoot, IOwinRequest request)
         {
             Struct result = new Struct();
+            
             foreach (var routeValue in request.Environment)
             {
                 bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == routeValue.Key);
                 if (exists)
-                {
-                    continue;
+                {                
+                    var resourceContextValue = routeValue.Value.ToString();
+
+                    result.Fields[routeValue.Key] = Value.ForString(resourceContextValue);
                 }
-
-                var resourceContextValue = routeValue.Value.ToString();
-
-                result.Fields[routeValue.Key] = Value.ForString(resourceContextValue);
             }
 
             return result;
@@ -151,17 +151,19 @@ namespace Aserto.Owin.Middleware.Options
         {
             var identityContext = new IdentityContext();
             identityContext.Type = IdentityType.None;
-
-            if (identity.Identity.AuthenticationType != null && identity.Identity != null)
+            if (identity != null)
             {
-                foreach (string supportedClaimType in supportedClaimTypes)
+                if (identity.Identity.AuthenticationType != null && identity.Identity != null)
                 {
-                    var claim = identity.FindFirst(c => c.Type == supportedClaimType);
-                    if (claim != null)
+                    foreach (string supportedClaimType in supportedClaimTypes)
                     {
-                        identityContext.Type = IdentityType.Sub;
-                        identityContext.Identity = claim.Value;
-                        break;
+                        var claim = identity.FindFirst(c => c.Type == supportedClaimType);
+                        if (claim != null)
+                        {
+                            identityContext.Type = IdentityType.Sub;
+                            identityContext.Identity = claim.Value;
+                            break;
+                        }
                     }
                 }
             }

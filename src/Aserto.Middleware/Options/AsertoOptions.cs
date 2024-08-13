@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace Aserto.Owin.Middleware.Options
+namespace Aserto.Middleware.Options
 {
     public class AsertoOptions
     {

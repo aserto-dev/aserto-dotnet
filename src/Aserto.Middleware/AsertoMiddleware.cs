@@ -1,7 +1,7 @@
 ﻿using Aserto.Authorizer.V2;
 using Aserto.Authorizer.V2.Api;
 using Aserto.Clients.Authorizer;
-using Aserto.Owin.Middleware.Options;
+using Aserto.Middleware.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.Owin;
 using Microsoft.Owin.Logging;
@@ -13,37 +13,30 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aserto.Owin.Middleware
+namespace Aserto.Middleware
 {
     public class AsertoMiddleware : OwinMiddleware
     {
         private readonly OwinMiddleware next;
         private readonly ILogger logger;
-        private readonly IOptionsMonitor<AsertoOptions> optionsMonitor;
         private AsertoOptions options;
         private IAuthorizerAPIClient client;
 
         public IEnumerable<string> DefaultClaimTypes { get; private set; } = new List<string>() { ClaimTypes.Email, ClaimTypes.Name, ClaimTypes.NameIdentifier };
-        
-        public AsertoMiddleware(OwinMiddleware next, ILoggerFactory loggerFactory, IOptionsMonitor<AsertoOptions> optionsMonitor, IAuthorizerAPIClient client) : base(next)
+
+        public AsertoMiddleware(OwinMiddleware next, ILoggerFactory loggerFactory, AsertoOptions options, IAuthorizerAPIClient client) : base(next)
         {
             this.next = next ?? throw new ArgumentNullException(nameof(next));
             this.logger = loggerFactory.Create("AsertoMiddleware");
 
-            this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
-            this.options = optionsMonitor.CurrentValue;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            this.optionsMonitor.OnChange(options =>
-            {
-                // Clear the cached settings so the next EnsuredConfigured will re-evaluate.
-                this.options = options;
-            });
             this.client = client;
         }
 
         public override async Task Invoke(IOwinContext context)
         {
-            
+
             var request = new Authorizer.V2.IsRequest();
 
             request.PolicyContext = new PolicyContext();
@@ -53,6 +46,11 @@ namespace Aserto.Owin.Middleware
             request.ResourceContext = this.options.ResourceMapper(this.options.PolicyRoot, context.Request);
 
             request.IdentityContext = options.IdentityMapper(context.Authentication.User, DefaultClaimTypes);
+            
+            request.PolicyInstance = new PolicyInstance();
+            request.PolicyInstance.Name = options.PolicyName;
+            request.PolicyInstance.InstanceLabel = options.PolicyInstanceLabel;
+                        
 
             var allowed = await this.client.IsAsync(request);
             if (!allowed && this.options.Enabled)
