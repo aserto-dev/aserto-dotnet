@@ -41,14 +41,23 @@ namespace AuthorizerClientExample
             request.IdentityContext = new IdentityContext();
             request.IdentityContext.Type = IdentityType.None;
             request.PolicyInstance = new PolicyInstance();
-            request.PolicyInstance.Name = "policy-todo";
-            request.PolicyInstance.InstanceLabel = "policy-todo";
+            request.PolicyInstance.Name = "todo";
+            request.PolicyInstance.InstanceLabel = "todo";
 
             var result = client.IsAsync(request);
 
             Task.WaitAll(result);
 
             Console.WriteLine(result);
+
+            var result2 = client.ListPoliciesAsync(new ListPoliciesRequest() { PolicyInstance = new PolicyInstance(){
+                Name="todo",
+                InstanceLabel="todo"
+            }
+        });
+            
+            Task.WaitAll(result2);
+            Console.WriteLine(result2);
         }
     }
 }

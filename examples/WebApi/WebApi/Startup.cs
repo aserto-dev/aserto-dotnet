@@ -48,13 +48,11 @@ namespace WebApi
                 }
                 return "todoApp.POST.todos";
             };
-
-            app.Use<AsertoMiddleware>(LoggerFactory.Default, (object)options, client);
-
+            
             var keyResolver = new OpenIdConnectSigningKeyResolver(domain);
             app.UseJwtBearerAuthentication(
                 new JwtBearerAuthenticationOptions
-                {
+                {                                   
                     AuthenticationMode = AuthenticationMode.Active,
                     TokenValidationParameters = new TokenValidationParameters()
                     {
@@ -63,6 +61,8 @@ namespace WebApi
                         IssuerSigningKeyResolver = (token, securityToken, kid, parameters) => keyResolver.GetSigningKey(kid)
                     }
                 });
+
+            app.Use<AsertoMiddleware>(LoggerFactory.Default, (object)options, client);
 
             // Configure Web API
             WebApiConfig.Configure(app);

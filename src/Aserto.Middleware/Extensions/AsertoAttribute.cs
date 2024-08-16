@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Aserto.Middleware.Extensions
 {
-    public class AsertoAttribute
+    public class AsertoAttribute : System.Attribute
     {
+        public AsertoAttribute()
+        {                
+        }
     }
 }
