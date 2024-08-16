@@ -1,0 +1,40 @@
+name: ci-msbuild
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - v*
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+  # Run tests for PRs
+  pull_request:
+
+env:
+   VAULT_ADDR: https://vault.eng.aserto.com/
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        cfg:         
+          - { project: Aserto.Clients }          
+    name: Build ${{ matrix.cfg.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+        
+      - name: Setup Nuget
+        uses: Nuget/setup-nuget@v2
+
+      - name: Restore nuget packages
+        run: nuget restore aserto-dotnet.sln
+
+
+      - name: Build app for release
+        run: msbuild src\${{matrix.cfg.project}}\${{matrix.cfg.project}}.csproj -t:rebuild -verbosity:diag -property:Configuration=Release
