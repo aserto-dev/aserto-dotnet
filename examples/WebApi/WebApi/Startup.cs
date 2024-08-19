@@ -35,7 +35,7 @@ namespace WebApi
             var authorizerOptions = Options.Create(authzOpts);
 
             var client = new AuthorizerAPIClient(authorizerOptions, new NullLoggerFactory());
-
+            
             AsertoOptions options = new AsertoOptions();
             options.PolicyName = "policy-todo";
             options.PolicyInstanceLabel = "policy-todo";
@@ -44,9 +44,9 @@ namespace WebApi
             {
                 if (request.Path.ToString().Contains("public"))
                 {
-                    return "todoApp.GET.todos";
+                    return "todoApp.GET.todos"; // has default allowed method set to true in policy.
                 }
-                return "todoApp.POST.todos";
+                return "todoApp.POST.todos"; // checks that provided identity (extracted from jwt sub) is a memeber of the editor or admin group
             };
             
             var keyResolver = new OpenIdConnectSigningKeyResolver(domain);

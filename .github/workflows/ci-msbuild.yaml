@@ -22,7 +22,8 @@ jobs:
     strategy:
       matrix:
         cfg:         
-          - { project: Aserto.Clients }          
+          - { project: Aserto.Clients }
+          - { project: Aserto.Middleware }
     name: Build ${{ matrix.cfg.project }}
     steps:
       - uses: actions/checkout@v4
