@@ -9,8 +9,10 @@ namespace Aserto.Middleware.Options
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Security.Claims;
     using System.Text.RegularExpressions;
+    using System.Web;
     using Aserto.Authorizer.V2.Api;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.Owin;
@@ -85,9 +87,20 @@ namespace Aserto.Middleware.Options
         /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The Aserto Policy path.</returns>
-        public static string DefaultPolicyPathMapper(string policyRoot, IOwinRequest request)
+        public static string DefaultPolicyPathMapper(string policyRoot, dynamic request)
         {
-            string policyPath = request.Path.ToString();
+            string policyPath = "";
+            string method = "";
+            if (request is IOwinRequest)
+            {
+                policyPath = request.Path.ToString();
+                method = request.Method.ToUpper();
+            }
+            else
+            {
+                policyPath = request.RequestUri.LocalPath.ToString();
+                method = request.Method.Method.ToUpper();
+            }
 
 
             // replace "{" with "__" in endpoint
@@ -103,7 +116,7 @@ namespace Aserto.Middleware.Options
             policyPath = policyPath.Replace(":", "__");
 
             // Handle method
-            policyPath = $"{request.Method.ToUpper()}.{policyPath.TrimStart('.')}";
+            policyPath = $"{method}.{policyPath.TrimStart('.')}";
 
             // Trim tailing dots
             policyPath = policyPath.TrimEnd('.');
@@ -123,18 +136,45 @@ namespace Aserto.Middleware.Options
         /// <param name="policyRoot">The policy root.</param>
         /// <param name="request">The <see cref="HttpRequest"/>.</param>
         /// <returns>The default Resource Context mapper.</returns>
-        public static Struct DefaultResourceMapper(string policyRoot, IOwinRequest request)
+        public static Struct DefaultResourceMapper(string policyRoot, dynamic request)
         {
-            Struct result = new Struct();
-            
-            foreach (var routeValue in request.Environment)
+            if (request == null)
             {
-                bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == routeValue.Key);
-                if (exists)
-                {                
-                    var resourceContextValue = routeValue.Value.ToString();
+                return null;
+            }
 
-                    result.Fields[routeValue.Key] = Value.ForString(resourceContextValue);
+            Struct result = new Struct();
+
+            if (request is OwinRequest)
+            {
+                foreach (var routeValue in request.Environment)
+                {
+                    bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == routeValue.Key);
+                    if (exists)
+                    {
+                        var resourceContextValue = routeValue.Value.ToString();
+
+                        result.Fields[routeValue.Key] = Value.ForString(resourceContextValue);
+                    }
+                }
+            }
+            else
+            {
+                if (request.Properties == null || request.Properties.Count == 0)
+                {
+                    return null;
+                }
+                foreach (var props in request.Properties)
+                {
+                    bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == props.Key);
+                    if (exists)
+                    {
+                        continue;
+                    }
+
+                    var resourceContextValue = props.Value.ToString();
+
+                    result.Fields[props.Key] = Value.ForString(resourceContextValue);
                 }
             }
 

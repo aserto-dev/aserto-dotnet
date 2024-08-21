@@ -3,7 +3,9 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Web;
 
 namespace Aserto.Middleware.Options
 {
@@ -37,13 +39,13 @@ namespace Aserto.Middleware.Options
         /// <summary>
         /// Gets or sets the URL to Policy mapper.
         /// </summary>
-        public Func<string, IOwinRequest, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
-
+        public Func<string, dynamic, string> PolicyPathMapper { get; set; } = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+        
         /// <summary>
         /// Gets or sets the Resource mapper.
         /// </summary>
-        public Func<string, IOwinRequest, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
-
+        public Func<string, dynamic, Struct> ResourceMapper { get; set; } = AsertoOptionsDefaults.DefaultResourceMapper;
+               
         /// <summary>
         /// Gets or sets the Identity mapper for the check middleware.
         /// </summary>

@@ -1,12 +1,19 @@
-﻿using System.Linq;
+﻿using Aserto.Clients.Authorizer;
+using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
+using WebApi.Support;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
     public class ApiController : System.Web.Http.ApiController
     {
+       
+        public ApiController()
+        {                
+        }
+
         [HttpGet]
         [Route("public")]
         public IHttpActionResult Public()
@@ -20,6 +27,7 @@ namespace WebApi.Controllers
         [HttpGet]
         [Route("private")]
         [Authorize]
+        [Aserto.Middleware.Extensions.Aserto]
         public IHttpActionResult Private()
         {
             return Json(new

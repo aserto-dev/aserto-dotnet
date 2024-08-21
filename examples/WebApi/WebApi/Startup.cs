@@ -15,6 +15,9 @@ using Aserto.Middleware.Options;
 using Aserto.Middleware;
 using log4net.Appender;
 using System;
+using Microsoft.Owin.Extensions;
+using System.Web.Http;
+using Ninject;
 
 [assembly: OwinStartup(typeof(WebApi.Startup))]
 
@@ -23,32 +26,10 @@ namespace WebApi
     public class Startup
     {
         public void Configuration(IAppBuilder app)
-        {
+        {            
             var domain = $"https://{ConfigurationManager.AppSettings["Auth0Domain"]}/";
             var apiIdentifier = ConfigurationManager.AppSettings["Auth0ApiIdentifier"];
 
-            AsertoAuthorizerOptions authzOpts = new AsertoAuthorizerOptions();
-            authzOpts.AuthorizerApiKey = ConfigurationManager.AppSettings["Authorizer.API.Key"];
-            authzOpts.TenantID = ConfigurationManager.AppSettings["Authorizer.TenantID"];
-            authzOpts.ServiceUrl = ConfigurationManager.AppSettings["Authorizer.ServiceURL"];
-            authzOpts.Insecure = Convert.ToBoolean(ConfigurationManager.AppSettings["Authorizer.Insecure"]); 
-            var authorizerOptions = Options.Create(authzOpts);
-
-            var client = new AuthorizerAPIClient(authorizerOptions, new NullLoggerFactory());
-            
-            AsertoOptions options = new AsertoOptions();
-            options.PolicyName = "policy-todo";
-            options.PolicyInstanceLabel = "policy-todo";
-            options.PolicyRoot = "todoApp";
-            options.PolicyPathMapper = (root, request) =>
-            {
-                if (request.Path.ToString().Contains("public"))
-                {
-                    return "todoApp.GET.todos"; // has default allowed method set to true in policy.
-                }
-                return "todoApp.POST.todos"; // checks that provided identity (extracted from jwt sub) is a memeber of the editor or admin group
-            };
-            
             var keyResolver = new OpenIdConnectSigningKeyResolver(domain);
             app.UseJwtBearerAuthentication(
                 new JwtBearerAuthenticationOptions
@@ -62,10 +43,14 @@ namespace WebApi
                     }
                 });
 
-            app.Use<AsertoMiddleware>(LoggerFactory.Default, (object)options, client);
+
+            // Example setup using the aserto owin middleware
+            // app.Use<Aserto.Middleware.AsertoMiddleware>(LoggerFactory.Default, AuthorizerClientHelper.GetAsertoOptions(), AuthorizerClientHelper.GetClient());
 
             // Configure Web API
             WebApiConfig.Configure(app);
         }
+
+        
     }   
 }

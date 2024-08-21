@@ -8,10 +8,12 @@ using Microsoft.Owin.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Aserto.Middleware
 {
@@ -35,15 +37,14 @@ namespace Aserto.Middleware
         }
 
         public override async Task Invoke(IOwinContext context)
-        {
-
+        {            
             var request = new Authorizer.V2.IsRequest();
 
             request.PolicyContext = new PolicyContext();
             request.PolicyContext.Path = this.options.PolicyPathMapper(this.options.PolicyRoot, context.Request);
             request.PolicyContext.Decisions.Add(options.Decision);
 
-            request.ResourceContext = this.options.ResourceMapper(this.options.PolicyRoot, context.Request);
+            request.ResourceContext =  this.options.ResourceMapper(this.options.PolicyRoot, context.Request);
 
             request.IdentityContext = options.IdentityMapper(context.Authentication.User, DefaultClaimTypes);
             
