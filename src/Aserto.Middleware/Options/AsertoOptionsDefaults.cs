@@ -98,8 +98,16 @@ namespace Aserto.Middleware.Options
             }
             else
             {
-                policyPath = request.RequestUri.LocalPath.ToString();
-                method = request.Method.Method.ToUpper();
+                if (request is System.Web.HttpRequestWrapper)
+                {
+                  policyPath = request.Path.ToString();
+                  method = request.Method.ToUpper();
+                }
+                else 
+                {
+                  policyPath = request.RequestUri.LocalPath.ToString();
+                  method = request.Method.Method.ToUpper();
+                }
             }
 
 
@@ -160,21 +168,43 @@ namespace Aserto.Middleware.Options
             }
             else
             {
-                if (request.Properties == null || request.Properties.Count == 0)
+                if (request is System.Web.HttpRequestWrapper)
                 {
-                    return null;
-                }
-                foreach (var props in request.Properties)
-                {
-                    bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == props.Key);
-                    if (exists)
+                    if (request.Params == null || request.Params.Count == 0)
                     {
-                        continue;
+                        return null;
                     }
+                    foreach (var key in request.Params.Keys)
+                    {
+                        bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == key);
+                        if (exists)
+                        {
+                            continue;
+                        }
 
-                    var resourceContextValue = props.Value.ToString();
+                        var resourceContextValue = request.Params[key].ToString();
 
-                    result.Fields[props.Key] = Value.ForString(resourceContextValue);
+                        result.Fields[key] = Value.ForString(resourceContextValue);
+                    }
+                }
+                else
+                {
+                    if (request.Properties == null || request.Properties.Count == 0)
+                    {
+                        return null;
+                    }
+                    foreach (var props in request.Properties)
+                    {
+                        bool exists = Array.Exists(ReservedRoutes, reservedRoute => reservedRoute == props.Key);
+                        if (exists)
+                        {
+                            continue;
+                        }
+
+                        var resourceContextValue = props.Value.ToString();
+
+                        result.Fields[props.Key] = Value.ForString(resourceContextValue);
+                    }
                 }
             }
 
@@ -200,9 +230,11 @@ namespace Aserto.Middleware.Options
                         var claim = identity.FindFirst(c => c.Type == supportedClaimType);
                         if (claim != null)
                         {
-                            identityContext.Type = IdentityType.Sub;
-                            identityContext.Identity = claim.Value;
-                            break;
+                            if (claim.Value != ""){
+                                identityContext.Type = IdentityType.Sub;
+                                identityContext.Identity = claim.Value;
+                                break;
+                            }
                         }
                     }
                 }

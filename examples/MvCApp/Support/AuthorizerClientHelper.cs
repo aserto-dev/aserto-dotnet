@@ -11,7 +11,7 @@ using Aserto.Middleware.Options;
 using Microsoft.Owin;
 using System.Diagnostics.Eventing.Reader;
 
-namespace WebApi.Support
+namespace MvCApp.Support
 {
     public static class AuthorizerClientHelper
     {
@@ -50,8 +50,8 @@ namespace WebApi.Support
                     }
                 }
                 else
-                {
-                    if (request.RequestUri.LocalPath.ToString().Contains("public"))
+                {                    
+                    if (request.Path=="/")
                     {
                         return "todoApp.GET.todos"; // has default allowed method set to true in policy.
                     }

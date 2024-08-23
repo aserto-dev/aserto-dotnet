@@ -25,7 +25,7 @@ namespace WebApi
                 defaults: new {id = RouteParameter.Optional});
 
             // Example configuration using the aserto authorization filter from the aserto middleware extensions 
-            // config.Filters.Add(new Aserto.Middleware.Extensions.AsertoAuthorizationFilter(AuthorizerClientHelper.GetAsertoOptions(), AuthorizerClientHelper.GetClient() ));
+            //config.Filters.Add(new Aserto.Middleware.Extensions.AsertoAuthorizationFilter(AuthorizerClientHelper.GetAsertoOptions(), AuthorizerClientHelper.GetClient() ));
 
             app.UseNinject(CreateKernel);
 
