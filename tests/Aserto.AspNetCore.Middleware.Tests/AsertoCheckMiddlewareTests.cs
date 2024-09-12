@@ -32,7 +32,6 @@ namespace Aserto.AspNetCore.Middleware.Tests
             var checkOptions = new CheckOptions();
             checkOptions.BaseOptions = new AsertoOptions();
             checkOptions.BaseOptions.PolicyName = "test";
-            checkOptions.BaseOptions.PolicyInstanceLabel = "test";
             checkOptions.BaseOptions.PolicyRoot = "testRoot";
             checkOptions.BaseOptions.Enabled = false;
 

@@ -78,6 +78,10 @@ namespace Aserto.AspNetCore.Middleware.Clients
                     InstanceLabel = options.PolicyInstanceLabel,
                     Name = options.PolicyInstanceLabel,
                 };
+                if (string.IsNullOrEmpty(options.PolicyInstanceLabel))
+                {
+                    policyInstance.InstanceLabel = policyInstance.Name;
+                }
 
                 isRequest.PolicyInstance = policyInstance;
             }
