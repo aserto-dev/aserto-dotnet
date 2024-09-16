@@ -12,9 +12,9 @@ namespace Aserto.AspNetCore.Middleware
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
-    using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
-    using Aserto.Authorizer.V2;
+    using Aserto.Clients.Authorizer;
+    using Aserto.Clients.Options;
     using Google.Api;
     using Grpc.Core;
     using Grpc.Net.Client;
@@ -48,6 +48,16 @@ namespace Aserto.AspNetCore.Middleware
 
             this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
             this.options = optionsMonitor.CurrentValue;
+            if (this.options.PolicyPathMapper == null)
+            {
+                this.options.PolicyPathMapper = AsertoOptionsDefaults.DefaultPolicyPathMapper;
+            }
+
+            if (this.options.ResourceMapper == null)
+            {
+                this.options.ResourceMapper = AsertoOptionsDefaults.DefaultResourceMapper;
+            }
+
             this.optionsMonitor.OnChange(options =>
             {
                 // Clear the cached settings so the next EnsuredConfigured will re-evaluate.

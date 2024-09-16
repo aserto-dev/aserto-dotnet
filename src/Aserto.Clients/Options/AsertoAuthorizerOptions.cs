@@ -4,26 +4,26 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Options
+namespace Aserto.Clients.Options
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Security.Claims;
     using System.Text;
-    using Aserto.Authorizer.V2.API;
+    using Aserto.Authorizer.V2.Api;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
-    /// Options for Aserto Middleware.
+    /// Options for Aserto Authorizer Client.
     /// </summary>
     public class AsertoAuthorizerOptions
     {
         /// <summary>
         /// Gets or sets a value indicating the Aserto Service URL.
         /// </summary>
-        public string ServiceUrl { get; set; } = AsertoOptionsDefaults.ServiceUrl;
+        public string ServiceUrl { get; set; } = "https://localhost:8282";
 
         /// <summary>
         /// Gets or sets a value indicating the Aserto Authorizer API Key.
@@ -33,19 +33,19 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Tenant ID.
         /// </summary>
-        public string TenantID { get; set; } = AsertoOptionsDefaults.TenantID;
+        public string TenantID { get; set; } 
 
         /// <summary>
         /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
         /// </summary>
-        public bool Insecure { get; set; } = AsertoOptionsDefaults.Insecure;
+        public bool Insecure { get; set; }
 
         /// <summary>
         /// Validates the provided options.
         /// </summary>
-        /// <param name="options">Authorizer API Client options <see cref="AsertoOptions"/>.</param>
+        /// <param name="options">Authorizer API Client options <see cref="Aserto.Clients.Options.AsertoAuthorizerOptions"/>.</param>
         /// <returns>true if the configuration is valid.</returns>
-        internal static bool Validate(AsertoAuthorizerOptions options)
+        public static bool Validate(AsertoAuthorizerOptions options)
         {
             if (options is null)
             {

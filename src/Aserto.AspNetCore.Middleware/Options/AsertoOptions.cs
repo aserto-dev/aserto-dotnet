@@ -11,7 +11,8 @@ namespace Aserto.AspNetCore.Middleware.Options
     using System.ComponentModel.DataAnnotations;
     using System.Security.Claims;
     using System.Text;
-    using Aserto.Authorizer.V2.API;
+    using Aserto.Authorizer.V2.Api;
+    using Aserto.Clients.Options;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
 
@@ -65,7 +66,7 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// </summary>
         /// <param name="options">Authorizer API Client options <see cref="AsertoOptions"/>.</param>
         /// <returns>true if the configuration is valid.</returns>
-        internal static bool Validate(AsertoOptions options)
+        public static bool Validate(AsertoOptions options)
         {
             if (options is null)
             {

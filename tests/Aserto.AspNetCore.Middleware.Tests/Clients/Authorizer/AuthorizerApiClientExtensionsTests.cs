@@ -1,6 +1,7 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Authorizer.V2.API;
+﻿using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Authorizer.V2.Api;
+using Aserto.Clients.Authorizer;
+using Aserto.Clients.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -27,7 +28,7 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         public AuthorizerApiClientExtensionsTests()
         {
             this.mockAuthorizerClient = new Moq.Mock<AuthorizerClient>();
-            this.asertoOptions = new AsertoOptions();
+            this.asertoOptions = new AsertoOptions();            
             this.authorizerOptions = Microsoft.Extensions.Options.Options.Create(new AsertoAuthorizerOptions());
             this.loggerFactory = new NullLoggerFactory();
 

@@ -1,7 +1,7 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.AspNetCore.Middleware.Options;
+﻿using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Clients.Authorizer;
 using Aserto.Authorizer.V2;
-using Aserto.Authorizer.V2.API;
+using Aserto.Authorizer.V2.Api;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -80,6 +80,31 @@ namespace Aserto.AspNetCore.Middleware.Tests.Testing
         {
             this.isRequest = isRequest;
             return Task.FromResult(this.allowed);
+        }
+
+        public Task<List<Module>> ListPoliciesAsync(ListPoliciesRequest request)
+        {
+            return Task.FromResult(new List<Module>());
+        }
+
+        public Task<Module> GetPolicyAsync(GetPolicyRequest request)
+        {
+            return Task.FromResult<Module>(null);
+        }
+
+        public Task<QueryResponse> QueryAsync(QueryRequest request)
+        {
+            return Task.FromResult(new QueryResponse());
+        }
+
+        public Task<CompileResponse> CompileAsync(CompileRequest request)
+        {
+            return Task.FromResult(new CompileResponse());
+        }
+
+        public Task<DecisionTreeResponse> DecisionTreeAsync(DecisionTreeRequest request)
+        {
+            return Task.FromResult<DecisionTreeResponse>(new DecisionTreeResponse());
         }
     }
 }

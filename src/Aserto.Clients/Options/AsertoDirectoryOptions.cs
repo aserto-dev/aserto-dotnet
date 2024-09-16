@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Options
+namespace Aserto.Clients.Options
 {
     using System;
     using System.Collections.Generic;
@@ -88,12 +88,12 @@ namespace Aserto.AspNetCore.Middleware.Options
         /// <summary>
         /// Gets or sets a value indicating the Aserto Tenant ID.
         /// </summary>
-        public string DirectoryTenantID { get; set; } = AsertoOptionsDefaults.DirectoryTenantID;
+        public string DirectoryTenantID { get; set; } 
 
         /// <summary>
         /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
         /// </summary>
-        public bool DirectoryInsecure { get; set; } = AsertoOptionsDefaults.Insecure;
+        public bool DirectoryInsecure { get; set; } 
 
         /// <summary>
         /// Validates the provided options.

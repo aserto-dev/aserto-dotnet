@@ -1,8 +1,8 @@
-﻿using Aserto.AspNetCore.Middleware.Clients;
-using Aserto.AspNetCore.Middleware.Extensions;
+﻿using Aserto.AspNetCore.Middleware.Extensions;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.AspNetCore.Middleware.Policies;
 using Aserto.AspNetCore.Middleware.Tests.Testing;
+using Aserto.Clients.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;

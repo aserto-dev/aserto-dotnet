@@ -9,9 +9,10 @@ namespace Aserto.AspNetCore.Middleware.Extensions
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using Aserto.AspNetCore.Middleware.Clients;
     using Aserto.AspNetCore.Middleware.Options;
     using Aserto.AspNetCore.Middleware.Policies;
+    using Aserto.Clients.Authorizer;
+    using Aserto.Clients.Options;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;

@@ -1,7 +1,7 @@
-using Aserto.AspNetCore.Middleware.Clients;
 using Aserto.AspNetCore.Middleware.Options;
 using Aserto.Directory.Reader.V2;
 using Aserto.Directory.Common.V2;
+using Aserto.Clients.Options;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using Grpc.Core.Testing;
@@ -18,7 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using static Aserto.Directory.Reader.V2.Reader;
-using Aserto.AspNetCore.Middleware.Clients.Directory.V2;
+using Aserto.Clients.Directory.V2;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {
@@ -65,7 +65,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         }
 
         [Fact]
-        async public void AccesingReaderWithoutAddressThrows()
+        [Obsolete]
+        async public Task AccesingReaderWithoutAddressThrows()
         {
             var logggerFactory = new NullLoggerFactory();
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
@@ -75,12 +76,14 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         }
 
         [Fact]
-        async public void AccesingReaderWithServiceAddressDoesNotThrow()
+        [Obsolete]
+        async public Task AccesingReaderWithServiceAddressDoesNotThrow()
         {
             var logggerFactory = new NullLoggerFactory();
             var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
             options.Value.DirectoryWriterUrl = "https://localhost:9292";
             options.Value.DirectoryServiceUrl = "https://localhost:9292";
+            options.Value.DirectoryTenantID = "test";            
             var dirClient = new DirectoryAPIClient(options, logggerFactory);
             await Assert.ThrowsAsync<Grpc.Core.RpcException>(() => dirClient.GetObjectAsync("type", "key"));
         }

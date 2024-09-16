@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
+namespace Aserto.Clients.Directory.V3
 {
     using System;
     using System.Collections.Generic;
@@ -57,7 +57,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <param name="subjectRelation">The relation of the subject.</param>
         /// <param name="withObjects">A bool indicating if the response should contain the found object for the relation.</param>
         /// <returns>A GetRelationResponse object indicating the relation.</returns>
-        Task<GetRelationResponse> GetRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "",  string subjectRelation = "",  bool withObjects = false);
+        Task<GetRelationResponse> GetRelationAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", string subjectRelation = "", bool withObjects = false);
 
         /// <summary>
         /// Gets the relations.
@@ -84,7 +84,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <param name="subjectId">The Id of the subject.</param>
         /// <param name="trace">A bool indicating if the trace is enabled.</param>
         /// <returns>A bool indicating if the permission exists.</returns>
-        Task<CheckPermissionResponse> CheckPermissionAsync(string objType = "", string objId = "", string permissionName = "", string subjectType = "", string subjectId = "",   bool trace = false);
+        Task<CheckPermissionResponse> CheckPermissionAsync(string objType = "", string objId = "", string permissionName = "", string subjectType = "", string subjectId = "", bool trace = false);
 
         /// <summary>
         /// Checks a relation.
@@ -108,7 +108,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <param name="subjectId">The Id of the subject.</param>
         /// <param name="trace">A bool indicating if the trace is enabled.</param>
         /// <returns>A bool indicating if the relation exists.</returns>
-        public Task<CheckResponse> CheckAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", bool trace = false);
+        Task<CheckResponse> CheckAsync(string objType = "", string objId = "", string relationName = "", string subjectType = "", string subjectId = "", bool trace = false);
 
         // Writer methods
 
@@ -143,7 +143,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V3
         /// <param name="subjectRelation">The relaton of the subject.</param>
         /// <param name="hash">The hash of the object.</param>
         /// <returns>A SetRelationResponse object.</returns>
-        Task<SetRelationResponse> SetRelationAsync(string objType, string objId, string relationName, string subjectType, string subjectId,  string subjectRelation, string hash = "");
+        Task<SetRelationResponse> SetRelationAsync(string objType, string objId, string relationName, string subjectType, string subjectId, string subjectRelation, string hash = "");
 
         /// <summary>
         /// Deletes a relation.

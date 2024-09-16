@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients
+namespace Aserto.Clients.Interceptors
 {
     using System;
     using System.Collections.Generic;
@@ -40,8 +40,8 @@ namespace Aserto.AspNetCore.Middleware.Clients
         public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(TRequest request, ClientInterceptorContext<TRequest, TResponse> context, AsyncUnaryCallContinuation<TRequest, TResponse> continuation)
         {
             var headers = new Metadata();
-            headers.Add(new Metadata.Entry("Aserto-Tenant-Id", this.tenantID));
-            headers.Add(new Metadata.Entry("Authorization", $"basic {this.apiKey}"));
+            headers.Add(new Metadata.Entry("Aserto-Tenant-Id", tenantID));
+            headers.Add(new Metadata.Entry("Authorization", $"basic {apiKey}"));
 
             var newOptions = context.Options.WithHeaders(headers);
             var newContext = new ClientInterceptorContext<TRequest, TResponse>(context.Method, context.Host, newOptions);

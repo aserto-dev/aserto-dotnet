@@ -1,4 +1,5 @@
 using Aserto.AspNetCore.Middleware.Options;
+using Aserto.Clients.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;

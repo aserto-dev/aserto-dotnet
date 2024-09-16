@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
+namespace Aserto.Clients.Directory.V2
 {
     using System;
     using System.Collections.Generic;
@@ -31,6 +31,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="key">The key of the object.</param>
         /// <param name="type">The type of the object.</param>
         /// <returns>A GetObjectResponse object indicating the requested object if found.</returns>
+        [Obsolete]
         Task<GetObjectResponse> GetObjectAsync(string key, string type);
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="pageSize">The number of items per page.</param>
         /// <param name="pageToken">The token representing the page from which to start reading.</param>
         /// <returns>A GetObjectsResponse object indicating the requested objects if found.</returns>
+        [Obsolete]
         Task<GetObjectsResponse> GetObjectsAsync(string type, int pageSize, string pageToken = "");
 
         /// <summary>
@@ -53,6 +55,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="relationObjectType">The type of the object indicated by relation.</param>
         /// <param name="withObjects">A bool indicating if the response should contain the found object for the relation.</param>
         /// <returns>A GetRelationResponse object indicating the relation.</returns>
+        [Obsolete]
         Task<GetRelationResponse> GetRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "", bool withObjects = false);
 
         /// <summary>
@@ -67,6 +70,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="pageSize">The number of items per page.</param>
         /// <param name="pageToken">The token representing the page from which to start reading.</param>
         /// <returns>A GetRelationsResponse object indicating the relations.</returns>
+        [Obsolete]
         Task<GetRelationsResponse> GetRelationsAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "", int pageSize = 0, string pageToken = "");
 
         /// <summary>
@@ -79,6 +83,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="permissionName">The name of the permission.</param>
         /// <param name="trace">A bool indicating if the trace is enabled.</param>
         /// <returns>A bool indicating if the permission exists.</returns>
+        [Obsolete]
         Task<CheckPermissionResponse> CheckPermissionAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string permissionName = "", bool trace = false);
 
         /// <summary>
@@ -92,6 +97,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="relationObjectType">The type of the object indicated by relation.</param>
         /// <param name="trace">A bool indicating if the trace is enabled.</param>
         /// <returns>A bool indicating if the relation exists.</returns>
+        [Obsolete]
         Task<CheckRelationResponse> CheckRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "", bool trace = false);
 
         // Writer methods
@@ -105,6 +111,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="properties">A struct representing the properties bag of the object.</param>
         /// <param name="hash">The hash of the object.</param>
         /// <returns>A SetObjectResponse object.</returns>
+        [Obsolete]
         Task<SetObjectResponse> SetObjectAsync(string key, string type, string displayName = "", Struct properties = null, string hash = "");
 
         /// <summary>
@@ -113,6 +120,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="key">The key of the object.</param>
         /// <param name="type">The type of the object.</param>
         /// <returns>A DeleteObjectResponse object.</returns>
+        [Obsolete]
         Task<DeleteObjectResponse> DeleteObjectAsync(string key, string type);
 
         /// <summary>
@@ -125,6 +133,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="relationTypeName">The type name of the relation.</param>
         /// <param name="hash">The hash of the object.</param>
         /// <returns>A SetRelationResponse object.</returns>
+        [Obsolete]
         Task<SetRelationResponse> SetRelationAsync(string subjectKey, string subjectType, string objKey, string objType, string relationTypeName, string hash = "");
 
         /// <summary>
@@ -137,6 +146,7 @@ namespace Aserto.AspNetCore.Middleware.Clients.Directory.V2
         /// <param name="relationName">The name of the relation type.</param>
         /// <param name="relationObjectType">The type of the object indicated by relation.</param>
         /// <returns>A DeleteRelationResponse object.</returns>
+        [Obsolete]
         Task<DeleteRelationResponse> DeleteRelationAsync(string subjectKey = "", string subjectType = "", string objKey = "", string objType = "", string relationName = "", string relationObjectType = "");
     }
 }
