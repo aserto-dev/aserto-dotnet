@@ -38,9 +38,6 @@
     <Reference Include="Aserto.Authorizer.V2.Client.Grpc, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Aserto.Authorizer.V2.Client.Grpc.0.0.7\lib\netstandard2.0\Aserto.Authorizer.V2.Client.Grpc.dll</HintPath>
     </Reference>
-    <Reference Include="Aserto.Clients">
-      <HintPath>..\..\src\Aserto.Clients\bin\Debug\netstandard2.0\Aserto.Clients.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Protobuf, Version=3.27.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Protobuf.3.27.2\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
@@ -113,6 +110,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Aserto.Clients\Aserto.Clients.csproj">
+      <Project>{632100f3-747d-4d06-8fd9-76f48752ef6c}</Project>
+      <Name>Aserto.Clients</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
