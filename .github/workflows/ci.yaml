@@ -25,6 +25,9 @@ jobs:
           - { project: Aserto.AspNetCore.Middleware, dotnet: 6.x}
           - { project: Aserto.AspNetCore.Middleware, dotnet: 7.x}
           - { project: Aserto.AspNetCore.Middleware, dotnet: 8.x}
+          - { project: Aserto.Clients, dotnet: 6.x }
+          - { project: Aserto.Clients, dotnet: 7.x }
+          - { project: Aserto.Clients, dotnet: 8.x }
     name: Build ${{ matrix.cfg.project }} on ${{ matrix.cfg.dotnet }}
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +94,11 @@ jobs:
 
       - name: Build
         run: dotnet build --configuration Release src/Aserto.AspNetCore.Middleware/Aserto.AspNetCore.Middleware.csproj
+      
+      - name: Build clients
+        run: dotnet build --configuration Release src/Aserto.Clients/Aserto.Clients.csproj
 
       - name: Publish to NuGet.org
         run: |
           dotnet nuget push ./src/Aserto.AspNetCore.Middleware/bin/Release/*.nupkg --api-key ${NUGET_API_KEY} --source https://api.nuget.org/v3/index.json
+          dotnet nuget push ./src/Aserto.Clients/bin/Release/*.nupkg --api-key ${NUGET_API_KEY} --source https://api.nuget.org/v3/index.json
