@@ -7,6 +7,9 @@
 	  <TargetFrameworks>net6;net7;net8;netstandard2.0</TargetFrameworks>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <LangVersion>8.0</LangVersion>
+	  <Company>Aserto</Company>
+	  <PackageIcon>aserto-brandmark-color.png</PackageIcon>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
 
@@ -35,6 +38,13 @@
   </ItemGroup>
 	
   <ItemGroup>
-	<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	<None Include="..\..\build\aserto-brandmark-color.png">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
+	<None Include="..\..\README.md">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
   </ItemGroup>
 </Project>
