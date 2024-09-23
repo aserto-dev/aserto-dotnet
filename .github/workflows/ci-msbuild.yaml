@@ -74,5 +74,5 @@ jobs:
         run: msbuild src\${{matrix.cfg.project}}\${{matrix.cfg.project}}.csproj -t:rebuild -verbosity:diag -property:Configuration=Release
 
       - name: Publish to NuGet.org
-        run: nuget push src\${{matrix.cfg.project}}\bin\Release\*.nupkg -ApiKey ${NUGET_API_KEY} -Source https://api.nuget.org/v3/index.json
+        run: nuget push src\${{matrix.cfg.project}}\bin\Release\*.nupkg -ApiKey ${NUGET_API_KEY}
 
