@@ -1,3 +1,91 @@
+# .NET Client library for Aserto
+
+[![ci](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml/badge.svg)](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml) [![Coverage Status](https://coveralls.io/repos/github/aserto-dev/aserto-dotnet/badge.svg?branch=main&t=1UzNg5)](https://coveralls.io/github/aserto-dev/aserto-dotnet?branch=main) [![NuGet version](https://img.shields.io/nuget/v/Aserto.AspNetCore.Middleware?style=flat)](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/)[![Maintainability](https://api.codeclimate.com/v1/badges/8d946af86d3dbd10956b/maintainability)](https://codeclimate.com/github/aserto-dev/aserto-dotnet/maintainability)
+
+Aserto.Clients is a library that allows .NET applications to use an Aserto Authorizer and Directory Client.
+
+## Installation
+[Aserto.Clients](https://www.nuget.org/packages/Aserto.Clients/) is provided as a NuGet package. 
+
+It can be installed:
+* Using Package Manager:
+```powershell
+Install-Package Aserto.Clients
+```
+
+ * Using .NET CLI
+```sh
+dotnet add package Aserto.Clients
+```
+
+## Authorizer Client
+A new Authorizer Client can be created as follows:
+```csharp
+   //Initialize using constructor
+   AsertoAuthorizerOptions authzOpts = new AsertoAuthorizerOptions();
+
+   // Set connection details
+   authzOpts.AuthorizerApiKey = ConfigurationManager.AppSettings["Authorizer.API.Key"];            
+   authzOpts.TenantID = ConfigurationManager.AppSettings["Authorizer.TenantID"];
+   authzOpts.ServiceUrl = ConfigurationManager.AppSettings["Authorizer.ServiceURL"];
+   authzOpts.Insecure = Convert.ToBoolean(ConfigurationManager.AppSettings["Authorizer.Insecure"]);
+                       
+   var authorizerOptions = Options.Create(authzOpts);
+   var client = new AuthorizerAPIClient(authorizerOptions, new NullLoggerFactory());
+```
+
+Example call:
+```csharp
+ var result = client.ListPoliciesAsync(new ListPoliciesRequest() { PolicyInstance = new PolicyInstance(){
+                Name="policy-todo",
+                InstanceLabel="policy-todo"
+            }
+```
+
+## Directory Client
+A new Directory Client can be created as follows:
+```csharp
+
+   var logggerFactory = new NullLoggerFactory();
+   // Initialize options using consttructor.
+   var options = new AsertoDirectoryOptions("url_and_port_to_directory_service", "directory_api_key", "directory_tenant_id", false);
+
+   // Intialize optons reading the appsettings.json file.
+   var options = new AsertoDirectoryOptions();
+   Configuration.GetSection("AsertoDirectory").Bind(options);
+
+   var optionsInt = Microsoft.Extensions.Options.Options.Create(options);
+   var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+
+```
+you'll need to provide the directory service URL, an API key and the Tenant ID.
+The client can be configure to use SSL connection as insecure by providing `options.Insecure = true;`.
+
+Example call to the directory client:
+```csharp
+
+   public async Task GetObject()
+   {
+      //...
+
+      var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+
+      // Get an object.
+      var getObjectResp = await directoryClient.GetObjectAsync("object_key","object_type");
+
+      // Get the identities for a user.
+      var getRelationsResp = await directoryAPI.GetRelationsAsync(subjectType: "user", subjectKey: "userID",relationName: "identifier", relationObjectType: "identity", pageSize: 10);
+
+      //...
+   }
+
+```
+
+## Examples
+
+* [Aserto Authorizer Client CLI](https://github.com/aserto-dev/aserto-dotnet/tree/main/examples/AuthorizerClientExample)
+* [Directory Client CLI](https://github.com/aserto-dev/aserto-dotnet/tree/main/examples/DirectoryClientExampleCLI)
+
 # .NET Middleware library for Aserto
 
 [![ci](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml/badge.svg)](https://github.com/aserto-dev/aserto-dotnet/actions/workflows/ci.yaml) [![Coverage Status](https://coveralls.io/repos/github/aserto-dev/aserto-dotnet/badge.svg?branch=main&t=1UzNg5)](https://coveralls.io/github/aserto-dev/aserto-dotnet?branch=main) [![NuGet version](https://img.shields.io/nuget/v/Aserto.AspNetCore.Middleware?style=flat)](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/)[![Maintainability](https://api.codeclimate.com/v1/badges/8d946af86d3dbd10956b/maintainability)](https://codeclimate.com/github/aserto-dev/aserto-dotnet/maintainability)
@@ -5,20 +93,29 @@
 Aserto.AspNetCore.Middleware is a middleware that allows .NET Asp applications to use Topaz Authorizer as the Authorization provider.
 
 ## Prerequisites
-* [.NET SDK](https://dotnet.microsoft.com/download) 3.1 or newer.
+* [.NET SDK](https://dotnet.microsoft.com/download)
 
 ## Installation
 [Aserto.AspNetCore.Middleware](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/) is provided as a NuGet package. 
+[Aserto.Middleware] (https://www.nuget.org/packages/Aserto.Middleware/) is the provided NuGet package that can be used with .Net Framework. 
 
 It can be installed:
 * Using Package Manager:
 ```powershell
 Install-Package Aserto.AspNetCore.Middleware
 ```
+or 
+```powershell
+Install-Package Aserto.Middleware
+```
 
  * Using .NET CLI
 ```sh
 dotnet add package Aserto.AspNetCore.Middleware
+``` 
+or 
+```sh
+dotnet add package Aserto.Middleware
 ```
 
 ## Configuration
@@ -57,7 +154,7 @@ The middleware accepts the following optional parameters:
 | DirectoryApiKey | "" | The directory API Key |
 
 
-## Usage
+## Usage for Aserto.AspNetCore.Middleware
 To configure Aserto Authorization, the Aserto Authorization Service needs to be added to the `ConfigureServices` method in `Startup.cs`
 
 ```csharp
@@ -115,6 +212,7 @@ public void ConfigureServices(IServiceCollection services)
    //..
 }
 ```
+
 
 ### Identity
 To determine the identity of the user, the middleware checks the following Claim types:

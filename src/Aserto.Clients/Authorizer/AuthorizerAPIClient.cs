@@ -100,7 +100,7 @@ namespace Aserto.Clients.Authorizer
             }
 
             logger.LogDebug($"Policy Context path resolved to: {isRequest.PolicyContext.Path}");
-            logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
+            // logger.LogDebug($"Resource Context resolved to: {isRequest.ResourceContext}");
             var result = await authorizerClient.IsAsync(isRequest);
 
             if (result.Decisions.Count == 0)
