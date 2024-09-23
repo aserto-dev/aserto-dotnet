@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>Aserto Middleware</title>
+    <authors>Aserto Dev</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>http://github.com/aserto-dev/aserto-dotnet/</projectUrl>
+    <description>$description$</description>
+    <releaseNotes>Aserto Middleware for .Net Framework.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>aserto middleware</tags>
+  </metadata>
+</package>
