@@ -58,8 +58,8 @@ jobs:
         with:
           url: ${{ env.VAULT_ADDR }}
           token: ${{ secrets.VAULT_TOKEN }}
-        secrets: |
-          kv/data/nuget  "NUGET_API_KEY"     | NUGET_API_KEY;
+          secrets: |
+            kv/data/nuget  "NUGET_API_KEY"     | NUGET_API_KEY;
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
