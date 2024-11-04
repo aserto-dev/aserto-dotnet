@@ -345,7 +345,7 @@ Example call to the directory client:
 
 ## Building & testing
 
-The project can be built on Windows, Linux or macOS using the [.Net Core SDK](https://dotnet.microsoft.com/download):
+ **_Note:_** We recommend using Windows to build and contribute to this project because of the dotnet framework projects present in this solution (Aserto.Middleware, WebAPI and MvCApp examples). If you want to build this project on Linux or macOS, please make sure to remove these projects from the solution, then you can build using the [.Net Core SDK](https://dotnet.microsoft.com/download):
 
 ```sh
 dotnet build .\aserto-dotnet.sln
