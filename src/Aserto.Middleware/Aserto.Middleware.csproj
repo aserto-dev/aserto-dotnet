@@ -18,12 +18,12 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageIcon>aserto-brandmark-color.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>aserto-brandmark-color.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
-        <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\build\aserto-brandmark-color.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\build\aserto-brandmark-color.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<!-- Generate the nupkg package on Release build -->
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- Generate the nupkg package on Release build -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -173,6 +173,11 @@
       <Project>{632100f3-747d-4d06-8fd9-76f48752ef6c}</Project>
       <Name>Aserto.Clients</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Aserto.Directory.V3.Client.Grpc">
+      <Version>0.33.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />

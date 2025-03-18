@@ -56,6 +56,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\src\Aserto.Clients\bin\Debug\netstandard2.0\Aserto.Clients.dll</HintPath>
     </Reference>
+    <Reference Include="Aserto.Directory.V3.Client.Grpc, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Aserto.Directory.V3.Client.Grpc.0.33.0\lib\netstandard2.0\Aserto.Directory.V3.Client.Grpc.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Protobuf, Version=3.28.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Google.Protobuf.3.28.2\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
