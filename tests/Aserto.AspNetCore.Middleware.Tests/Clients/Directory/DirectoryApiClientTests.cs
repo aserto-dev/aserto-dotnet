@@ -1,6 +1,6 @@
 using Aserto.AspNetCore.Middleware.Options;
-using Aserto.Directory.Reader.V2;
-using Aserto.Directory.Common.V2;
+using Aserto.Directory.Reader.V3;
+using Aserto.Directory.Common.V3;
 using Aserto.Clients.Options;
 using Google.Protobuf.Collections;
 using Grpc.Core;
@@ -17,8 +17,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using static Aserto.Directory.Reader.V2.Reader;
-using Aserto.Clients.Directory.V2;
+using static Aserto.Directory.Reader.V3.Reader;
+using Aserto.Clients.Directory.V3;
 
 namespace Aserto.AspNetCore.Middleware.Tests.Clients
 {
@@ -39,18 +39,18 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         {
             var logggerFactory = new NullLoggerFactory();
 
-            Assert.Throws<ArgumentNullException>(() => new  DirectoryAPIClient(null, logggerFactory));
+            Assert.Throws<ArgumentNullException>(() => new Aserto.Clients.Directory.V3.Directory(null, logggerFactory));
         }
 
         [Fact]
         public void WrongDirectoryServiceURLThrows()
         {
             var logggerFactory = new NullLoggerFactory();
-            var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
-            options.Value.DirectoryServiceUrl = "www.someweb.com/path/file";
+            var options = new AsertoDirectoryOptions();
+            options.DirectoryServiceUrl = "www.someweb.com/path/file";
 
 
-            Assert.Throws<ArgumentException>(() => new DirectoryAPIClient(options, logggerFactory));
+            Assert.Throws<ArgumentException>(() => new Aserto.Clients.Directory.V3.Directory(options, logggerFactory));
         }
 
         [Fact]
@@ -59,9 +59,8 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
             var logggerFactory = new NullLoggerFactory();
             var options = new AsertoDirectoryOptions();
             _configuration.GetSection("AsertoDirectory").Bind(options);
-            var opt = Microsoft.Extensions.Options.Options.Create(options);
 
-            Assert.Throws<ArgumentException>(() => new DirectoryAPIClient(opt, logggerFactory));
+            Assert.Throws<ArgumentException>(() => new Aserto.Clients.Directory.V3.Directory(options, logggerFactory));
         }
 
         [Fact]
@@ -69,9 +68,9 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         async public Task AccesingReaderWithoutAddressThrows()
         {
             var logggerFactory = new NullLoggerFactory();
-            var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
-            options.Value.DirectoryWriterUrl = "https://localhost:9292";
-            var dirClient = new DirectoryAPIClient(options, logggerFactory);
+            var options = new AsertoDirectoryOptions();
+            options.DirectoryWriterUrl = "https://localhost:9292";
+            var dirClient = new Aserto.Clients.Directory.V3.Directory(options, logggerFactory);
             await Assert.ThrowsAsync<ArgumentException>(() => dirClient.GetObjectAsync("type", "key"));
         }
 
@@ -80,11 +79,11 @@ namespace Aserto.AspNetCore.Middleware.Tests.Clients
         async public Task AccesingReaderWithServiceAddressDoesNotThrow()
         {
             var logggerFactory = new NullLoggerFactory();
-            var options = Microsoft.Extensions.Options.Options.Create(new AsertoDirectoryOptions());
-            options.Value.DirectoryWriterUrl = "https://localhost:9292";
-            options.Value.DirectoryServiceUrl = "https://localhost:9292";
-            options.Value.DirectoryTenantID = "test";            
-            var dirClient = new DirectoryAPIClient(options, logggerFactory);
+            var options = new AsertoDirectoryOptions();
+            options.DirectoryWriterUrl = "https://localhost:9292";
+            options.DirectoryServiceUrl = "https://localhost:9292";
+            options.DirectoryTenantID = "test";            
+            var dirClient = new Aserto.Clients.Directory.V3.Directory(options, logggerFactory);
             await Assert.ThrowsAsync<Grpc.Core.RpcException>(() => dirClient.GetObjectAsync("type", "key"));
         }
     }
