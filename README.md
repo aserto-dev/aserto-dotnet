@@ -54,8 +54,7 @@ A new Directory Client can be created as follows:
    var options = new AsertoDirectoryOptions();
    Configuration.GetSection("AsertoDirectory").Bind(options);
 
-   var optionsInt = Microsoft.Extensions.Options.Options.Create(options);
-   var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+   var directoryClient = new Directory(options, logggerFactory);
 
 ```
 you'll need to provide the directory service URL, an API key and the Tenant ID.
@@ -68,7 +67,7 @@ Example call to the directory client:
    {
       //...
 
-      var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+      var directoryClient = new Directory(options, logggerFactory);
 
       // Get an object.
       var getObjectResp = await directoryClient.GetObjectAsync("object_key","object_type");
@@ -92,8 +91,7 @@ Example call to the directory client:
 
 Aserto.AspNetCore.Middleware is a middleware that allows .NET Asp applications to use Topaz Authorizer as the Authorization provider.
 
-## Prerequisites
-* [.NET SDK](https://dotnet.microsoft.com/download)
+## Prerequisit* [.NET SDK](https://dotnet.microsoft.com/download)
 
 ## Installation
 [Aserto.AspNetCore.Middleware](https://www.nuget.org/packages/Aserto.AspNetCore.Middleware/) is provided as a NuGet package. 
@@ -315,8 +313,7 @@ A new Directory Client can be creating as follows:
    var options = new AsertoDirectoryOptions();
    Configuration.GetSection("AsertoDirectory").Bind(options);
 
-   var optionsInt = Microsoft.Extensions.Options.Options.Create(options);
-   var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+   var directoryClient = new Directory(options, logggerFactory);
 
 ```
 you'll need to provide the directory service URL, an API key and the Tenant ID.
@@ -329,7 +326,7 @@ Example call to the directory client:
    {
       //...
 
-      var directoryClient = new DirectoryAPIClient(optionsInt, logggerFactory);
+      var directoryClient = new Directory(options, logggerFactory);
 
       // Get an object.
       var getObjectResp = await directoryClient.GetObjectAsync("object_key","object_type");
