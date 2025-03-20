@@ -22,6 +22,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<!-- Generate the nupkg package on Release build -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	        <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
