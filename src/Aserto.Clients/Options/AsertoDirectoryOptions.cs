@@ -40,7 +40,19 @@ namespace Aserto.Clients.Options
         /// <param name="insecure">Bool indicating whether insecure service connections are allowed when using SSL.</param>
         public AsertoDirectoryOptions(string serviceURL = "", string readerURL = "", string writerURL = "", string importerURL = "", string exporterURL = "", string modelURL = "", string apiKey = "", string tenantID = "", bool insecure = false)
         {
-            this.DirectoryApiKey = apiKey;
+            if (serviceURL != string.Empty)
+            {
+                this.DirectoryServiceUrl = serviceURL;
+            }
+            else
+            {
+                this.DirectoryReaderUrl = readerURL;
+                this.DirectoryWriterUrl = writerURL;
+                this.DirectoryImporterUrl = importerURL;
+                this.DirectoryExporterUrl = exporterURL;
+                this.DirectoryModelUrl = modelURL;
+                this.DirectoryApiKey = apiKey;
+            }
 
             if (tenantID != string.Empty)
             {
