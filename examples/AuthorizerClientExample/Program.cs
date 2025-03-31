@@ -21,7 +21,7 @@ namespace AuthorizerClientExample
     {
         static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder()
+            var builder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
                            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                            .AddJsonFile("appsettings.json", optional: false);
 
