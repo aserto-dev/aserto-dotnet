@@ -40,8 +40,14 @@ namespace Aserto.Clients.Interceptors
         public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(TRequest request, ClientInterceptorContext<TRequest, TResponse> context, AsyncUnaryCallContinuation<TRequest, TResponse> continuation)
         {
             var headers = new Metadata();
-            headers.Add(new Metadata.Entry("Aserto-Tenant-Id", tenantID));
-            headers.Add(new Metadata.Entry("Authorization", $"basic {apiKey}"));
+            if (tenantID != null)
+            {
+                headers.Add(new Metadata.Entry("Aserto-Tenant-Id", tenantID));
+            }
+            if (apiKey != null)
+            {
+                headers.Add(new Metadata.Entry("Authorization", $"basic {apiKey}"));
+            }
 
             var newOptions = context.Options.WithHeaders(headers);
             var newContext = new ClientInterceptorContext<TRequest, TResponse>(context.Method, context.Host, newOptions);

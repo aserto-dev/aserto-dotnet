@@ -1,18 +1,19 @@
 ﻿using Aserto.Clients.Authorizer;
 using Aserto.Authorizer.V2.Api;
 using Aserto.Clients.Options;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using Aserto.Authorizer.V2;
 using Google.Protobuf.WellKnownTypes;
-using System.Runtime.Remoting.Contexts;
-using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using Grpc.Net.Client;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace AuthorizerClientExample
 {
@@ -20,15 +21,29 @@ namespace AuthorizerClientExample
     {
         static void Main(string[] args)
         {
+            var builder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+                           .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                           .AddJsonFile("appsettings.json", optional: false);
+
+            IConfiguration config = builder.Build();
 
             AsertoAuthorizerOptions authzOpts = new AsertoAuthorizerOptions();
-            authzOpts.AuthorizerApiKey = ConfigurationManager.AppSettings["Authorizer.API.Key"];            
-            authzOpts.TenantID = ConfigurationManager.AppSettings["Authorizer.TenantID"];
-            authzOpts.ServiceUrl = ConfigurationManager.AppSettings["Authorizer.ServiceURL"];
-            authzOpts.Insecure = Convert.ToBoolean(ConfigurationManager.AppSettings["Authorizer.Insecure"]);
+            authzOpts.AuthorizerApiKey = config.GetSection("Authorizer:APIKey").Value;
+            authzOpts.ServiceUrl = config.GetSection("Authorizer:ServiceUrl").Value;
+            authzOpts.TenantID = config.GetSection("Authorizer:TenantID").Value;
+            authzOpts.Insecure = Convert.ToBoolean(config.GetSection("Authorizer:Insecure").Value);
                         
             var authorizerOptions = Options.Create(authzOpts);
 
+            //var handler = new WinHttpHandler();
+            
+            //handler.ServerCertificateValidationCallback =
+            //    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+            //var channel = GrpcChannel.ForAddress("https://localhost:8282",
+            //  new GrpcChannelOptions { HttpHandler = handler });
+
+            //var client = new Aserto.Authorizer.V2.Authorizer.AuthorizerClient(channel);
             var client = new AuthorizerAPIClient(authorizerOptions, new NullLoggerFactory());
 
             // Example Is Request for policy-todo instance
@@ -44,11 +59,11 @@ namespace AuthorizerClientExample
             request.PolicyInstance.Name = "todo";
             request.PolicyInstance.InstanceLabel = "todo";
 
-            var result = client.IsAsync(request);
+            var result =  client.IsAsync(request);
 
             Task.WaitAll(result);
 
-            Console.WriteLine(result);
+            Console.WriteLine(result.Result);
 
             var result2 = client.ListPoliciesAsync(new ListPoliciesRequest() { PolicyInstance = new PolicyInstance(){
                 Name="todo",
@@ -57,7 +72,11 @@ namespace AuthorizerClientExample
         });
             
             Task.WaitAll(result2);
-            Console.WriteLine(result2);
+            Console.WriteLine("List modules:");
+            foreach (var policy in result2.Result)
+            {
+                Console.WriteLine(policy.Raw);
+            }
         }
     }
 }

@@ -60,21 +60,29 @@ Console.WriteLine(System.Text.Encoding.UTF8.GetString(manifestBytes));
 //var manifestSet = await client.SetManifestAsync(setRequest);
 
 // Example of import object
-var importRequest = new ImportRequest();
-importRequest.Object = new Aserto.Directory.Common.V3.Object() { Id = "testImport", DisplayName = "testImport", Type="user" };
+//var importRequest = new ImportRequest();
+//importRequest.OpCode = Opcode.Set;
+//importRequest.Object = new Aserto.Directory.Common.V3.Object() { Id = "testImport", DisplayName = "testImport", Type="user" };
 
-var importResponse = client.ImportAsync(importRequest);
-await foreach (var item in importResponse)
-{
-    Console.WriteLine(item.Object.ToString());
-}
+//var importResponse = client.ImportAsync(importRequest);
+//await foreach (var item in importResponse)
+//{
+//    Console.WriteLine(item.Object.ToString());
+//}
 
 // Example of export all data
 var exportRequest = new ExportRequest();
 exportRequest.Options = ((uint)Aserto.Directory.Exporter.V3.Option.Data) ;
 var exportResponse = client.ExportAsync(exportRequest);
 await foreach(var item in exportResponse){
-    Console.WriteLine(item.Object.ToString());
+    if (item.Object != null)
+    {
+        Console.WriteLine(item.Object.ToString());
+    }
+    if (item.Relation != null)
+    {
+        Console.WriteLine(item.Relation.ToString());
+    }
 }
 
 Console.WriteLine("Done!");
