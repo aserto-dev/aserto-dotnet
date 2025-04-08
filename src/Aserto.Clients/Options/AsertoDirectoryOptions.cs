@@ -9,9 +9,11 @@ namespace Aserto.Clients.Options
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Runtime.CompilerServices;
     using System.Text;
     using Google.Protobuf.WellKnownTypes;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
 
     /// <summary>
     /// Options for Aserto Directory Client.
@@ -105,7 +107,12 @@ namespace Aserto.Clients.Options
         /// <summary>
         /// Gets or sets a value indicating whether insecure service connections are allowed when using SSL.
         /// </summary>
-        public bool DirectoryInsecure { get; set; } 
+        public bool DirectoryInsecure { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether service connections are in plaintext.
+        /// </summary>
+        public bool DirectoryPlainText { get; set; }
 
         /// <summary>
         /// Validates the provided options.
@@ -126,33 +133,57 @@ namespace Aserto.Clients.Options
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryServiceUrl) && !ValidateUri(options.DirectoryServiceUrl))
-            {
+            { 
                 throw new ArgumentException("wrong url provided for directory service url");
+            }
+            if (!string.IsNullOrEmpty(options.DirectoryServiceUrl) && options.DirectoryPlainText)
+            {
+                ValidatePlainTextURL(options.DirectoryServiceUrl);
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryReaderUrl) && !ValidateUri(options.DirectoryReaderUrl))
             {
                 throw new ArgumentException("wrong url provided for directory reader service");
             }
+            if (!string.IsNullOrEmpty(options.DirectoryReaderUrl) && options.DirectoryPlainText)
+            {
+                ValidatePlainTextURL(options.DirectoryReaderUrl);
+            }
 
             if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) && !ValidateUri(options.DirectoryWriterUrl))
             {
                 throw new ArgumentException("wrong url provided for directory writer service");
+            }
+            if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) && options.DirectoryPlainText)
+            {
+                ValidatePlainTextURL(options.DirectoryWriterUrl);
             }
 
             if (!string.IsNullOrEmpty(options.DirectoryImporterUrl) && !ValidateUri(options.DirectoryImporterUrl))
             {
                 throw new ArgumentException("wrong url provided for directory importer service");
             }
+            if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) && options.DirectoryPlainText)
+            {
+                ValidatePlainTextURL(options.DirectoryImporterUrl);
+            }
 
             if (!string.IsNullOrEmpty(options.DirectoryExporterUrl) && !ValidateUri(options.DirectoryExporterUrl))
             {
                 throw new ArgumentException("wrong url provided for directory exporter service");
             }
+            if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) &&  options.DirectoryPlainText)
+            {
+                ValidatePlainTextURL(options.DirectoryExporterUrl);
+            }
 
             if (!string.IsNullOrEmpty(options.DirectoryModelUrl) && !ValidateUri(options.DirectoryModelUrl))
             {
                 throw new ArgumentException("wrong url provided for directory model service");
+            }
+            if (!string.IsNullOrEmpty(options.DirectoryWriterUrl) && options.DirectoryPlainText)
+            {
+                ValidatePlainTextURL(options.DirectoryModelUrl);
             }
 
             return;
@@ -166,13 +197,21 @@ namespace Aserto.Clients.Options
             }
 
             var serviceUri = new Uri(uri);
-
+            
             if (serviceUri.Scheme != Uri.UriSchemeHttps && serviceUri.Scheme != Uri.UriSchemeHttp)
             {
                 return false;
             }
 
             return true;
+        }
+
+        private static void ValidatePlainTextURL(string address)
+        {   
+            if (new Uri(address).Scheme != Uri.UriSchemeHttp)
+            {
+                throw new ArgumentException(String.Format("invalid service scheme for plain text client configuration on {0}",address));
+            }
         }
     }
 }

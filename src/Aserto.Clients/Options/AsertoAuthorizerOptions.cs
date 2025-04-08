@@ -41,6 +41,11 @@ namespace Aserto.Clients.Options
         public bool Insecure { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether service connections are in plaintext.
+        /// </summary>
+        public bool PlainText { get; set; }
+
+        /// <summary>
         /// Validates the provided options.
         /// </summary>
         /// <param name="options">Authorizer API Client options <see cref="Aserto.Clients.Options.AsertoAuthorizerOptions"/>.</param>
@@ -55,6 +60,14 @@ namespace Aserto.Clients.Options
             if (!ValidateUri(options.ServiceUrl))
             {
                 return false;
+            }
+
+            if (options.PlainText)
+            {
+                if (new Uri(options.ServiceUrl).Scheme != Uri.UriSchemeHttp)
+                {
+                    throw new ArgumentException("invalid service scheme for plain text client configuration");
+                }
             }
 
             return true;
