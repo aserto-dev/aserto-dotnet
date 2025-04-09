@@ -46,6 +46,8 @@ namespace Aserto.Clients.Authorizer
 
             this.options = options.Value;
 
+            AsertoAuthorizerOptions.Validate(this.options);
+
             if (authorizerClient != null)
             {
                 this.authorizerClient = authorizerClient;
@@ -55,11 +57,11 @@ namespace Aserto.Clients.Authorizer
                 this.authorizerClient = null;
 
                 var grpcChannelOptions = new GrpcChannelOptions { };
-
+              
                 if (this.options.Insecure)
                 {
                     var httpHandler = new HttpClientHandler
-                    {
+                    {   
                         ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
                     };
 
