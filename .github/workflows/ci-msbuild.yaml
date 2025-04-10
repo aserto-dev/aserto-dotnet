@@ -75,6 +75,6 @@ jobs:
       - name: Pack and push nuget
         run: |
           cd src\${{matrix.cfg.project}}
-          nuget pack
+          nuget pack -Prop Configuration=Release
           nuget push *.nupkg -ApiKey $Env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
 
